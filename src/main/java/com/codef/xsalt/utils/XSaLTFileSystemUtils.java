@@ -15,7 +15,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,8 +29,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Stream;
-
-import org.apache.log4j.Priority;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -39,15 +36,17 @@ import java.util.zip.ZipOutputStream;
 
 import javax.imageio.ImageIO;
 
+import org.apache.log4j.Priority;
+
+import com.codef.xsalt.arch.XSaLTGenericLogger;
+import com.itextpdf.text.DocumentException;
+
 import multivalent.Behavior;
 import multivalent.Context;
 import multivalent.Document;
 import multivalent.Node;
 import multivalent.ParseException;
 import multivalent.std.adaptor.pdf.PDF;
-
-import com.codef.xsalt.arch.XSaLTGenericLogger;
-import com.itextpdf.text.DocumentException;
 
 /**
  * @author Stephan P. Cossette

@@ -791,7 +791,7 @@ public class XSaLTDataUtils
 			oResultsMap.put("COLUMNS", asTempString);
 			oResultsMap.put("ROW_COUNT", new Integer(oCleanFileBuffer.size()));
 		}
-
+		
 		oResultsMap.put("COLUMN_COUNT_DATA", new Integer(nMaxDataColumnCount));
 		oResultsMap.put("COLUMN_COUNT_HEADER", new Integer(oCleanFileBuffer.get(0).length));
 		oResultsMap.put("COLUMN_LENGTH_DATA", anMaxDataColumnLength);
@@ -804,13 +804,21 @@ public class XSaLTDataUtils
 		dropTableInDatabase(_oConn, _sTableName.toUpperCase());
 
 		StringBuffer oCreateSqlStringbuffer = new StringBuffer("CREATE TABLE " + _sTableName.toUpperCase() + " (");
-		oCreateSqlStringbuffer.append("\n   ROWGENID bigint(20) NOT NULL auto_increment PRIMARY KEY, ");
+		
+		
+		if (_oConn.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+			oCreateSqlStringbuffer.append("\n   ROWGENID serial PRIMARY KEY, ");
+		} else {
+			oCreateSqlStringbuffer.append("\n   ROWGENID bigint(20) NOT NULL auto_increment PRIMARY KEY, ");
+		}
 
 		if (_bAddDupeRow)
 		{
 			oCreateSqlStringbuffer.append("\n   ORIGINAL_OR_DUPE VARCHAR(20) DEFAULT '', ");
 		}
 
+		StringBuffer oAllColumnsForInsert = new StringBuffer(" (");
+		
 		String[] asTemp = (String[]) oResultsMap.get("COLUMNS");
 		for (int i = 0; i < asTemp.length; i++)
 		{
@@ -822,12 +830,13 @@ public class XSaLTDataUtils
 
 			if (_sDefaultColumnType != null)
 			{
-
+				oAllColumnsForInsert.append(XSaLTStringUtils.regExReplaceSpacesWithUnderscores(asTemp[i].toUpperCase()));
 				oCreateSqlStringbuffer.append("\n   " + XSaLTStringUtils.regExReplaceSpacesWithUnderscores(asTemp[i].toUpperCase()) + " ");
 				oCreateSqlStringbuffer.append(_sDefaultColumnType + "(" + anMaxDataColumnLength[i] + ")");
 			}
 			else
 			{
+				oAllColumnsForInsert.append(XSaLTStringUtils.regExReplaceSpacesWithUnderscores(asTemp[i].toUpperCase()));
 				oCreateSqlStringbuffer.append("\n   " + XSaLTStringUtils.regExReplaceSpacesWithUnderscores(asTemp[i].toUpperCase()) + " ");
 				oCreateSqlStringbuffer.append(_sDefaultColumnType + "");
 			}
@@ -836,14 +845,29 @@ public class XSaLTDataUtils
 			{
 				oCreateSqlStringbuffer.append(" DEFAULT '' ");
 			}
+			oAllColumnsForInsert.append(", ");
 			oCreateSqlStringbuffer.append(", ");
 
 		}
 		oCreateSqlStringbuffer = new StringBuffer(oCreateSqlStringbuffer.substring(0, oCreateSqlStringbuffer.length() - 2));
-		oCreateSqlStringbuffer.append(")\nENGINE=" + _sDefaultTableType);
+		oAllColumnsForInsert = new StringBuffer(oAllColumnsForInsert.substring(0, oAllColumnsForInsert.length() - 2));
+		
+		oAllColumnsForInsert.append(") ");
+		
+		if (_oConn.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+			oCreateSqlStringbuffer.append(")");
+		} else {
+			oCreateSqlStringbuffer.append(")\nENGINE=" + _sDefaultTableType);
+		}
 		executeSQL(_oConn, oCreateSqlStringbuffer.toString());
+		
+		StringBuffer oFinalInsertBuffer = new StringBuffer("");
+		if (_oConn.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+			oFinalInsertBuffer.append("INSERT INTO " + _sTableName.toUpperCase() + " " + oAllColumnsForInsert + " VALUES ");
+		} else {
+			oFinalInsertBuffer.append("INSERT INTO " + _sTableName.toUpperCase() + " VALUES ");
+		}
 
-		StringBuffer oFinalInsertBuffer = new StringBuffer("INSERT INTO " + _sTableName.toUpperCase() + " VALUES ");
 		String[] asData;
 
 		for (int i = 1; i < oCleanFileBuffer.size(); i++)
@@ -854,14 +878,26 @@ public class XSaLTDataUtils
 				continue;
 			}
 
-			if (_bAddDupeRow)
-			{
-				oFinalInsertBuffer.append("(null, 'XX_ORIGINAL_XX', " + XSaLTObjectUtils.getStringArrayWithDelimiter_String(asData, ", "));
+			if (_oConn.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+				if (_bAddDupeRow)
+				{
+					oFinalInsertBuffer.append("('XX_ORIGINAL_XX', " + XSaLTObjectUtils.getStringArrayWithDelimiter_String(asData, ", "));
+				}
+				else
+				{
+					oFinalInsertBuffer.append("(" + XSaLTObjectUtils.getStringArrayWithDelimiter_String(asData, ", "));
+				}
+			} else {
+				if (_bAddDupeRow)
+				{
+					oFinalInsertBuffer.append("(null, 'XX_ORIGINAL_XX', " + XSaLTObjectUtils.getStringArrayWithDelimiter_String(asData, ", "));
+				}
+				else
+				{
+					oFinalInsertBuffer.append("(null, " + XSaLTObjectUtils.getStringArrayWithDelimiter_String(asData, ", "));
+				}
 			}
-			else
-			{
-				oFinalInsertBuffer.append("(null, " + XSaLTObjectUtils.getStringArrayWithDelimiter_String(asData, ", "));
-			}
+			
 
 			if (asData.length < oCleanFileBuffer.get(0).length)
 			{
@@ -890,7 +926,12 @@ public class XSaLTDataUtils
 					executeSQL(_oConn, oFinalInsertBuffer.substring(0, oFinalInsertBuffer.length() - 2).toString().replaceAll("XX_ORIGINAL_XX", "DUPE"));
 				}
 
-				oFinalInsertBuffer = new StringBuffer("INSERT INTO " + _sTableName.toUpperCase() + " VALUES ");
+				oFinalInsertBuffer = new StringBuffer("");
+				if (_oConn.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+					oFinalInsertBuffer.append("INSERT INTO " + _sTableName.toUpperCase() + " " + oAllColumnsForInsert + " VALUES ");
+				} else {
+					oFinalInsertBuffer.append("INSERT INTO " + _sTableName.toUpperCase() + " VALUES ");
+				}
 
 				if (!_oConn.getAutoCommit())
 				{
@@ -1229,7 +1270,14 @@ public class XSaLTDataUtils
 		dropTableInDatabase(_oConn, _sTableName.toUpperCase());
 
 		StringBuffer oCreateSqlStringbuffer = new StringBuffer("CREATE TABLE " + _sTableName.toUpperCase() + " (");
-		oCreateSqlStringbuffer.append("\n   ROWGENID bigint(20) NOT NULL auto_increment PRIMARY KEY, ");
+		
+		
+		if (_oConn.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+			oCreateSqlStringbuffer.append("\n   ROWGENID serial auto_increment PRIMARY KEY, ");
+		} else {
+			oCreateSqlStringbuffer.append("\n   ROWGENID bigint(20) NOT NULL auto_increment PRIMARY KEY, ");
+		}
+		
 
 		String[] asTemp = (String[]) oResultsMap.get("COLUMNS");
 		for (int i = 0; i < asTemp.length; i++)
@@ -2955,7 +3003,13 @@ public class XSaLTDataUtils
 		dropTableInDatabase(_oMySQLConnection, _sNewImportTableName.toUpperCase());
 
 		StringBuffer oCreateSqlStringbuffer = new StringBuffer("CREATE TABLE " + _sNewImportTableName.toUpperCase() + " (");
-		oCreateSqlStringbuffer.append("\n\tROWGENID bigint(20) NOT NULL auto_increment PRIMARY KEY, ");
+		
+		
+		if (_oMySQLConnection.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+			oCreateSqlStringbuffer.append("\n\tROWGENID serial PRIMARY KEY, ");
+		} else {
+			oCreateSqlStringbuffer.append("\n\tROWGENID bigint(20) NOT NULL auto_increment PRIMARY KEY, ");
+		}
 
 		for (int i = 0; i < _oAccessMetaData.getColumnCount(); i++)
 		{
@@ -3933,7 +3987,13 @@ public class XSaLTDataUtils
 		dropTableInDatabase(_oConnection, _sTableName);
 
 		StringBuffer oCreateSqlStringbuffer = new StringBuffer("CREATE TABLE " + _sTableName.toUpperCase() + " (");
-		oCreateSqlStringbuffer.append("\n\tROWGENID bigint(20) NOT NULL auto_increment PRIMARY KEY, ");
+
+		
+		if (_oConnection.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+			oCreateSqlStringbuffer.append("\n\tROWGENID serial PRIMARY KEY, ");
+		} else {
+			oCreateSqlStringbuffer.append("\n\tROWGENID bigint(20) NOT NULL auto_increment PRIMARY KEY, ");
+		}
 
 		int nColumnCount = 1;
 
@@ -4089,8 +4149,13 @@ public class XSaLTDataUtils
 		dropTableInDatabase(_oConnection, _sTableName);
 
 		StringBuffer oCreateSqlStringbuffer = new StringBuffer("CREATE TABLE " + _sTableName.toUpperCase() + " (");
-		oCreateSqlStringbuffer.append("\n\tROWGENID bigint(20) NOT NULL auto_increment PRIMARY KEY, ");
-
+		
+		if (_oConnection.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+			oCreateSqlStringbuffer.append("\n\tROWGENID serial PRIMARY KEY, ");
+		} else {
+			oCreateSqlStringbuffer.append("\n\tROWGENID bigint(20) NOT NULL auto_increment PRIMARY KEY, ");
+		}
+		
 		int nColumnCount = 1;
 
 		int nMinimumLineLength = 0;
@@ -4951,6 +5016,32 @@ public class XSaLTDataUtils
 		return getMySQLConnection(_sHostName, "3306", _sSchemaName, _sUsername, _sPassword);
 
 	}
+	
+	/***
+	 * This method creates a getPostgres connection object.
+	 * 
+	 * @param _sHostName
+	 *            Host where database is stored
+	 * @param _sSchemaName
+	 *            Database schema to attach to
+	 * @param _sUsername
+	 *            Database user name
+	 * @param _sPassword
+	 *            Password for user name
+	 * @return Connection to MySQL database
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	public static Connection getPostgresConnection(String _sHostName, String _sSchemaName, String _sUsername, String _sPassword) throws InstantiationException,
+			IllegalAccessException, ClassNotFoundException, SQLException
+	{
+		return getPostgresConnection(_sHostName, "5432", _sSchemaName, _sUsername, _sPassword);
+
+	}
+	
+	
 
 	/**
 	 * This method creates a MySQL connection object.
@@ -4974,37 +5065,74 @@ public class XSaLTDataUtils
 	public static Connection getMySQLConnection(String _sHostName, String _sPortNumber, String _sSchemaName, String _sUsername, String _sPassword) throws InstantiationException,
 			IllegalAccessException, ClassNotFoundException, SQLException
 	{
-		Class.forName("com.mysql.jdbc.Driver").newInstance();
+		
 		Connection o_connection_mysql = null;
+		String sConnectString = "";
+		// XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "sConnectString: " +
+		// sConnectString);
 
-		if (_sSchemaName == null)
-		{
+		if (_sSchemaName == null) {
 
-			String sConnectString = "jdbc:mysql://" + _sHostName + ":" + _sPortNumber + "/" + "?user=" + _sUsername + "&password=" + _sPassword;
-			//XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "sConnectString: " + sConnectString);
-
-			o_connection_mysql = DriverManager.getConnection(sConnectString);
+			sConnectString = "jdbc:mysql://" + _sHostName + ":" + _sPortNumber + "/" + "?user=" + _sUsername
+					+ "&password=" + _sPassword;
+			// XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "sConnectString: " + sConnectString);
+		} else {
+			sConnectString = "jdbc:mysql://" + _sHostName + ":" + _sPortNumber + "/" + _sSchemaName + "?user="
+					+ _sUsername + "&password=" + _sPassword;
+			// XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "sConnectString: " + sConnectString);
 		}
-		else
-		{
-			String sConnectString = "jdbc:mysql://" + _sHostName + ":" + _sPortNumber + "/" + _sSchemaName + "?user=" + _sUsername + "&password=" + _sPassword;
-			//XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "sConnectString: " + sConnectString);
 
-			try
-			{
-				o_connection_mysql = DriverManager.getConnection(sConnectString);
-			}
-			catch (Exception e)
-			{
-				sConnectString = "jdbc:mysql://" + _sHostName + ":" + _sPortNumber + "/" + "?user=" + _sUsername + "&password=" + _sPassword;
-				//XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "sConnectString: " + sConnectString);
-				o_connection_mysql = DriverManager.getConnection(sConnectString);
-			}
+		try {
+			o_connection_mysql = DriverManager.getConnection(sConnectString);
+			return o_connection_mysql;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		return o_connection_mysql;
 
 	}
+	
+	
+	/**
+	 * This method creates a getPostgres connection object.
+	 * 
+	 * @param _sHostName
+	 *            Host where database is stored
+	 * @param _sPortNumber
+	 *            Port database is listening on
+	 * @param _sSchemaName
+	 *            Database schema to attach to
+	 * @param _sUsername
+	 *            Database user name
+	 * @param _sPassword
+	 *            Password for user name
+	 * @return Connection to MySQL database
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	public static Connection getPostgresConnection(String _sHostName, String _sPortNumber, String _sSchemaName, String _sUsername, String _sPassword) 
+	{
+
+		Connection o_connection_mysql = null;
+		String sConnectString = "jdbc:postgresql://" + _sHostName + ":" + _sPortNumber + "/" + _sSchemaName;
+		// XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "sConnectString: " + sConnectString);
+
+		try {
+			o_connection_mysql = DriverManager.getConnection(sConnectString, _sUsername, _sPassword);
+			return o_connection_mysql;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return o_connection_mysql;
+
+
+	}
+	
+	
 
 	/**
 	 * This method gets an encrypted connection to a MySQL database.
@@ -5226,6 +5354,7 @@ public class XSaLTDataUtils
 			XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "\t\t" + _sSqlText);
 
 		}
+		
 		return _oConnection.createStatement().executeUpdate(_sSqlText);
 	}
 

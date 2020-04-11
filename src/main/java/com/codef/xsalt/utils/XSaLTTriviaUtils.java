@@ -309,14 +309,14 @@ public class XSaLTTriviaUtils
 
 		try
 		{
-			String sTrack = sEncodeValue.substring(0, 20);
-			String sRoute = sEncodeValue.substring(20, 31);
+//			String sTrack = sEncodeValue.substring(0, 20);
+//			String sRoute = sEncodeValue.substring(20, 31);
 //			USPS4CB oUSPSEncoder = gov.usps.USPS4CB.getInstance();
 //			oUSPSEncoder.setTrack(sTrack);
 //			oUSPSEncoder.setRoute(sRoute);
 //			String sBarcode = oUSPSEncoder.getBarCode();
 //			return sBarcode.substring(3, sBarcode.length());
-			return "";
+			return sEncodeValue;
 
 		}
 		catch (Exception e)

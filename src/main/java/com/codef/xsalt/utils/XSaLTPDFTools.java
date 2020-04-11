@@ -1260,7 +1260,6 @@ public class XSaLTPDFTools
 		oCode25.setBarHeight(_fBarHeight);
 		oCode25.setAltText("");
 		oCode25.setGuardBars(true);
-		Rectangle oRectangle = oCode25.getBarcodeSize();
 		Image oBCImage = oCode25.createImageWithBarcode(_oPDFContentByte, null, null);
 		oBCImage.setRotationDegrees(_fRotateDegrees);
 		oBCImage.setAbsolutePosition(_fPositionX, _fPositionY);
