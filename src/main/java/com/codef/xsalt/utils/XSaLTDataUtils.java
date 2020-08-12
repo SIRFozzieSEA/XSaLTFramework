@@ -806,7 +806,7 @@ public class XSaLTDataUtils
 		StringBuffer oCreateSqlStringbuffer = new StringBuffer("CREATE TABLE " + _sTableName.toUpperCase() + " (");
 		
 		
-		if (_oConn.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+		if (_oConn.getClientInfo("ApplicationName") != null && _oConn.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
 			oCreateSqlStringbuffer.append("\n   ROWGENID serial PRIMARY KEY, ");
 		} else {
 			oCreateSqlStringbuffer.append("\n   ROWGENID bigint(20) NOT NULL auto_increment PRIMARY KEY, ");
@@ -854,15 +854,18 @@ public class XSaLTDataUtils
 		
 		oAllColumnsForInsert.append(") ");
 		
-		if (_oConn.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+		if (_oConn.getClientInfo("ApplicationName") != null && _oConn.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+
 			oCreateSqlStringbuffer.append(")");
 		} else {
 			oCreateSqlStringbuffer.append(")\nENGINE=" + _sDefaultTableType);
 		}
+		
 		executeSQL(_oConn, oCreateSqlStringbuffer.toString());
 		
 		StringBuffer oFinalInsertBuffer = new StringBuffer("");
-		if (_oConn.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+		if (_oConn.getClientInfo("ApplicationName") != null && _oConn.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+
 			oFinalInsertBuffer.append("INSERT INTO " + _sTableName.toUpperCase() + " " + oAllColumnsForInsert + " VALUES ");
 		} else {
 			oFinalInsertBuffer.append("INSERT INTO " + _sTableName.toUpperCase() + " VALUES ");
@@ -878,7 +881,8 @@ public class XSaLTDataUtils
 				continue;
 			}
 
-			if (_oConn.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+			if (_oConn.getClientInfo("ApplicationName") != null && _oConn.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+
 				if (_bAddDupeRow)
 				{
 					oFinalInsertBuffer.append("('XX_ORIGINAL_XX', " + XSaLTObjectUtils.getStringArrayWithDelimiter_String(asData, ", "));
@@ -927,7 +931,8 @@ public class XSaLTDataUtils
 				}
 
 				oFinalInsertBuffer = new StringBuffer("");
-				if (_oConn.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+				if (_oConn.getClientInfo("ApplicationName") != null && _oConn.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+
 					oFinalInsertBuffer.append("INSERT INTO " + _sTableName.toUpperCase() + " " + oAllColumnsForInsert + " VALUES ");
 				} else {
 					oFinalInsertBuffer.append("INSERT INTO " + _sTableName.toUpperCase() + " VALUES ");
