@@ -91,6 +91,15 @@
 			<artifactId>postgresql</artifactId>
 			<version>42.2.5</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>net.sf.ucanaccess</groupId>
+		    <artifactId>ucanaccess</artifactId>
+		    <version>4.0.4</version>
+		</dependency>
+		
+		
+		
 
 	</dependencies>
 
