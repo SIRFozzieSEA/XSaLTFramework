@@ -332,7 +332,7 @@ public class XSaLTXMLUtils
 		{
 			for (int i = 1; i <= n_column_count; i++)
 			{
-				Integer oColumnIndex = new Integer(i);
+				Integer oColumnIndex = Integer.valueOf(i);
 				String sColumnName = oRsmd.getColumnName(i).toUpperCase();
 				String sColumnTypename = oRsmd.getColumnTypeName(i).toUpperCase();
 				oColumnNameHashmap.put(oColumnIndex, sColumnName);
@@ -344,7 +344,7 @@ public class XSaLTXMLUtils
 		HashMap<String, Serializable> oNamesAndCountHashMap = new HashMap<String, Serializable>();
 		oNamesAndCountHashMap.put("COLUMN_NAMES", oColumnNameHashmap);
 		oNamesAndCountHashMap.put("COLUMN_TYPES", oColumnTypeHashmap);
-		oNamesAndCountHashMap.put("COLUMN_COUNT", new Integer(n_column_count).toString());
+		oNamesAndCountHashMap.put("COLUMN_COUNT", Integer.valueOf(n_column_count).toString());
 		return oNamesAndCountHashMap;
 
 	}
@@ -367,7 +367,7 @@ public class XSaLTXMLUtils
 	{
 
 		Element oReturnElement = null;
-		String sColumnName = _oColumnNameHashmap.get(new Integer(_nColumnPosition)).toString();
+		String sColumnName = _oColumnNameHashmap.get(Integer.valueOf(_nColumnPosition)).toString();
 		String sValueOfColumn = _oRs.getString(_nColumnPosition);
 
 		if (_bMakeHeaderRow)
@@ -375,20 +375,20 @@ public class XSaLTXMLUtils
 			sColumnName = "COLUMN_NAME";
 		}
 
-		if (_oColumnTypeHashmap.get(new Integer(_nColumnPosition)).toString().toUpperCase().indexOf(".TIMESTAMP") != -1
-				|| _oColumnTypeHashmap.get(new Integer(_nColumnPosition)).toString().toUpperCase().indexOf("TIMESTAMP") != -1)
+		if (_oColumnTypeHashmap.get(Integer.valueOf(_nColumnPosition)).toString().toUpperCase().indexOf(".TIMESTAMP") != -1
+				|| _oColumnTypeHashmap.get(Integer.valueOf(_nColumnPosition)).toString().toUpperCase().indexOf("TIMESTAMP") != -1)
 		{
 			oReturnElement = XSaLTXMLUtils.addSimpleTextNode(_oDoc, _oParentNode, sColumnName,
 					XSaLTStringUtils.formatTimeStampFromMySQLToReadableTimeStamp(sValueOfColumn));
 		}
-		else if (_oColumnTypeHashmap.get(new Integer(_nColumnPosition)).toString().toUpperCase().indexOf(".DATETIME") != -1
-				|| _oColumnTypeHashmap.get(new Integer(_nColumnPosition)).toString().toUpperCase().indexOf("DATETIME") != -1)
+		else if (_oColumnTypeHashmap.get(Integer.valueOf(_nColumnPosition)).toString().toUpperCase().indexOf(".DATETIME") != -1
+				|| _oColumnTypeHashmap.get(Integer.valueOf(_nColumnPosition)).toString().toUpperCase().indexOf("DATETIME") != -1)
 		{
 			oReturnElement = XSaLTXMLUtils.addSimpleTextNode(_oDoc, _oParentNode, sColumnName,
 					XSaLTStringUtils.formatTimeStampFromMySQLToReadableTimeStamp(sValueOfColumn));
 		}
-		else if (_oColumnTypeHashmap.get(new Integer(_nColumnPosition)).toString().toUpperCase().indexOf(".DATE") != -1
-				|| _oColumnTypeHashmap.get(new Integer(_nColumnPosition)).toString().toUpperCase().equals("DATE"))
+		else if (_oColumnTypeHashmap.get(Integer.valueOf(_nColumnPosition)).toString().toUpperCase().indexOf(".DATE") != -1
+				|| _oColumnTypeHashmap.get(Integer.valueOf(_nColumnPosition)).toString().toUpperCase().equals("DATE"))
 		{
 			oReturnElement = XSaLTXMLUtils.addSimpleTextNode(_oDoc, _oParentNode, sColumnName,
 					XSaLTStringUtils.formatDateFromMySQLToReadableDate(sValueOfColumn));
@@ -420,7 +420,7 @@ public class XSaLTXMLUtils
 			Element oOptionElement = XSaLTXMLUtils.addSimpleTextNode(_oDoc, oSelectNodeElement, "DisplayOption", null);
 			String sKey = "";
 			String sValue = "";
-			XSaLTXMLUtils.addSimpleTextNode(_oDoc, oOptionElement, "DisplayOrder", new Integer(nRowCount).toString());
+			XSaLTXMLUtils.addSimpleTextNode(_oDoc, oOptionElement, "DisplayOrder", Integer.valueOf(nRowCount).toString());
 			XSaLTXMLUtils.addSimpleTextNode(_oDoc, oOptionElement, "DisplayValue", sKey);
 			XSaLTXMLUtils.addSimpleTextNode(_oDoc, oOptionElement, "DisplayHTML", sValue);
 			nRowCount = nRowCount + 1;
@@ -431,7 +431,7 @@ public class XSaLTXMLUtils
 			Element oOptionElement = XSaLTXMLUtils.addSimpleTextNode(_oDoc, oSelectNodeElement, "DisplayOption", null);
 			String sKey = XSaLTStringUtils.getEmptyStringIfNull(_oRs.getString(1));
 			String sValue = XSaLTStringUtils.getEmptyStringIfNull(_oRs.getString(2));
-			XSaLTXMLUtils.addSimpleTextNode(_oDoc, oOptionElement, "DisplayOrder", new Integer(nRowCount).toString());
+			XSaLTXMLUtils.addSimpleTextNode(_oDoc, oOptionElement, "DisplayOrder", Integer.valueOf(nRowCount).toString());
 			XSaLTXMLUtils.addSimpleTextNode(_oDoc, oOptionElement, "DisplayValue", sKey);
 			XSaLTXMLUtils.addSimpleTextNode(_oDoc, oOptionElement, "DisplayHTML", sValue);
 			if (_oAdditionalFields != null)
@@ -470,7 +470,7 @@ public class XSaLTXMLUtils
 			Element oOptionElement = XSaLTXMLUtils.addSimpleTextNode(_oDoc, oSelectNodeElement, "DisplayOption", null);
 			String sKey = "";
 			String sValue = "";
-			XSaLTXMLUtils.addSimpleTextNode(_oDoc, oOptionElement, "DisplayOrder", new Integer(nRowCount).toString());
+			XSaLTXMLUtils.addSimpleTextNode(_oDoc, oOptionElement, "DisplayOrder", Integer.valueOf(nRowCount).toString());
 			XSaLTXMLUtils.addSimpleTextNode(_oDoc, oOptionElement, "DisplayValue", sKey);
 			XSaLTXMLUtils.addSimpleTextNode(_oDoc, oOptionElement, "DisplayHTML", sValue);
 			nRowCount = nRowCount + 1;
@@ -502,7 +502,7 @@ public class XSaLTXMLUtils
 	public static int getMaxScrollableXMLRecordSetSize(HttpServletRequest _oRequest, long _nRecordsetSize)
 	{
 		int lPageNo = XSaLTStringUtils.getDefaultIntegerIfParameterIsNull(_oRequest.getParameter("PageNo"), 1);
-		int nMaxResultSize = (lPageNo * new Long(_nRecordsetSize).intValue() + 20);
+		int nMaxResultSize = (lPageNo * Long.valueOf(_nRecordsetSize).intValue() + 20);
 		//		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "max result: " + nMaxResultSize);
 		return nMaxResultSize;
 	}
@@ -530,9 +530,9 @@ public class XSaLTXMLUtils
 		HashMap<String, Serializable> oNamesAndCountHashMap = getColumnNamesAndCountHashMap(_oRs);
 		HashMap<Integer, String> oColumnNameHashmap = (HashMap<Integer, String>) oNamesAndCountHashMap.get("COLUMN_NAMES");
 		HashMap<Integer, String> oColumnTypeHashmap = (HashMap<Integer, String>) oNamesAndCountHashMap.get("COLUMN_TYPES");
-		int n_column_count = new Integer(oNamesAndCountHashMap.get("COLUMN_COUNT").toString()).intValue();
+		int n_column_count = Integer.valueOf(oNamesAndCountHashMap.get("COLUMN_COUNT").toString()).intValue();
 
-		long lPageNo = new Long(XSaLTStringUtils.getDefaultLongIfParameterIsNull(_oRequest.getParameter("PageNo"), 1)).longValue();
+		long lPageNo = Long.valueOf(XSaLTStringUtils.getDefaultLongIfParameterIsNull(_oRequest.getParameter("PageNo"), 1)).longValue();
 
 		Element oRecordsElement = XSaLTXMLUtils.addSimpleTextNode(_oDoc, oElement, "ResultSet", null);
 
@@ -547,8 +547,8 @@ public class XSaLTXMLUtils
 		}
 
 		XSaLTXMLUtils.addSimpleTextNode(_oDoc, oRecordsElement, "DrillColor", sDrillColor);
-		XSaLTXMLUtils.addSimpleTextNode(_oDoc, oRecordsElement, "PageNo", new Long(lPageNo).toString());
-		XSaLTXMLUtils.addSimpleTextNode(_oDoc, oRecordsElement, "RecordsPerPage", new Long(_nRecordsetSize).toString());
+		XSaLTXMLUtils.addSimpleTextNode(_oDoc, oRecordsElement, "PageNo", Long.valueOf(lPageNo).toString());
+		XSaLTXMLUtils.addSimpleTextNode(_oDoc, oRecordsElement, "RecordsPerPage", Long.valueOf(_nRecordsetSize).toString());
 
 		if (_oHeaderLinkedHashMap != null)
 		{
@@ -571,7 +571,7 @@ public class XSaLTXMLUtils
 		{
 			if (lPageNo > 1)
 			{
-				_oRs.absolute(new Long((lPageNo - 1) * _nRecordsetSize).intValue());
+				_oRs.absolute(Long.valueOf((lPageNo - 1) * _nRecordsetSize).intValue());
 			}
 		}
 
@@ -585,7 +585,7 @@ public class XSaLTXMLUtils
 			{
 				Element oRowValue = attachColumnDataToRecordNode(_oRs, oColumnNameHashmap, oColumnTypeHashmap, i, _oDoc, oRowElement, false);
 
-				XSaLTDataColumnDefinition oTempXDCD = (XSaLTDataColumnDefinition) _oHeaderLinkedHashMap.get(oColumnNameHashmap.get(new Integer(i))
+				XSaLTDataColumnDefinition oTempXDCD = (XSaLTDataColumnDefinition) _oHeaderLinkedHashMap.get(oColumnNameHashmap.get(Integer.valueOf(i))
 						.toString());
 				if (oTempXDCD != null)
 				{
@@ -595,10 +595,10 @@ public class XSaLTXMLUtils
 				}
 			}
 			nRecordsetLoops = nRecordsetLoops + 1;
-			XSaLTXMLUtils.addSimpleTextNode(_oDoc, oRowElement, "RECORD_ORDER", new Integer(nRecordsetLoops).toString());
+			XSaLTXMLUtils.addSimpleTextNode(_oDoc, oRowElement, "RECORD_ORDER", Integer.valueOf(nRecordsetLoops).toString());
 		}
 
-		XSaLTXMLUtils.addSimpleTextNode(_oDoc, oRecordsElement, "LastRecordOrdinal", new Long(nRecordsetLoops).toString());
+		XSaLTXMLUtils.addSimpleTextNode(_oDoc, oRecordsElement, "LastRecordOrdinal", Long.valueOf(nRecordsetLoops).toString());
 
 	} /**/
 
@@ -618,7 +618,7 @@ public class XSaLTXMLUtils
 			HashMap<String, Serializable> oNamesAndCountHashMap = getColumnNamesAndCountHashMap(_oRs);
 			HashMap<Integer, String> oColumnNameHashmap = (HashMap<Integer, String>) oNamesAndCountHashMap.get("COLUMN_NAMES");
 			HashMap<Integer, String> oColumnTypeHashmap = (HashMap<Integer, String>) oNamesAndCountHashMap.get("COLUMN_TYPES");
-			int n_column_count = new Integer(oNamesAndCountHashMap.get("COLUMN_COUNT").toString()).intValue();
+			int n_column_count = Integer.valueOf(oNamesAndCountHashMap.get("COLUMN_COUNT").toString()).intValue();
 			for (int i = 1; i <= n_column_count; i++)
 			{
 				attachColumnDataToRecordNode(_oRs, oColumnNameHashmap, oColumnTypeHashmap, i, _oDoc, _oParentNode, false);
@@ -644,20 +644,20 @@ public class XSaLTXMLUtils
 		HashMap<String, Serializable> oNamesAndCountHashMap = getColumnNamesAndCountHashMap(_oRs);
 		HashMap<Integer, String> oColumnNameHashmap = (HashMap<Integer, String>) oNamesAndCountHashMap.get("COLUMN_NAMES");
 		HashMap<Integer, String> oColumnTypeHashmap = (HashMap<Integer, String>) oNamesAndCountHashMap.get("COLUMN_TYPES");
-		int n_column_count = new Integer(oNamesAndCountHashMap.get("COLUMN_COUNT").toString()).intValue();
+		int n_column_count = Integer.valueOf(oNamesAndCountHashMap.get("COLUMN_COUNT").toString()).intValue();
 
 		Element oHeaderRow = null;
 		if (_bMakeHeaderRow)
 		{
 			oHeaderRow = XSaLTXMLUtils.addSimpleTextNode(_oDoc, _oParentNode, _sResultRowName + "_HEADER", "");
-			XSaLTXMLUtils.addSimpleTextNode(_oDoc, oHeaderRow, "COLUMN_COUNT", new Integer(n_column_count).toString());
+			XSaLTXMLUtils.addSimpleTextNode(_oDoc, oHeaderRow, "COLUMN_COUNT", Integer.valueOf(n_column_count).toString());
 		}
 
 		if (n_column_count > 0)
 		{
 			for (int i = 1; i <= n_column_count; i++)
 			{
-				String sColumnName = oColumnNameHashmap.get(new Integer(i)).toString().toUpperCase();
+				String sColumnName = oColumnNameHashmap.get(Integer.valueOf(i)).toString().toUpperCase();
 				if (_bMakeHeaderRow)
 				{
 					XSaLTXMLUtils.addSimpleTextNode(_oDoc, oHeaderRow, "COLUMN_HEADER_NAME", sColumnName);
@@ -676,7 +676,7 @@ public class XSaLTXMLUtils
 			}
 
 			XSaLTXMLUtils.addSimpleTextNode(_oDoc, oRowValueOne, "SORT_ORDER",
-					XSaLTStringUtils.padLeftWithCharacter(new Integer(nRecordCount).toString(), '0', 9));
+					XSaLTStringUtils.padLeftWithCharacter(Integer.valueOf(nRecordCount).toString(), '0', 9));
 
 			for (int i = 1; i <= n_column_count; i++)
 			{
@@ -707,20 +707,20 @@ public class XSaLTXMLUtils
 		HashMap<String, Serializable> oNamesAndCountHashMap = getColumnNamesAndCountHashMap(_oRs);
 		HashMap<Integer, String> oColumnNameHashmap = (HashMap<Integer, String>) oNamesAndCountHashMap.get("COLUMN_NAMES");
 		HashMap<Integer, String> oColumnTypeHashmap = (HashMap<Integer, String>) oNamesAndCountHashMap.get("COLUMN_TYPES");
-		int n_column_count = new Integer(oNamesAndCountHashMap.get("COLUMN_COUNT").toString()).intValue();
+		int n_column_count = Integer.valueOf(oNamesAndCountHashMap.get("COLUMN_COUNT").toString()).intValue();
 
 		Element oHeaderRow = null;
 		if (_bMakeHeaderRow)
 		{
 			oHeaderRow = XSaLTXMLUtils.addSimpleTextNode(_oDoc, _oParentNode, _sResultRowName + "_HEADER", "");
-			XSaLTXMLUtils.addSimpleTextNode(_oDoc, oHeaderRow, "COLUMN_COUNT", new Integer(n_column_count).toString());
+			XSaLTXMLUtils.addSimpleTextNode(_oDoc, oHeaderRow, "COLUMN_COUNT", Integer.valueOf(n_column_count).toString());
 		}
 
 		if (n_column_count > 0)
 		{
 			for (int i = 1; i <= n_column_count; i++)
 			{
-				String sColumnName = oColumnNameHashmap.get(new Integer(i)).toString().toUpperCase();
+				String sColumnName = oColumnNameHashmap.get(Integer.valueOf(i)).toString().toUpperCase();
 				if (_bMakeHeaderRow)
 				{
 					XSaLTXMLUtils.addSimpleTextNode(_oDoc, oHeaderRow, "COLUMN_HEADER_NAME", sColumnName);
@@ -739,7 +739,7 @@ public class XSaLTXMLUtils
 			}
 
 			XSaLTXMLUtils.addSimpleTextNode(_oDoc, oRowValueOne, "SORT_ORDER",
-					XSaLTStringUtils.padLeftWithCharacter(new Integer(nRecordCount).toString(), '0', 9));
+					XSaLTStringUtils.padLeftWithCharacter(Integer.valueOf(nRecordCount).toString(), '0', 9));
 
 			for (int i = 1; i <= n_column_count; i++)
 			{

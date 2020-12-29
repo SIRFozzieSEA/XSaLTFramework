@@ -71,7 +71,7 @@ public class XSaLTFrameworkProperties
 	/**
 	 * The evolving constant for the maximum number of records in a scrollable resultset
 	 */
-	public static Long XL_MAXIMUM_RECORDS_RETRIEVED = new Long(0);
+	public static Long XL_MAXIMUM_RECORDS_RETRIEVED = Long.valueOf(0);
 
 	public static String XS_PATH_TO_XSALT_XSLS = null;
 
@@ -102,7 +102,7 @@ public class XSaLTFrameworkProperties
 
 		XS_SERVER_APPLICATION_URL = oResourceBundle.getString("XS_SERVER_APPLICATION_URL");
 		XS_PATH_TO_TOMCAT_HOME_FOLDER_PRODUCTION_ONLY = oResourceBundle.getString("XS_PATH_TO_TOMCAT_HOME_FOLDER_PRODUCTION_ONLY");
-		XL_MAXIMUM_RECORDS_RETRIEVED = new Long(oResourceBundle.getString("XL_MAXIMUM_RECORDS_RETRIEVED"));
+		XL_MAXIMUM_RECORDS_RETRIEVED = Long.valueOf(oResourceBundle.getString("XL_MAXIMUM_RECORDS_RETRIEVED"));
 		XS_APPLICATIONS_AVAILABLE = oResourceBundle.getString("XS_APPLICATIONS_AVAILABLE");
 
 		XO_APPLICATIONS_AVAILABLE = new ArrayList<String>();

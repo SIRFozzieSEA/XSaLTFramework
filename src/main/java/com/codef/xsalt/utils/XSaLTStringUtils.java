@@ -313,7 +313,7 @@ public class XSaLTStringUtils
 
 			sYear = asDate[2];
 
-			Integer oYear = new Integer(sYear);
+			Integer oYear = Integer.valueOf(sYear);
 
 			if (sYear.length() == 4)
 			{
@@ -374,7 +374,7 @@ public class XSaLTStringUtils
 			sYear = _sDate.substring(_sDate.lastIndexOf("/") + 1, _sDate.lastIndexOf("/") + 5);
 
 			sHour = _sDate.substring(_sDate.indexOf(" ") + 1, _sDate.indexOf(":"));
-			int nHour = new Integer(sHour).intValue();
+			int nHour = Integer.valueOf(sHour).intValue();
 
 			sMinute = XSaLTStringUtils.padLeftWithCharacter(_sDate.substring(_sDate.indexOf(":") + 1, _sDate.lastIndexOf(":")), '0', 2);
 			sSecond = XSaLTStringUtils.padLeftWithCharacter(_sDate.substring(_sDate.lastIndexOf(":") + 1, _sDate.lastIndexOf(" ")), '0', 2);
@@ -387,7 +387,7 @@ public class XSaLTStringUtils
 				}
 			}
 
-			sHour = XSaLTStringUtils.padLeftWithCharacter(new Integer(nHour).toString(), '0', 2);
+			sHour = XSaLTStringUtils.padLeftWithCharacter(Integer.valueOf(nHour).toString(), '0', 2);
 
 			return sYear + "-" + sMonth + "-" + sDay + " " + sHour + ":" + sMinute + ":" + sSecond;
 
@@ -515,7 +515,7 @@ public class XSaLTStringUtils
 				sDay = "0" + sDay;
 			}
 
-			Integer oYear = new Integer(sYear);
+			Integer oYear = Integer.valueOf(sYear);
 
 			if (oYear.intValue() < 20)
 			{
@@ -1718,7 +1718,7 @@ public class XSaLTStringUtils
 		}
 		else
 		{
-			return new Long(_sTempString).longValue();
+			return Long.valueOf(_sTempString).longValue();
 		}
 	}
 
@@ -1744,7 +1744,7 @@ public class XSaLTStringUtils
 		}
 		else
 		{
-			return new Long(_sTempString).intValue();
+			return Long.valueOf(_sTempString).intValue();
 		}
 	}
 
@@ -1770,7 +1770,7 @@ public class XSaLTStringUtils
 		}
 		else
 		{
-			return new Long(_sTempString).doubleValue();
+			return Long.valueOf(_sTempString).doubleValue();
 		}
 	}
 

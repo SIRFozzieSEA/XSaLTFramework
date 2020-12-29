@@ -179,7 +179,7 @@ public class XSaLTFileSystemUtils {
 	 */
 	public static void main(String[] args) throws NumberFormatException, IOException {
 		if (args[0].equals("joinfile")) {
-			joinFiles(args[1], new Integer(args[2]).intValue(), args[3]);
+			joinFiles(args[1], Integer.valueOf(args[2]).intValue(), args[3]);
 		}
 	}
 
@@ -919,7 +919,7 @@ public class XSaLTFileSystemUtils {
 		int nCycles = 1;
 		BufferedOutputStream out = new BufferedOutputStream(
 				new FileOutputStream(_sTargetDirectoryForSplitFiles + getRealFileName(_sFileToSplitPath) + "."
-						+ XSaLTStringUtils.padLeftWithCharacter(new Integer(nPart).toString(), '0', 3)));
+						+ XSaLTStringUtils.padLeftWithCharacter(Integer.valueOf(nPart).toString(), '0', 3)));
 		byte[] buffer = new byte[(1024 * _nMBChunkSize)];
 		int b = in.read(buffer);
 		while (b >= 0) {
@@ -929,7 +929,7 @@ public class XSaLTFileSystemUtils {
 				nPart = nPart + 1;
 				out = new BufferedOutputStream(
 						new FileOutputStream(_sTargetDirectoryForSplitFiles + getRealFileName(_sFileToSplitPath) + "."
-								+ XSaLTStringUtils.padLeftWithCharacter(new Integer(nPart).toString(), '0', 3)));
+								+ XSaLTStringUtils.padLeftWithCharacter(Integer.valueOf(nPart).toString(), '0', 3)));
 				nCycles = 0;
 			}
 			b = in.read(buffer);
@@ -1031,7 +1031,7 @@ public class XSaLTFileSystemUtils {
 	public static void joinFiles(String _sFileName, int _nPieces, String _sFileDirectory) throws IOException {
 		LinkedHashMap<String, String> oRegExHashMap = new LinkedHashMap<String, String>();
 		for (int i = 1; i <= _nPieces; i++) {
-			String sPieceNumber = XSaLTStringUtils.padLeftWithCharacter(new Integer(i).toString(), '0', 3);
+			String sPieceNumber = XSaLTStringUtils.padLeftWithCharacter(Integer.valueOf(i).toString(), '0', 3);
 			oRegExHashMap.put(_sFileName + "." + sPieceNumber, _sFileDirectory + "/" + _sFileName + "." + sPieceNumber);
 		}
 		XSaLTFileSystemUtils.joinFiles(oRegExHashMap, _sFileDirectory + "/", 2048, false, null);
@@ -1058,7 +1058,7 @@ public class XSaLTFileSystemUtils {
 		}
 		for (int i = nStartPart; i < nPieces + 1; i++) {
 			String sFileName = sRealFileName + "."
-					+ XSaLTStringUtils.padLeftWithCharacter(new Integer(i).toString(), '0', 3);
+					+ XSaLTStringUtils.padLeftWithCharacter(Integer.valueOf(i).toString(), '0', 3);
 			String sFilePart = sRealFilePath + sFileName;
 			oFileToJoinMap.put(sFileName, sFilePart);
 		}
@@ -1109,7 +1109,7 @@ public class XSaLTFileSystemUtils {
 	 * @return The number of parts for a split file
 	 */
 	private static int getNumberOfPartsFromFileNameMultipart(String _sFilePath) {
-		Integer oTempInteger = new Integer(_sFilePath.substring(_sFilePath.lastIndexOf(".") + 1, _sFilePath.length()));
+		Integer oTempInteger = Integer.valueOf(_sFilePath.substring(_sFilePath.lastIndexOf(".") + 1, _sFilePath.length()));
 		return oTempInteger.intValue();
 	}
 

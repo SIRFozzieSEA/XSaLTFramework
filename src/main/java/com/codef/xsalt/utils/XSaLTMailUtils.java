@@ -52,7 +52,7 @@ public class XSaLTMailUtils
 		java.util.Properties oMailProperties = System.getProperties();
 		oMailProperties.put("mail.smtp.host", _oXsaltMmo.getMailServerHostAddress());
 		oMailProperties.put("mail.smtp.port", _oXsaltMmo.getMailServerPort());
-		oMailProperties.put("mail.smtp.auth", new Boolean(_oXsaltMmo.doesMailServerHostRequiresAuthentication()));
+		oMailProperties.put("mail.smtp.auth", Boolean.valueOf(_oXsaltMmo.doesMailServerHostRequiresAuthentication()));
 		oMailProperties.put("mail.from", _oXsaltMmo.getMailMessageOriginatesFromEmail());
 
 		if (_oXsaltMmo.getMailServerPort().equalsIgnoreCase("587"))

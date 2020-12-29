@@ -54,33 +54,33 @@ public class XSaLTTriviaUtils
 				Connection oConn = XSaLTDataUtils.getMySQLConnection("localhost", "working", "root", XSaLTFrameworkProperties.XS_DEFAULT_PASSWORD);
 
 				LinkedHashMap<String, Integer> oDbColumnsHashmap = new LinkedHashMap<String, Integer>();
-				oDbColumnsHashmap.put("VEHICLE_PLATE", new Integer(9));
-				oDbColumnsHashmap.put("OWNER_CODE", new Integer(2));
-				oDbColumnsHashmap.put("FIRST_NAME_ONE", new Integer(23));
-				oDbColumnsHashmap.put("LAST_NAME_ONE", new Integer(35));
-				oDbColumnsHashmap.put("FIRST_NAME_TWO", new Integer(23));
-				oDbColumnsHashmap.put("LAST_NAME_TWO", new Integer(35));
-				oDbColumnsHashmap.put("ADDRESS_1", new Integer(35));
-				oDbColumnsHashmap.put("CITY", new Integer(21));
-				oDbColumnsHashmap.put("ZIP", new Integer(5));
-				oDbColumnsHashmap.put("ZIP_PLUS", new Integer(4));
-				oDbColumnsHashmap.put("COUNTY_CODE", new Integer(3));
-				oDbColumnsHashmap.put("COUNTY_NAME", new Integer(12));
-				oDbColumnsHashmap.put("VEHICLE_YEAR", new Integer(4));
-				oDbColumnsHashmap.put("VEHICLE_MAKE", new Integer(13));
-				oDbColumnsHashmap.put("VEHICLE_BODYSTYLE", new Integer(9));
-				oDbColumnsHashmap.put("VEHICLE_VIN", new Integer(20));
-				oDbColumnsHashmap.put("CHANGE_PENDING", new Integer(1));
-				oDbColumnsHashmap.put("DRIVERS_ID_ONE", new Integer(12));
-				oDbColumnsHashmap.put("DRIVERS_ID_TWO", new Integer(12));
-				oDbColumnsHashmap.put("VALIDATION_DATE", new Integer(8));
-				oDbColumnsHashmap.put("TYPE_ACTION_CODE", new Integer(3));
-				oDbColumnsHashmap.put("LEASED_CODE", new Integer(1));
-				oDbColumnsHashmap.put("BODY_TYPE", new Integer(1));
-				oDbColumnsHashmap.put("ENGINE_HP", new Integer(5));
-				oDbColumnsHashmap.put("REGISTRATION_EXP_DATE", new Integer(6));
-				oDbColumnsHashmap.put("COSTCODE_NAME", new Integer(17));
-				oDbColumnsHashmap.put("COSTCODE_NAME_CODE", new Integer(3));
+				oDbColumnsHashmap.put("VEHICLE_PLATE", Integer.valueOf(9));
+				oDbColumnsHashmap.put("OWNER_CODE", Integer.valueOf(2));
+				oDbColumnsHashmap.put("FIRST_NAME_ONE", Integer.valueOf(23));
+				oDbColumnsHashmap.put("LAST_NAME_ONE", Integer.valueOf(35));
+				oDbColumnsHashmap.put("FIRST_NAME_TWO", Integer.valueOf(23));
+				oDbColumnsHashmap.put("LAST_NAME_TWO", Integer.valueOf(35));
+				oDbColumnsHashmap.put("ADDRESS_1", Integer.valueOf(35));
+				oDbColumnsHashmap.put("CITY", Integer.valueOf(21));
+				oDbColumnsHashmap.put("ZIP", Integer.valueOf(5));
+				oDbColumnsHashmap.put("ZIP_PLUS", Integer.valueOf(4));
+				oDbColumnsHashmap.put("COUNTY_CODE", Integer.valueOf(3));
+				oDbColumnsHashmap.put("COUNTY_NAME", Integer.valueOf(12));
+				oDbColumnsHashmap.put("VEHICLE_YEAR", Integer.valueOf(4));
+				oDbColumnsHashmap.put("VEHICLE_MAKE", Integer.valueOf(13));
+				oDbColumnsHashmap.put("VEHICLE_BODYSTYLE", Integer.valueOf(9));
+				oDbColumnsHashmap.put("VEHICLE_VIN", Integer.valueOf(20));
+				oDbColumnsHashmap.put("CHANGE_PENDING", Integer.valueOf(1));
+				oDbColumnsHashmap.put("DRIVERS_ID_ONE", Integer.valueOf(12));
+				oDbColumnsHashmap.put("DRIVERS_ID_TWO", Integer.valueOf(12));
+				oDbColumnsHashmap.put("VALIDATION_DATE", Integer.valueOf(8));
+				oDbColumnsHashmap.put("TYPE_ACTION_CODE", Integer.valueOf(3));
+				oDbColumnsHashmap.put("LEASED_CODE", Integer.valueOf(1));
+				oDbColumnsHashmap.put("BODY_TYPE", Integer.valueOf(1));
+				oDbColumnsHashmap.put("ENGINE_HP", Integer.valueOf(5));
+				oDbColumnsHashmap.put("REGISTRATION_EXP_DATE", Integer.valueOf(6));
+				oDbColumnsHashmap.put("COSTCODE_NAME", Integer.valueOf(17));
+				oDbColumnsHashmap.put("COSTCODE_NAME_CODE", Integer.valueOf(3));
 
 				XSaLTDataUtils
 						.importFixedDataFileToDatabase(oConn, _sOriginalFilePath, oDbColumnsHashmap, null, _sCommunityAndSeason + "_STATE", "varchar(200)", true, "MyISAM", 0);
@@ -559,7 +559,7 @@ public class XSaLTTriviaUtils
 		sYear = _sDate.substring(6, 10);
 
 		SimpleDateFormat oSdf = new SimpleDateFormat(XSaLTConstants.XS_DATE_FORMATTER_WITH_SLASHES);
-		GregorianCalendar oGregorianCalendar = new GregorianCalendar(new Integer(sYear).intValue(), new Integer(sMonth).intValue() - 1, new Integer(sDay).intValue());
+		GregorianCalendar oGregorianCalendar = new GregorianCalendar(Integer.valueOf(sYear).intValue(), Integer.valueOf(sMonth).intValue() - 1, Integer.valueOf(sDay).intValue());
 		oGregorianCalendar.add(Calendar.DATE, _nDaysToAdd);
 
 		return oSdf.format(oGregorianCalendar.getTime());
@@ -593,8 +593,8 @@ public class XSaLTTriviaUtils
 		sDay2 = _sDateTwo.substring(3, 5);
 		sYear2 = _sDateTwo.substring(6, 10);
 
-		GregorianCalendar oGregorianCalendar = new GregorianCalendar(new Integer(sYear).intValue(), new Integer(sMonth).intValue() - 1, new Integer(sDay).intValue());
-		GregorianCalendar oGregorianCalendarTwo = new GregorianCalendar(new Integer(sYear2).intValue(), new Integer(sMonth2).intValue() - 1, new Integer(sDay2).intValue());
+		GregorianCalendar oGregorianCalendar = new GregorianCalendar(Integer.valueOf(sYear).intValue(), Integer.valueOf(sMonth).intValue() - 1, Integer.valueOf(sDay).intValue());
+		GregorianCalendar oGregorianCalendarTwo = new GregorianCalendar(Integer.valueOf(sYear2).intValue(), Integer.valueOf(sMonth2).intValue() - 1, Integer.valueOf(sDay2).intValue());
 
 		if (oGregorianCalendar.compareTo(oGregorianCalendarTwo) == 0)
 		{
@@ -642,8 +642,8 @@ public class XSaLTTriviaUtils
 			sDay2 = _sStartDate.substring(3, 5);
 			sYear2 = _sStartDate.substring(6, 10);
 
-			GregorianCalendar oGregorianCalendar = new GregorianCalendar(new Integer(sYear).intValue(), new Integer(sMonth).intValue() - 1, new Integer(sDay).intValue());
-			GregorianCalendar oGregorianCalendarTwo = new GregorianCalendar(new Integer(sYear2).intValue(), new Integer(sMonth2).intValue() - 1, new Integer(sDay2).intValue());
+			GregorianCalendar oGregorianCalendar = new GregorianCalendar(Integer.valueOf(sYear).intValue(), Integer.valueOf(sMonth).intValue() - 1, Integer.valueOf(sDay).intValue());
+			GregorianCalendar oGregorianCalendarTwo = new GregorianCalendar(Integer.valueOf(sYear2).intValue(), Integer.valueOf(sMonth2).intValue() - 1, Integer.valueOf(sDay2).intValue());
 
 			long lMilliDiff = oGregorianCalendar.getTimeInMillis() - oGregorianCalendarTwo.getTimeInMillis();
 			return (int) (lMilliDiff / (1000 * 60 * 60 * 24));
@@ -737,18 +737,18 @@ public class XSaLTTriviaUtils
 
 		LinkedHashMap<String, Integer> oDbColumnsHashmap = new LinkedHashMap<String, Integer>();
 
-		oDbColumnsHashmap.put("FIELD_NO", new Integer(3));
-		oDbColumnsHashmap.put("TYPE", new Integer(8));
-		oDbColumnsHashmap.put("FIELDNAME", new Integer(71));
-		oDbColumnsHashmap.put("SIZE", new Integer(4));
-		oDbColumnsHashmap.put("LN1", new Integer(4));
-		oDbColumnsHashmap.put("COL1", new Integer(6));
-		oDbColumnsHashmap.put("LN2", new Integer(4));
-		oDbColumnsHashmap.put("COL2", new Integer(6));
-		oDbColumnsHashmap.put("LN3", new Integer(4));
-		oDbColumnsHashmap.put("COL3", new Integer(6));
-		oDbColumnsHashmap.put("LN4", new Integer(4));
-		oDbColumnsHashmap.put("COL4", new Integer(6));
+		oDbColumnsHashmap.put("FIELD_NO", Integer.valueOf(3));
+		oDbColumnsHashmap.put("TYPE", Integer.valueOf(8));
+		oDbColumnsHashmap.put("FIELDNAME", Integer.valueOf(71));
+		oDbColumnsHashmap.put("SIZE", Integer.valueOf(4));
+		oDbColumnsHashmap.put("LN1", Integer.valueOf(4));
+		oDbColumnsHashmap.put("COL1", Integer.valueOf(6));
+		oDbColumnsHashmap.put("LN2", Integer.valueOf(4));
+		oDbColumnsHashmap.put("COL2", Integer.valueOf(6));
+		oDbColumnsHashmap.put("LN3", Integer.valueOf(4));
+		oDbColumnsHashmap.put("COL3", Integer.valueOf(6));
+		oDbColumnsHashmap.put("LN4", Integer.valueOf(4));
+		oDbColumnsHashmap.put("COL4", Integer.valueOf(6));
 
 		ArrayList<String> oNumericArrayList = new ArrayList<String>();
 		oNumericArrayList.add("FIELD_NO");
@@ -775,13 +775,13 @@ public class XSaLTTriviaUtils
 		ResultSet oRs = XSaLTDataUtils.querySQL(_oConnection, "SELECT FIELDNAME, SIZE FROM MUNIS_LAYOUT WHERE COL1 > 0 ORDER BY ROWGENID");
 		while (oRs.next())
 		{
-			String sFieldName = XSaLTStringUtils.padLeftWithCharacter(new Long(lFieldNumber).toString(), '0', 5) + "_"
+			String sFieldName = XSaLTStringUtils.padLeftWithCharacter(Long.valueOf(lFieldNumber).toString(), '0', 5) + "_"
 					+ XSaLTStringUtils.regExMakeDataColumnName(oRs.getString("FIELDNAME"));
-			//String sFieldName = "FIELD_" + XSaLTStringUtils.padLeftWithCharacter(new Long(lFieldNumber).toString(), '0', 5) + "";
+			//String sFieldName = "FIELD_" + XSaLTStringUtils.padLeftWithCharacter(Long.valueOf(lFieldNumber).toString(), '0', 5) + "";
 			//String sFieldName = "FIELD_" + nFieldNumber;
 
 			int nFieldSize = oRs.getInt("SIZE");
-			oDbColumnsHashmap.put(sFieldName, new Integer(nFieldSize));
+			oDbColumnsHashmap.put(sFieldName, Integer.valueOf(nFieldSize));
 			lFieldNumber = lFieldNumber + 1;
 		}
 
@@ -791,26 +791,26 @@ public class XSaLTTriviaUtils
 			oRs = XSaLTDataUtils.querySQL(_oConnection, "SELECT FIELDNAME, SIZE FROM MUNIS_LAYOUT WHERE COL2 > 0 ORDER BY ROWGENID");
 			while (oRs.next())
 			{
-				String sFieldName = XSaLTStringUtils.padLeftWithCharacter(new Long(lFieldNumber).toString(), '0', 5) + "_"
+				String sFieldName = XSaLTStringUtils.padLeftWithCharacter(Long.valueOf(lFieldNumber).toString(), '0', 5) + "_"
 						+ XSaLTStringUtils.regExMakeDataColumnName(oRs.getString("FIELDNAME"));
-				//String sFieldName = "FIELD_" + XSaLTStringUtils.padLeftWithCharacter(new Long(lFieldNumber).toString(), '0', 5) + "";
+				//String sFieldName = "FIELD_" + XSaLTStringUtils.padLeftWithCharacter(Long.valueOf(lFieldNumber).toString(), '0', 5) + "";
 				//String sFieldName = "FIELD_" + nFieldNumber;
 
 				int nFieldSize = oRs.getInt("SIZE");
-				oDbColumnsHashmap.put(sFieldName, new Integer(nFieldSize));
+				oDbColumnsHashmap.put(sFieldName, Integer.valueOf(nFieldSize));
 				lFieldNumber = lFieldNumber + 1;
 			}
 
 			oRs = XSaLTDataUtils.querySQL(_oConnection, "SELECT FIELDNAME, SIZE FROM MUNIS_LAYOUT WHERE COL3 > 0 ORDER BY ROWGENID");
 			while (oRs.next())
 			{
-				String sFieldName = XSaLTStringUtils.padLeftWithCharacter(new Long(lFieldNumber).toString(), '0', 5) + "_"
+				String sFieldName = XSaLTStringUtils.padLeftWithCharacter(Long.valueOf(lFieldNumber).toString(), '0', 5) + "_"
 						+ XSaLTStringUtils.regExMakeDataColumnName(oRs.getString("FIELDNAME"));
-				//String sFieldName = "FIELD_" + XSaLTStringUtils.padLeftWithCharacter(new Long(lFieldNumber).toString(), '0', 5) + "";
+				//String sFieldName = "FIELD_" + XSaLTStringUtils.padLeftWithCharacter(Long.valueOf(lFieldNumber).toString(), '0', 5) + "";
 				//String sFieldName = "FIELD_" + nFieldNumber;
 
 				int nFieldSize = oRs.getInt("SIZE");
-				oDbColumnsHashmap.put(sFieldName, new Integer(nFieldSize));
+				oDbColumnsHashmap.put(sFieldName, Integer.valueOf(nFieldSize));
 				lFieldNumber = lFieldNumber + 1;
 			}
 
@@ -880,7 +880,7 @@ public class XSaLTTriviaUtils
 			}
 			else
 			{
-				anValue[i] = new Integer(_sValueToEvaluate.substring(i, i + 1)).intValue();
+				anValue[i] = Integer.valueOf(_sValueToEvaluate.substring(i, i + 1)).intValue();
 			}
 			oValueBufferForArrayList.append(anValue[i] + "\t");
 
@@ -889,7 +889,7 @@ public class XSaLTTriviaUtils
 		int[] anWeights = new int[_sValueToEvaluate.length()];
 		for (int i = 0; i < _sValueToEvaluate.length(); i++)
 		{
-			anWeights[i] = new Integer(_sWeights.substring(i, i + 1)).intValue();
+			anWeights[i] = Integer.valueOf(_sWeights.substring(i, i + 1)).intValue();
 			oWeightBufferForArrayList.append(anWeights[i] + "\t");
 		}
 
@@ -903,12 +903,12 @@ public class XSaLTTriviaUtils
 
 			nResults[i] = nCurrentDigit * nCurrentWeight;
 
-			Integer oResults = new Integer(nResults[i]);
+			Integer oResults = Integer.valueOf(nResults[i]);
 
 			if (oResults.toString().length() > 1)
 			{
-				Integer oNewIntegerOne = new Integer(oResults.toString().substring(0, 1));
-				Integer oNewIntegerTwo = new Integer(oResults.toString().substring(1));
+				Integer oNewIntegerOne = Integer.valueOf(oResults.toString().substring(0, 1));
+				Integer oNewIntegerTwo = Integer.valueOf(oResults.toString().substring(1));
 				nResults[i] = oNewIntegerOne.intValue() + oNewIntegerTwo.intValue();
 				oProductBufferForArrayList.append(oNewIntegerOne + "+" + oNewIntegerTwo + "\t");
 
@@ -1162,7 +1162,7 @@ public class XSaLTTriviaUtils
 				}
 				else
 				{
-					anTestCheckDigitFinal[i] = new Integer(_sCheckLineWithCheckDigit.substring(i, 1)).intValue();
+					anTestCheckDigitFinal[i] = Integer.valueOf(_sCheckLineWithCheckDigit.substring(i, 1)).intValue();
 				}
 			}
 			else
@@ -1173,13 +1173,13 @@ public class XSaLTTriviaUtils
 				}
 				else
 				{
-					anTestCheckDigitFinal[i] = new Integer(_sCheckLineWithCheckDigit.substring(i, i + 1)).intValue();
+					anTestCheckDigitFinal[i] = Integer.valueOf(_sCheckLineWithCheckDigit.substring(i, i + 1)).intValue();
 				}
 			}
 
 		}
 
-		int nCheckDigit = new Integer(_sCheckLineWithCheckDigit.substring(_sCheckLineWithCheckDigit.length() - 1, _sCheckLineWithCheckDigit.length())).intValue();
+		int nCheckDigit = Integer.valueOf(_sCheckLineWithCheckDigit.substring(_sCheckLineWithCheckDigit.length() - 1, _sCheckLineWithCheckDigit.length())).intValue();
 
 		int[] nResults = new int[_sCheckLineWithCheckDigit.length()];
 		int nTotal = 0;
@@ -1187,11 +1187,11 @@ public class XSaLTTriviaUtils
 		for (int i = 0; i < anTestCheckDigitFinal.length - 1; i++)
 		{
 			nResults[i] = anTestCheckDigitFinal[i] * _anWeights[i];
-			Integer oResults = new Integer(nResults[i]);
+			Integer oResults = Integer.valueOf(nResults[i]);
 			if (oResults.toString().length() > 1)
 			{
-				Integer oNewIntegerOne = new Integer(oResults.toString().substring(0, 1));
-				Integer oNewIntegerTwo = new Integer(oResults.toString().substring(1));
+				Integer oNewIntegerOne = Integer.valueOf(oResults.toString().substring(0, 1));
+				Integer oNewIntegerTwo = Integer.valueOf(oResults.toString().substring(1));
 				nResults[i] = oNewIntegerOne.intValue() + oNewIntegerTwo.intValue();
 
 				oReturnMod10Output = oReturnMod10Output + anTestCheckDigitFinal[i] + " * " + _anWeights[i] + " = " + oResults.toString() + "(" + oNewIntegerOne.intValue() + " + "

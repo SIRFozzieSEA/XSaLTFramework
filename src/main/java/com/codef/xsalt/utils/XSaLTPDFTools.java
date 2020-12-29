@@ -1,9 +1,7 @@
 package com.codef.xsalt.utils;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,8 +24,6 @@ import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.html.simpleparser.HTMLWorker;
-import com.itextpdf.text.html.simpleparser.StyleSheet;
 import com.itextpdf.text.pdf.Barcode128;
 import com.itextpdf.text.pdf.Barcode39;
 import com.itextpdf.text.pdf.BarcodeInter25;
@@ -1672,7 +1668,7 @@ public class XSaLTPDFTools
 			sSecondDigit = "H";
 		}
 
-		return ioOBrienInserterFirstDigitMap.get(new Integer(nNumericalValue)) + sSecondDigit;
+		return ioOBrienInserterFirstDigitMap.get(Integer.valueOf(nNumericalValue)) + sSecondDigit;
 	}
 
 	/**
@@ -2586,51 +2582,51 @@ public class XSaLTPDFTools
 
 	}
 
-	/**
-	 * This method generates the message center text in the specified format
-	 * and location.
-	 * 
-	 * @param _fLeft
-	 *            X-coordinate for beginning of message
-	 * @param _fBottom
-	 *            Y-coordinate for bottom of message
-	 * @param _fWidth
-	 *            Width of message
-	 * @param _fHeight
-	 *            Height of message
-	 * @param _sText
-	 *            Text to render in the message
-	 * @param _bShowBoundingBox
-	 *            Flag if message should have a border (not used)
-	 * @param _bLeftJustify
-	 *            Flag if message should be left justified (not used)
-	 * @param _bTopAlign
-	 *            Flag if message should be aligned with the top of the created
-	 *            box (not used)
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws DocumentException
-	 */
-	public void generateFormattedMessageCenter(float _fLeft, float _fBottom, float _fWidth, float _fHeight, String _sText, float _fLeading) throws FileNotFoundException,
-			IOException, DocumentException
-	{
-
-		StringReader myStringReader = new StringReader(_sText);
-		ColumnText oColumnText = new ColumnText(ioPDFContentByte);
-		StyleSheet styles = new StyleSheet();
-
-		oColumnText.setSimpleColumn(_fLeft, _fBottom, _fWidth, _fHeight);
-		oColumnText.setLeading(_fLeading);
-		oColumnText.setAlignment(Element.ALIGN_JUSTIFIED);
-
-		List<Element> p = HTMLWorker.parseToList(myStringReader, styles);
-		for (int k = 0; k < p.size(); ++k)
-		{
-			oColumnText.addElement((Element) p.get(k));
-		}
-		oColumnText.go();
-
-	}
+//	/**
+//	 * This method generates the message center text in the specified format
+//	 * and location.
+//	 * 
+//	 * @param _fLeft
+//	 *            X-coordinate for beginning of message
+//	 * @param _fBottom
+//	 *            Y-coordinate for bottom of message
+//	 * @param _fWidth
+//	 *            Width of message
+//	 * @param _fHeight
+//	 *            Height of message
+//	 * @param _sText
+//	 *            Text to render in the message
+//	 * @param _bShowBoundingBox
+//	 *            Flag if message should have a border (not used)
+//	 * @param _bLeftJustify
+//	 *            Flag if message should be left justified (not used)
+//	 * @param _bTopAlign
+//	 *            Flag if message should be aligned with the top of the created
+//	 *            box (not used)
+//	 * @throws FileNotFoundException
+//	 * @throws IOException
+//	 * @throws DocumentException
+//	 */
+//	public void generateFormattedMessageCenter(float _fLeft, float _fBottom, float _fWidth, float _fHeight, String _sText, float _fLeading) throws FileNotFoundException,
+//			IOException, DocumentException
+//	{
+//
+//		StringReader myStringReader = new StringReader(_sText);
+//		ColumnText oColumnText = new ColumnText(ioPDFContentByte);
+//		StyleSheet styles = new StyleSheet();
+//
+//		oColumnText.setSimpleColumn(_fLeft, _fBottom, _fWidth, _fHeight);
+//		oColumnText.setLeading(_fLeading);
+//		oColumnText.setAlignment(Element.ALIGN_JUSTIFIED);
+//
+//		List<Element> p = HTMLWorker.parseToList(myStringReader, styles);
+//		for (int k = 0; k < p.size(); ++k)
+//		{
+//			oColumnText.addElement((Element) p.get(k));
+//		}
+//		oColumnText.go();
+//
+//	}
 
 	/**
 	 * This method calculates the next page roll sequence number based on the O'Brien specification.

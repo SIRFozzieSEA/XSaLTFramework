@@ -10,6 +10,7 @@ import java.io.LineNumberReader;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -2164,7 +2165,7 @@ public class XSaLTDataUtils {
 				String sColumnName = XSaLTStringUtils.regExMakeDataColumnName(oRsMd.getColumnName(i + 1).toUpperCase());
 				String sTempColumnValue = "";
 
-				if (!oNulledColumns.containsKey(Long.valueOf(i).toString())) {  
+				if (!oNulledColumns.containsKey(Long.valueOf(i).toString())) {
 
 					if (_bAllowRowGenId) {
 						sTempColumnValue = sColumnName + ", ";
@@ -4519,6 +4520,47 @@ public class XSaLTDataUtils {
 
 			if (XB_SYSOUT_DB_CALLS) {
 				XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, sReturnKeyAsString + "\t\t" + _sSqlText);
+			}
+
+		}
+		return sReturnKeyAsString;
+
+	}
+
+	/**
+	 * 
+	 * Wrapper for prepared statement and generated ID
+	 * 
+	 * @param _oConnection The connection
+	 * @param _sStatement  The SQL to be turned into a prepared statement
+	 * @return The wrapped prepared statement
+	 * @throws SQLException
+	 */
+	public static PreparedStatement createPreparedStatementForReturnKeys(Connection _oConnection, String _sStatement)
+			throws SQLException {
+		return _oConnection.prepareStatement(_sStatement, Statement.RETURN_GENERATED_KEYS);
+	}
+
+	/**
+	 * 
+	 * Executes prepared statement in a database schema and gets the generated ID
+	 * 
+	 * @param _oConnection        The connection
+	 * @param _oPreparedStatement The prepared statement to execute
+	 * @return The *first* generated key
+	 * @throws SQLException
+	 */
+	public static String executePreparedStatementGetKey(Connection _oConnection, PreparedStatement _oPreparedStatement)
+			throws SQLException {
+		String sReturnKeyAsString = "";
+		_oPreparedStatement.executeUpdate();
+		ResultSet oGenKeysRs = _oPreparedStatement.getGeneratedKeys();
+		if (oGenKeysRs.next()) {
+			sReturnKeyAsString = oGenKeysRs.getString(1);
+
+			if (XB_SYSOUT_DB_CALLS) {
+				XSaLTGenericLogger.logXSaLT(Priority.INFO_INT,
+						sReturnKeyAsString + "\t\t" + _oPreparedStatement.toString());
 			}
 
 		}

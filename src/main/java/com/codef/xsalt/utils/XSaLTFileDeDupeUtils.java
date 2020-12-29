@@ -121,23 +121,23 @@ public class XSaLTFileDeDupeUtils
 	{
 		ioLogBuffer.append("\n\n              Total Files: " + ilTotalCountFiles);
 		ioLogBuffer.append("\n      Total Files (bytes): " + ilTotalBytesFiles);
-		ioLogBuffer.append("\n         Total Files (KB): " + new Double(ilTotalBytesFiles / 1024));
-		ioLogBuffer.append("\n         Total Files (MB): " + new Double(ilTotalBytesFiles / 1048576));
+		ioLogBuffer.append("\n         Total Files (KB): " + Double.valueOf(ilTotalBytesFiles / 1024));
+		ioLogBuffer.append("\n         Total Files (MB): " + Double.valueOf(ilTotalBytesFiles / 1048576));
 
 		ioLogBuffer.append("\n\n         Total Dupe Files: " + ilTotalCountOfDupes);
 		ioLogBuffer.append("\n Total Dupe Files (bytes): " + ilTotalBytesOfDupes);
-		ioLogBuffer.append("\n    Total Dupe Files (KB): " + new Double(ilTotalBytesOfDupes / 1024));
-		ioLogBuffer.append("\n    Total Dupe Files (MB): " + new Double(ilTotalBytesOfDupes / 1048576));
+		ioLogBuffer.append("\n    Total Dupe Files (KB): " + Double.valueOf(ilTotalBytesOfDupes / 1024));
+		ioLogBuffer.append("\n    Total Dupe Files (MB): " + Double.valueOf(ilTotalBytesOfDupes / 1048576));
 
 		ioDeletedFilesBuffer.append("\n\n              Total Files: " + ilTotalCountFiles);
 		ioDeletedFilesBuffer.append("\n      Total Files (bytes): " + ilTotalBytesFiles);
-		ioDeletedFilesBuffer.append("\n         Total Files (KB): " + new Double(ilTotalBytesFiles / 1024));
-		ioDeletedFilesBuffer.append("\n         Total Files (MB): " + new Double(ilTotalBytesFiles / 1048576));
+		ioDeletedFilesBuffer.append("\n         Total Files (KB): " + Double.valueOf(ilTotalBytesFiles / 1024));
+		ioDeletedFilesBuffer.append("\n         Total Files (MB): " + Double.valueOf(ilTotalBytesFiles / 1048576));
 
 		ioDeletedFilesBuffer.append("\n\n         Total Dupe Files: " + ilTotalCountOfDupes);
 		ioDeletedFilesBuffer.append("\n Total Dupe Files (bytes): " + ilTotalBytesOfDupes);
-		ioDeletedFilesBuffer.append("\n    Total Dupe Files (KB): " + new Double(ilTotalBytesOfDupes / 1024));
-		ioDeletedFilesBuffer.append("\n    Total Dupe Files (MB): " + new Double(ilTotalBytesOfDupes / 1048576));
+		ioDeletedFilesBuffer.append("\n    Total Dupe Files (KB): " + Double.valueOf(ilTotalBytesOfDupes / 1024));
+		ioDeletedFilesBuffer.append("\n    Total Dupe Files (MB): " + Double.valueOf(ilTotalBytesOfDupes / 1048576));
 
 	}
 
@@ -219,8 +219,8 @@ public class XSaLTFileDeDupeUtils
 						String sFileAndExtension = oFullFilePath.substring(oFullFilePath.toString().lastIndexOf('/') + 1,
 								oFullFilePath.length());
 
-						Long oLastModified = new Long(oTestFile.lastModified());
-						Long oFileSize = new Long(oTestFile.length());
+						Long oLastModified = Long.valueOf(oTestFile.lastModified());
+						Long oFileSize = Long.valueOf(oTestFile.length());
 
 						ilTotalCountFiles = ilTotalCountFiles + 1;
 						ilTotalBytesFiles = ilTotalBytesFiles + oTestFile.length();
@@ -229,7 +229,7 @@ public class XSaLTFileDeDupeUtils
 
 						if (_bDoAlderDupe)
 						{
-							sHashKey = new Long(getFileChecksum(oFullFilePath.toString())).toString();
+							sHashKey = Long.valueOf(getFileChecksum(oFullFilePath.toString())).toString();
 						}
 						else
 						{
