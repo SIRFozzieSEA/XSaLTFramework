@@ -9,9 +9,11 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -513,6 +515,57 @@ public class XSaLTTriviaUtils {
 		} catch (Exception e) {
 			return 0;
 		}
+
+	}
+
+	/**
+	 * This method calculates the number of whole days between the start and end
+	 * dates.
+	 * 
+	 * @param start Calendar representation of start date
+	 * @param end   Calendar representation of end date
+	 * @return Formatted string of the two dates and the difference
+	 */
+
+	public static String getFormatedDateDifference(Calendar start, Calendar end) {
+
+//		Calendar start = Calendar.getInstance();
+//		start.getTime();
+//		Calendar end = Calendar.getInstance();
+//		end.set(2019, 9, 20);
+//		System.out.println(getFormatedDateDifference(start, end));
+
+		Date startDate = start.getTime();
+		Date endDate = end.getTime();
+		DateFormat dateFormat = DateFormat.getDateInstance();
+		return "The difference between " + dateFormat.format(startDate) + " and " + dateFormat.format(endDate) + " is "
+				+ getDateDifferenceInDays(start, end) + " days.";
+
+	}
+
+	/**
+	 * This method calculates the number of whole days between the start and end
+	 * dates.
+	 * 
+	 * @param start Calendar representation of start date
+	 * @param end   Calendar representation of end date
+	 * @return Number of whole days between given dates
+	 */
+
+	public static long getDateDifferenceInDays(Calendar start, Calendar end) {
+
+//		Calendar start = Calendar.getInstance();
+//		start.getTime();
+//		Calendar end = Calendar.getInstance();
+//		end.set(2019, 9, 20);
+
+		Date startDate = start.getTime();
+		Date endDate = end.getTime();
+		long startTime = startDate.getTime();
+		long endTime = endDate.getTime();
+		long diffTime = endTime - startTime;
+		long diffDays = diffTime / (1000 * 60 * 60 * 24);
+		return diffDays;
 
 	}
 
