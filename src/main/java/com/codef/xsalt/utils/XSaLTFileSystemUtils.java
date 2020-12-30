@@ -1,8 +1,5 @@
 package com.codef.xsalt.utils;
 
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -27,6 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
 import java.util.stream.Stream;
 import java.util.zip.Deflater;
@@ -34,18 +32,11 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import javax.imageio.ImageIO;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.log4j.Logger;
-
-import com.itextpdf.text.DocumentException;
-
-import multivalent.Behavior;
-import multivalent.Context;
-import multivalent.Document;
-import multivalent.Node;
-import multivalent.ParseException;
-import multivalent.std.adaptor.pdf.PDF;
+import org.w3c.dom.Document;
 
 /**
  * @author Stephan P. Cossette
@@ -115,63 +106,6 @@ public class XSaLTFileSystemUtils {
 	}
 
 	/**
-	 * This method reads a PDF file and converts the file and writes it into a JPEG
-	 * format.
-	 * 
-	 * @param _sPDFFilePath      Path for PDF file
-	 * @param _sImageFilePathJPG Path to write JPEG file
-	 * @throws IOException
-	 * @throws DocumentException
-	 * @throws ParseException
-	 */
-	public static void convertPDFtoJPEG(String _sPDFFilePath, String _sImageFilePathJPG)
-			throws IOException, DocumentException, ParseException {
-
-		File oInputFile = new File(_sPDFFilePath);
-		File oOutFile = new File(_sImageFilePathJPG);
-
-		PDF oPDFInputFile = (PDF) Behavior.getInstance("AdobePDF", "AdobePDF", null, null, null);
-
-		oPDFInputFile.setInput(oInputFile);
-
-		Document oDocument = new Document("doc", null, null);
-		oPDFInputFile.parse(oDocument);
-		oDocument.clear();
-
-		oDocument.putAttr(Document.ATTR_PAGE, Integer.toString(1));
-		oPDFInputFile.parse(oDocument);
-
-		Node oTopNode = oDocument.childAt(0);
-
-		oDocument.formatBeforeAfter(612, 792, null);
-
-		int w = oTopNode.bbox.width;
-		int h = oTopNode.bbox.height;
-
-		BufferedImage oBufferedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-		Graphics2D oGraphics2D = oBufferedImage.createGraphics();
-		oGraphics2D.setClip(0, 0, w, h);
-
-		oGraphics2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		oGraphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		oGraphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-
-		Context oContext = oDocument.getStyleSheet().getContext(oGraphics2D, null);
-		oTopNode.paintBeforeAfter(oGraphics2D.getClipBounds(), oContext);
-
-		ImageIO.write(oBufferedImage, "jpeg", oOutFile);
-
-		oDocument.removeAllChildren();
-		oContext.reset();
-		oGraphics2D.dispose();
-
-		oPDFInputFile.getReader().close();
-		oOutFile = null;
-		oDocument = null;
-
-	}
-
-	/**
 	 * "Main" method, attempts to join files with expected arguments.
 	 * 
 	 * @param args Command-line arguments for executing class
@@ -231,6 +165,18 @@ public class XSaLTFileSystemUtils {
 	public static String readResourceFile(String pathToFile) throws URISyntaxException, IOException {
 		Path path = Paths.get(XSaLTFileSystemUtils.class.getResource(pathToFile).toURI());
 		return new String(Files.readAllBytes(path));
+	}
+
+	public static Properties loadProperties(String resourceName) {
+		ClassLoader oloader = ClassLoader.getSystemClassLoader();
+		try (InputStream oInputStream = oloader.getResource(resourceName).openStream()) {
+			Properties oProps = new Properties();
+			oProps.load(oInputStream);
+			return oProps;
+		} catch (IOException e) {
+			LOGGER.error(e.toString(), e);
+			return null;
+		}
 	}
 
 	/**
@@ -1613,4 +1559,56 @@ public class XSaLTFileSystemUtils {
 		}
 
 	}
+
+	/**
+	 * This method grabs a resource file and returns an XML document
+	 * 
+	 * @param _oSrcPath Source path
+	 * @return XML document
+	 * @throws Exception
+	 */
+	public static Document getXMLFromResourceFile(String _oSrcPath) {
+
+		ClassLoader oloader = ClassLoader.getSystemClassLoader();
+		File xmlFile = new File(oloader.getResource(_oSrcPath).getFile());
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder;
+
+		try {
+			dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(xmlFile);
+			doc.getDocumentElement().normalize();
+			return doc;
+		} catch (Exception e) {
+			LOGGER.error(e.toString(), e);
+			return null;
+		}
+
+	}
+
+	/**
+	 * This method grabs a file path and returns an XML document
+	 * 
+	 * @param _oSrcPath Source path
+	 * @return XML document
+	 * @throws Exception
+	 */
+	public static Document getXMLFromPathFile(String filePath) {
+
+		File xmlFile = new File(filePath);
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder;
+
+		try {
+			dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(xmlFile);
+			doc.getDocumentElement().normalize();
+			return doc;
+		} catch (Exception e) {
+			LOGGER.error(e.toString(), e);
+			return null;
+		}
+
+	}
+
 }
