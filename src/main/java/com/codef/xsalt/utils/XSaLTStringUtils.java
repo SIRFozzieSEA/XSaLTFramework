@@ -1646,39 +1646,6 @@ public class XSaLTStringUtils {
 		return oRv;
 	}
 
-	// TODO: Annotate
 
-	public static String getFormatedDateDifference(Calendar start, Calendar end) {
-
-//		Calendar start = Calendar.getInstance();
-//		start.getTime();
-//		Calendar end = Calendar.getInstance();
-//		end.set(2019, 9, 20);
-//		System.out.println(getFormatedDateDifference(start, end));
-
-		Date startDate = start.getTime();
-		Date endDate = end.getTime();
-		DateFormat dateFormat = DateFormat.getDateInstance();
-		return "The difference between " + dateFormat.format(startDate) + " and " + dateFormat.format(endDate) + " is "
-				+ getDateDifferenceInDays(start, end) + " days.";
-
-	}
-
-	public static long getDateDifferenceInDays(Calendar start, Calendar end) {
-
-//		Calendar start = Calendar.getInstance();
-//		start.getTime();
-//		Calendar end = Calendar.getInstance();
-//		end.set(2019, 9, 20);
-
-		Date startDate = start.getTime();
-		Date endDate = end.getTime();
-		long startTime = startDate.getTime();
-		long endTime = endDate.getTime();
-		long diffTime = endTime - startTime;
-		long diffDays = diffTime / (1000 * 60 * 60 * 24);
-		return diffDays;
-
-	}
 
 }
