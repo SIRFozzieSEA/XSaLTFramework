@@ -1,4 +1,4 @@
-package com.codef.xsalt.arch.special;
+package com.codef.xsalt.arch;
 
 import java.io.File;
 import java.util.ArrayList;

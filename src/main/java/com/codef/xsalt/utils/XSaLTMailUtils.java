@@ -17,11 +17,9 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
 import javax.mail.internet.MimeMultipart;
 
-import org.apache.log4j.Priority;
+import org.apache.log4j.Logger;
 
-import com.codef.xsalt.arch.XSaLTFrameworkProperties;
-import com.codef.xsalt.arch.XSaLTGenericLogger;
-import com.codef.xsalt.arch.special.XSaLTMailMessageObject;
+import com.codef.xsalt.arch.XSaLTMailMessageObject;
 
 /**
  * @author Stephan P. Cossette
@@ -31,6 +29,9 @@ public class XSaLTMailUtils
 {
 
 	public static boolean XB_TEST_MODE = false;
+	public static boolean XB_IS_TEST_SERVER = false;
+	
+	private static final Logger LOGGER = Logger.getLogger(XSaLTMailUtils.class.getName());
 
 	/**
 	 * Mails a com.codef.xsalt.arch.XSaLTMailMessageObject
@@ -156,7 +157,7 @@ public class XSaLTMailUtils
 				XSaLTFileSystemUtils.createFileFolder("C:/_WORKING/TEST_MAILS/");
 				XSaLTFileSystemUtils.writeStringBufferToFile(oMailBuffer, "C:/_WORKING/TEST_MAILS/" + sEMailUniqueKey);
 
-				XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "Mailing TEST 1: " + sSubject + " (" + oToPersonBuffer.toString() + oBCCPersonBuffer.toString() + ")");
+				LOGGER.info( "Mailing TEST 1: " + sSubject + " (" + oToPersonBuffer.toString() + oBCCPersonBuffer.toString() + ")");
 
 			}
 			else
@@ -165,11 +166,11 @@ public class XSaLTMailUtils
 				if (_sOverrideServerTestFlag != null && _sOverrideServerTestFlag.equalsIgnoreCase("YES"))
 				{
 					Transport.send(oMimeMessage);
-					XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "Mailing LIVE 1: " + sSubject + " (" + oToPersonBuffer.toString() + oBCCPersonBuffer.toString() + ")");
+					LOGGER.info( "Mailing LIVE 1: " + sSubject + " (" + oToPersonBuffer.toString() + oBCCPersonBuffer.toString() + ")");
 				}
 				else
 				{
-					if (XSaLTFrameworkProperties.XB_IS_TEST_SERVER)
+					if (XB_IS_TEST_SERVER)
 					{
 						StringBuffer oMailBuffer = new StringBuffer();
 						String sEMailUniqueKey = "MAIL_" + XSaLTStringUtils.getDatetimeStringNoUnderscoreWithMilli() + ".txt";
@@ -189,14 +190,14 @@ public class XSaLTMailUtils
 						XSaLTFileSystemUtils.createFileFolder("C:/_WORKING/TEST_MAILS/");
 						XSaLTFileSystemUtils.writeStringBufferToFile(oMailBuffer, "C:/_WORKING/TEST_MAILS/" + sEMailUniqueKey);
 
-						XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "Mailing TEST 2: " + sSubject + " (" + oToPersonBuffer.toString() + oBCCPersonBuffer.toString() + ")");
+						LOGGER.info( "Mailing TEST 2: " + sSubject + " (" + oToPersonBuffer.toString() + oBCCPersonBuffer.toString() + ")");
 
 					}
 					else
 					{
 						Transport.send(oMimeMessage);
 
-						XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "Mailing LIVE 2: " + sSubject + " (" + oToPersonBuffer.toString() + oBCCPersonBuffer.toString() + ")");
+						LOGGER.info( "Mailing LIVE 2: " + sSubject + " (" + oToPersonBuffer.toString() + oBCCPersonBuffer.toString() + ")");
 
 					}
 				}
@@ -243,13 +244,13 @@ public class XSaLTMailUtils
 //			XSaLTMailUtils oTestMail = new XSaLTMailUtils();
 //			XSaLTMailUtils.setTestMode(true);
 //			oTestMail.sendMail(oXsaltMmo, "YES");
-//			XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "Success");
+//			LOGGER.info( "Success");
 //
 //		}
 //		catch (Exception e)
 //		{
 //
-//			XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "Fail", e);
+//			LOGGER.info( "Fail", e);
 //
 //		}
 //	}

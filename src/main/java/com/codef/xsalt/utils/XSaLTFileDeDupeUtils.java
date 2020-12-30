@@ -1,23 +1,23 @@
 package com.codef.xsalt.utils;
 
 import java.io.File;
-import org.apache.log4j.Priority;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
 
-import com.codef.xsalt.arch.XSaLTGenericLogger;
+import org.apache.log4j.Logger;
 
 /**
  * @author Stephan P. Cossette
  * @author Copyright 2011 Codef.com
  */
-public class XSaLTFileDeDupeUtils
-{
+public class XSaLTFileDeDupeUtils {
+
+	private static final Logger LOGGER = Logger.getLogger(XSaLTFileDeDupeUtils.class.getName());
+
 	/**
 	 * The current file being examined
 	 */
@@ -29,22 +29,22 @@ public class XSaLTFileDeDupeUtils
 	private boolean ibDeleteDupes = false;
 
 	/**
-	 * The total files XSaLTFileDeDupeUtils examined 
+	 * The total files XSaLTFileDeDupeUtils examined
 	 */
 	private long ilTotalCountFiles = 0;
 
 	/**
-	 * The total count of dupes XSaLTFileDeDupeUtils suspects 
+	 * The total count of dupes XSaLTFileDeDupeUtils suspects
 	 */
 	private long ilTotalCountOfDupes = 0;
 
 	/**
-	 * The total bytes XSaLTFileDeDupeUtils examined 
+	 * The total bytes XSaLTFileDeDupeUtils examined
 	 */
 	private long ilTotalBytesFiles = 0;
 
 	/**
-	 * The total duplicate bytes XSaLTFileDeDupeUtils suspects 
+	 * The total duplicate bytes XSaLTFileDeDupeUtils suspects
 	 */
 	private long ilTotalBytesOfDupes = 0;
 
@@ -72,17 +72,14 @@ public class XSaLTFileDeDupeUtils
 
 	/**
 	 * Main constructor (testing only)
+	 * 
 	 * @param args
 	 */
-	public static void main(String[] args)
-	{
-		try
-		{
+	public static void main(String[] args) {
+		try {
 			new XSaLTFileDeDupeUtils("", "", true, true);
-		}
-		catch (IOException e)
-		{
-			XSaLTGenericLogger.error("", e);
+		} catch (IOException e) {
+			LOGGER.error(e.toString(), e);
 		}
 
 	}
@@ -91,13 +88,13 @@ public class XSaLTFileDeDupeUtils
 	 * The main constructor and entry method
 	 * 
 	 * @param _sDirectoryToStartIn The directory to start the searching in
-	 * @param _sLogPath The path for the logs
-	 * @param _bDeleteDupes Flag to delete the files
-	 * @param _bDoAlderDupe Flag to do standard dedupe, or Alder checksum
-	 * @throws IOException 
+	 * @param _sLogPath            The path for the logs
+	 * @param _bDeleteDupes        Flag to delete the files
+	 * @param _bDoAlderDupe        Flag to do standard dedupe, or Alder checksum
+	 * @throws IOException
 	 */
-	public XSaLTFileDeDupeUtils(String _sDirectoryToStartIn, String _sLogPath, boolean _bDeleteDupes, boolean _bDoAlderDupe) throws IOException
-	{
+	public XSaLTFileDeDupeUtils(String _sDirectoryToStartIn, String _sLogPath, boolean _bDeleteDupes,
+			boolean _bDoAlderDupe) throws IOException {
 		ilTotalCountFiles = 0;
 		ilTotalCountOfDupes = 0;
 		ilTotalBytesFiles = 0;
@@ -110,15 +107,16 @@ public class XSaLTFileDeDupeUtils
 		traverseDirectoriesForDedupe(o_directory, true, true, _bDoAlderDupe);
 		writeDeDupeFileSummary();
 		XSaLTFileSystemUtils.writeStringToFile(ioLogBuffer.toString(), _sLogPath + "/TMADupeReport_FileDateSize.txt");
-		XSaLTFileSystemUtils.writeStringToFile(ioDeletedFilesBuffer.toString(), _sLogPath + "/TMADupeDeleted_FileDateSize.txt");
-		XSaLTFileSystemUtils.writeStringToFile(ioReportFilesBuffer.toString(), _sLogPath + "/TMAReport_FileDateSize.txt");
+		XSaLTFileSystemUtils.writeStringToFile(ioDeletedFilesBuffer.toString(),
+				_sLogPath + "/TMADupeDeleted_FileDateSize.txt");
+		XSaLTFileSystemUtils.writeStringToFile(ioReportFilesBuffer.toString(),
+				_sLogPath + "/TMAReport_FileDateSize.txt");
 	}
 
 	/**
 	 * The method that prints out the dedupe summary
 	 */
-	public void writeDeDupeFileSummary()
-	{
+	public void writeDeDupeFileSummary() {
 		ioLogBuffer.append("\n\n              Total Files: " + ilTotalCountFiles);
 		ioLogBuffer.append("\n      Total Files (bytes): " + ilTotalBytesFiles);
 		ioLogBuffer.append("\n         Total Files (KB): " + Double.valueOf(ilTotalBytesFiles / 1024));
@@ -148,13 +146,11 @@ public class XSaLTFileDeDupeUtils
 	 * @return The long Alder checksum
 	 * @throws IOException
 	 */
-	public long getFileChecksum(String _sFilePath) throws IOException
-	{
+	public long getFileChecksum(String _sFilePath) throws IOException {
 		// Compute Adler-32 checksum
 		CheckedInputStream cis = new CheckedInputStream(new FileInputStream(_sFilePath), new Adler32());
 		byte[] tempBuf = new byte[10240];
-		while (cis.read(tempBuf) >= 0)
-		{
+		while (cis.read(tempBuf) >= 0) {
 		}
 		long checksum = cis.getChecksum().getValue();
 		cis.close();
@@ -165,18 +161,15 @@ public class XSaLTFileDeDupeUtils
 	/**
 	 * The static method that calculates the Alder checksum
 	 * 
-	 * @param _sFilePath
-	 *            The path to the file
+	 * @param _sFilePath The path to the file
 	 * @return The long Alder checksum
 	 * @throws IOException
 	 */
-	public static long getFileChecksumStatic(String _sFilePath) throws IOException
-	{
+	public static long getFileChecksumStatic(String _sFilePath) throws IOException {
 		// Compute Adler-32 checksum
 		CheckedInputStream cis = new CheckedInputStream(new FileInputStream(_sFilePath), new Adler32());
 		byte[] tempBuf = new byte[10240];
-		while (cis.read(tempBuf) >= 0)
-		{
+		while (cis.read(tempBuf) >= 0) {
 		}
 		long checksum = cis.getChecksum().getValue();
 		cis.close();
@@ -187,37 +180,31 @@ public class XSaLTFileDeDupeUtils
 	/**
 	 * This method actually does all the deduping and traversing through directories
 	 * 
-	 * @param _oStartDirectory The directory to start the searching in
+	 * @param _oStartDirectory        The directory to start the searching in
 	 * @param _bShowDirectoryProgress Flag to show directory progress
-	 * @param _bShowFileDupes Flag to show the file dupes or not
-	 * @param _bDoAlderDupe Flag to do standard dedupe, or Alder checksum
-	 * @throws IOException 
+	 * @param _bShowFileDupes         Flag to show the file dupes or not
+	 * @param _bDoAlderDupe           Flag to do standard dedupe, or Alder checksum
+	 * @throws IOException
 	 */
-	public void traverseDirectoriesForDedupe(File _oStartDirectory, boolean _bShowDirectoryProgress, boolean _bShowFileDupes,
-			boolean _bDoAlderDupe) throws IOException
-	{
-		if (_oStartDirectory.isDirectory())
-		{
+	public void traverseDirectoriesForDedupe(File _oStartDirectory, boolean _bShowDirectoryProgress,
+			boolean _bShowFileDupes, boolean _bDoAlderDupe) throws IOException {
+		if (_oStartDirectory.isDirectory()) {
 			String sDirectoryMessage = "In directory: " + _oStartDirectory.getAbsolutePath();
-			if (_bShowDirectoryProgress)
-			{
-				XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, sDirectoryMessage);
+			if (_bShowDirectoryProgress) {
+				LOGGER.info(sDirectoryMessage);
 			}
 			ioLogBuffer.append(sDirectoryMessage);
 
 			String[] asDirectoryChildren = _oStartDirectory.list();
-			if (asDirectoryChildren != null)
-			{
-				for (int i = 0; i < asDirectoryChildren.length; i++)
-				{
-					StringBuffer oTestFilePath = new StringBuffer(_oStartDirectory.getAbsolutePath() + "\\"
-							+ asDirectoryChildren[i]);
+			if (asDirectoryChildren != null) {
+				for (int i = 0; i < asDirectoryChildren.length; i++) {
+					StringBuffer oTestFilePath = new StringBuffer(
+							_oStartDirectory.getAbsolutePath() + "\\" + asDirectoryChildren[i]);
 					File oTestFile = new File(oTestFilePath.toString());
-					if (!oTestFile.isDirectory())
-					{
+					if (!oTestFile.isDirectory()) {
 						StringBuffer oFullFilePath = new StringBuffer(oTestFilePath.toString().replace('\\', '/'));
-						String sFileAndExtension = oFullFilePath.substring(oFullFilePath.toString().lastIndexOf('/') + 1,
-								oFullFilePath.length());
+						String sFileAndExtension = oFullFilePath
+								.substring(oFullFilePath.toString().lastIndexOf('/') + 1, oFullFilePath.length());
 
 						Long oLastModified = Long.valueOf(oTestFile.lastModified());
 						Long oFileSize = Long.valueOf(oTestFile.length());
@@ -227,44 +214,37 @@ public class XSaLTFileDeDupeUtils
 
 						String sHashKey = "";
 
-						if (_bDoAlderDupe)
-						{
+						if (_bDoAlderDupe) {
 							sHashKey = Long.valueOf(getFileChecksum(oFullFilePath.toString())).toString();
-						}
-						else
-						{
+						} else {
 							sHashKey = sFileAndExtension + "_" + oFileSize + "_" + oLastModified;
 						}
 
-						if (sFileAndExtension.lastIndexOf(".") != -1)
-						{
-							String sFileExtension = sFileAndExtension.substring(sFileAndExtension.lastIndexOf(".") + 1,
-									sFileAndExtension.length()).toLowerCase();
-							if (!ioFileExtensionsArrayList.contains(sFileExtension))
-							{
+						if (sFileAndExtension.lastIndexOf(".") != -1) {
+							String sFileExtension = sFileAndExtension
+									.substring(sFileAndExtension.lastIndexOf(".") + 1, sFileAndExtension.length())
+									.toLowerCase();
+							if (!ioFileExtensionsArrayList.contains(sFileExtension)) {
 								ioFileExtensionsArrayList.add(sFileExtension);
 							}
 						}
 
-						if (ioFileNamesSizeDatesHashMap.containsKey(sHashKey))
-						{
+						if (ioFileNamesSizeDatesHashMap.containsKey(sHashKey)) {
 							isExistingFileInDirectory = ioFileNamesSizeDatesHashMap.get(sHashKey).toString();
-							String sMessageOne = "\tSuspect Duplicate File: '" + oFullFilePath + " (" + sHashKey.toString()
-									+ ")'\n\t               copy of: '" + isExistingFileInDirectory + "'";
+							String sMessageOne = "\tSuspect Duplicate File: '" + oFullFilePath + " ("
+									+ sHashKey.toString() + ")'\n\t               copy of: '"
+									+ isExistingFileInDirectory + "'";
 
-							if (_bShowFileDupes)
-							{
-								XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, sMessageOne);
-								if (sMessageOne != null)
-								{
+							if (_bShowFileDupes) {
+								LOGGER.info(sMessageOne);
+								if (sMessageOne != null) {
 									ioReportFilesBuffer.append(sMessageOne);
 								}
 							}
 
 							ioLogBuffer.append(sMessageOne);
 
-							if (ibDeleteDupes)
-							{
+							if (ibDeleteDupes) {
 								ioDeletedFilesBuffer.append("\n" + oFullFilePath);
 								ilTotalBytesOfDupes = ilTotalBytesOfDupes + oTestFile.length();
 								oTestFile.delete();
@@ -272,14 +252,12 @@ public class XSaLTFileDeDupeUtils
 
 							ilTotalCountOfDupes = ilTotalCountOfDupes + 1;
 
-						}
-						else
-						{
+						} else {
 							ioFileNamesSizeDatesHashMap.put(sHashKey, oFullFilePath);
 						}
 					}
-					traverseDirectoriesForDedupe(new File(_oStartDirectory, asDirectoryChildren[i]), _bShowDirectoryProgress,
-							_bShowFileDupes, _bDoAlderDupe);
+					traverseDirectoriesForDedupe(new File(_oStartDirectory, asDirectoryChildren[i]),
+							_bShowDirectoryProgress, _bShowFileDupes, _bDoAlderDupe);
 				}
 			}
 		}

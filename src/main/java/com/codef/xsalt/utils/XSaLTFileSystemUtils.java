@@ -36,9 +36,8 @@ import java.util.zip.ZipOutputStream;
 
 import javax.imageio.ImageIO;
 
-import org.apache.log4j.Priority;
+import org.apache.log4j.Logger;
 
-import com.codef.xsalt.arch.XSaLTGenericLogger;
 import com.itextpdf.text.DocumentException;
 
 import multivalent.Behavior;
@@ -53,6 +52,8 @@ import multivalent.std.adaptor.pdf.PDF;
  * @author Copyright 2011 Codef.com
  */
 public class XSaLTFileSystemUtils {
+
+	private static final Logger LOGGER = Logger.getLogger(XSaLTFileSystemUtils.class.getName());
 
 	/**
 	 * This method uses a native operating system call to recode video files found
@@ -89,7 +90,7 @@ public class XSaLTFileSystemUtils {
 				}
 			}
 		} catch (Exception e) {
-			XSaLTGenericLogger.error("", e);
+			LOGGER.error(e.toString(), e);
 		}
 	}
 
@@ -109,7 +110,7 @@ public class XSaLTFileSystemUtils {
 				out.write(mynumber);
 			}
 		} catch (Exception e) {
-			XSaLTGenericLogger.error("", e);
+			LOGGER.error(e.toString(), e);
 		}
 	}
 
@@ -192,7 +193,7 @@ public class XSaLTFileSystemUtils {
 		File oFile = new File(_sPath);
 		if (oFile.exists()) {
 			if (_bLogEvent) {
-				XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "Deleting: " + _sPath);
+				LOGGER.info("Deleting: " + _sPath);
 			}
 			oFile.delete();
 		}
@@ -222,8 +223,7 @@ public class XSaLTFileSystemUtils {
 			directory.mkdir();
 		}
 	}
-	
-	
+
 	public static String readFile(String pathToFile) throws IOException {
 		return new String(Files.readAllBytes(new File(pathToFile).toPath()));
 	}
@@ -245,8 +245,7 @@ public class XSaLTFileSystemUtils {
 
 		boolean success = oFile1.renameTo(oFile2);
 		if (!success) {
-			XSaLTGenericLogger.logXSaLT(Priority.INFO_INT,
-					"File '" + _sOldPathName + "' was not successfully renamed to '" + _sNewPathName + "'");
+			LOGGER.info("File '" + _sOldPathName + "' was not successfully renamed to '" + _sNewPathName + "'");
 		}
 
 	}
@@ -272,7 +271,7 @@ public class XSaLTFileSystemUtils {
 		for (File oFile : oEmptyFileFolders) {
 			boolean isDeleted = oFile.delete();
 			if (isDeleted) {
-				XSaLTGenericLogger.logXSaLT(Priority.ERROR_INT, oFile.getPath() + " deleted");
+				LOGGER.error(oFile.getPath() + " deleted");
 			}
 		}
 	}
@@ -495,7 +494,7 @@ public class XSaLTFileSystemUtils {
 		zipFile(_oDirectoryToZip, _oDirectoryToZip, oZipOutputStream, _bShowFileProgress);
 		oZipOutputStream.close();
 
-		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "Zipped 1: " + _sPathToNewZipFile);
+		LOGGER.info("Zipped 1: " + _sPathToNewZipFile);
 	}
 
 	/**
@@ -518,8 +517,7 @@ public class XSaLTFileSystemUtils {
 			} else {
 				FileInputStream oFileInputStream = new FileInputStream(oFilesToZip[i]);
 				if (_bShowFileProgress) {
-					XSaLTGenericLogger.logXSaLT(Priority.INFO_INT,
-							oFilesToZip[i].getPath().substring(_oMasterFileDirectory.getPath().length() + 1));
+					LOGGER.info(oFilesToZip[i].getPath().substring(_oMasterFileDirectory.getPath().length() + 1));
 				}
 				ZipEntry oZipEntry = new ZipEntry(
 						oFilesToZip[i].getPath().substring(_oMasterFileDirectory.getPath().length() + 1));
@@ -566,7 +564,7 @@ public class XSaLTFileSystemUtils {
 		zipFileNoEmbeddedZips(_oDirectoryToZip, _oDirectoryToZip, oZipOutputStream, _bShowFileProgress);
 		oZipOutputStream.close();
 
-		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "Zipped 2: " + _sPathToNewZipFile);
+		LOGGER.info("Zipped 2: " + _sPathToNewZipFile);
 	}
 
 	/**
@@ -593,8 +591,7 @@ public class XSaLTFileSystemUtils {
 
 					FileInputStream oFileInputStream = new FileInputStream(oFilesToZip[i]);
 					if (_bShowFileProgress) {
-						XSaLTGenericLogger.logXSaLT(Priority.INFO_INT,
-								oFilesToZip[i].getPath().substring(_oMasterFileDirectory.getPath().length() + 1));
+						LOGGER.info(oFilesToZip[i].getPath().substring(_oMasterFileDirectory.getPath().length() + 1));
 					}
 					ZipEntry oZipEntry = new ZipEntry(
 							oFilesToZip[i].getPath().substring(_oMasterFileDirectory.getPath().length() + 1));
@@ -695,7 +692,7 @@ public class XSaLTFileSystemUtils {
 		oFileInputStream.close();
 		oZipOutputStream.close();
 
-		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "Zipped 3: " + _sPathToNewZipFile);
+		LOGGER.info("Zipped 3: " + _sPathToNewZipFile);
 	}
 
 	/**
@@ -719,7 +716,7 @@ public class XSaLTFileSystemUtils {
 	 */
 	public static synchronized void writeStringToFile(String _sStringToWrite, String _sFilePath) throws IOException {
 		Files.write(Paths.get(_sFilePath), _sStringToWrite.getBytes());
-		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "Writing: " + _sFilePath);
+		LOGGER.info("Writing: " + _sFilePath);
 	}
 
 	/**
@@ -1109,7 +1106,8 @@ public class XSaLTFileSystemUtils {
 	 * @return The number of parts for a split file
 	 */
 	private static int getNumberOfPartsFromFileNameMultipart(String _sFilePath) {
-		Integer oTempInteger = Integer.valueOf(_sFilePath.substring(_sFilePath.lastIndexOf(".") + 1, _sFilePath.length()));
+		Integer oTempInteger = Integer
+				.valueOf(_sFilePath.substring(_sFilePath.lastIndexOf(".") + 1, _sFilePath.length()));
 		return oTempInteger.intValue();
 	}
 

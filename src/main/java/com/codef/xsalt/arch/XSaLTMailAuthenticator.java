@@ -1,4 +1,4 @@
-package com.codef.xsalt.arch.special;
+package com.codef.xsalt.arch;
 
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;

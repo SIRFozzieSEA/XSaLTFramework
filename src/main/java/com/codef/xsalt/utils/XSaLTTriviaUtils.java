@@ -17,121 +17,32 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-import org.apache.log4j.Priority;
+import org.apache.log4j.Logger;
 
 import com.codef.xsalt.arch.XSaLTConstants;
-import com.codef.xsalt.arch.XSaLTFrameworkProperties;
-import com.codef.xsalt.arch.XSaLTGenericLogger;
 
 /**
  * @author Stephan P. Cossette
  * @author Copyright 2011 Codef.com
  */
-public class XSaLTTriviaUtils
-{
+public class XSaLTTriviaUtils {
+
+	private static final Logger LOGGER = Logger.getLogger(XSaLTTriviaUtils.class.getName());
 
 	/**
-	 * This method parses and re-writes a fixed length SOS file into a tab-delimited file with headers
+	 * This method returns the formed URL to manually check bad addresses on USPS'
+	 * website
 	 * 
-	 * @param _sCommunityAndSeason
-	 *            The community and season for the file (e.g.  CL_2012)
-	 * @param _sOriginalFilePath
-	 *            The original file path
-	 * @param _sCleanFilePath
-	 *            The path to save the clean file
-	 *
-	 */
-	public static void exportOutStateFileToTableFileWithHeaders(String _sCommunityAndSeason, String _sOriginalFilePath, String _sCleanFilePath)
-	{
-
-		//		XSaLTTriviaUtils.exportOutStateFileToTableFileWithHeaders("CL_2012", "G:/A-G/Crystal Lake/Data/2012_1st/CRYSTAL_SOS.TXT", "G:/A-G/Crystal Lake/Data/2012_1st/CRYSTAL_SOS.tab");
-
-		if (!_sOriginalFilePath.equalsIgnoreCase(_sCleanFilePath))
-		{
-
-			try
-			{
-				Connection oConn = XSaLTDataUtils.getMySQLConnection("localhost", "working", "root", XSaLTFrameworkProperties.XS_DEFAULT_PASSWORD);
-
-				LinkedHashMap<String, Integer> oDbColumnsHashmap = new LinkedHashMap<String, Integer>();
-				oDbColumnsHashmap.put("VEHICLE_PLATE", Integer.valueOf(9));
-				oDbColumnsHashmap.put("OWNER_CODE", Integer.valueOf(2));
-				oDbColumnsHashmap.put("FIRST_NAME_ONE", Integer.valueOf(23));
-				oDbColumnsHashmap.put("LAST_NAME_ONE", Integer.valueOf(35));
-				oDbColumnsHashmap.put("FIRST_NAME_TWO", Integer.valueOf(23));
-				oDbColumnsHashmap.put("LAST_NAME_TWO", Integer.valueOf(35));
-				oDbColumnsHashmap.put("ADDRESS_1", Integer.valueOf(35));
-				oDbColumnsHashmap.put("CITY", Integer.valueOf(21));
-				oDbColumnsHashmap.put("ZIP", Integer.valueOf(5));
-				oDbColumnsHashmap.put("ZIP_PLUS", Integer.valueOf(4));
-				oDbColumnsHashmap.put("COUNTY_CODE", Integer.valueOf(3));
-				oDbColumnsHashmap.put("COUNTY_NAME", Integer.valueOf(12));
-				oDbColumnsHashmap.put("VEHICLE_YEAR", Integer.valueOf(4));
-				oDbColumnsHashmap.put("VEHICLE_MAKE", Integer.valueOf(13));
-				oDbColumnsHashmap.put("VEHICLE_BODYSTYLE", Integer.valueOf(9));
-				oDbColumnsHashmap.put("VEHICLE_VIN", Integer.valueOf(20));
-				oDbColumnsHashmap.put("CHANGE_PENDING", Integer.valueOf(1));
-				oDbColumnsHashmap.put("DRIVERS_ID_ONE", Integer.valueOf(12));
-				oDbColumnsHashmap.put("DRIVERS_ID_TWO", Integer.valueOf(12));
-				oDbColumnsHashmap.put("VALIDATION_DATE", Integer.valueOf(8));
-				oDbColumnsHashmap.put("TYPE_ACTION_CODE", Integer.valueOf(3));
-				oDbColumnsHashmap.put("LEASED_CODE", Integer.valueOf(1));
-				oDbColumnsHashmap.put("BODY_TYPE", Integer.valueOf(1));
-				oDbColumnsHashmap.put("ENGINE_HP", Integer.valueOf(5));
-				oDbColumnsHashmap.put("REGISTRATION_EXP_DATE", Integer.valueOf(6));
-				oDbColumnsHashmap.put("COSTCODE_NAME", Integer.valueOf(17));
-				oDbColumnsHashmap.put("COSTCODE_NAME_CODE", Integer.valueOf(3));
-
-				XSaLTDataUtils
-						.importFixedDataFileToDatabase(oConn, _sOriginalFilePath, oDbColumnsHashmap, null, _sCommunityAndSeason + "_STATE", "varchar(200)", true, "MyISAM", 0);
-
-				XSaLTDataUtils.dropColumnInTable(oConn, _sCommunityAndSeason + "_STATE", "OWNER_CODE");
-				XSaLTDataUtils.dropColumnInTable(oConn, _sCommunityAndSeason + "_STATE", "COUNTY_CODE");
-				XSaLTDataUtils.dropColumnInTable(oConn, _sCommunityAndSeason + "_STATE", "COUNTY_NAME");
-				XSaLTDataUtils.dropColumnInTable(oConn, _sCommunityAndSeason + "_STATE", "CHANGE_PENDING");
-				XSaLTDataUtils.dropColumnInTable(oConn, _sCommunityAndSeason + "_STATE", "VALIDATION_DATE");
-				XSaLTDataUtils.dropColumnInTable(oConn, _sCommunityAndSeason + "_STATE", "TYPE_ACTION_CODE");
-				XSaLTDataUtils.dropColumnInTable(oConn, _sCommunityAndSeason + "_STATE", "LEASED_CODE");
-				XSaLTDataUtils.dropColumnInTable(oConn, _sCommunityAndSeason + "_STATE", "BODY_TYPE");
-				XSaLTDataUtils.dropColumnInTable(oConn, _sCommunityAndSeason + "_STATE", "ENGINE_HP");
-				XSaLTDataUtils.dropColumnInTable(oConn, _sCommunityAndSeason + "_STATE", "COSTCODE_NAME_CODE");
-
-				XSaLTDataUtils.executeSQL(oConn, "ALTER TABLE " + _sCommunityAndSeason + "_STATE ADD COLUMN STATEPROV VARCHAR(10) DEFAULT 'IL'");
-
-				String sSQL = "SELECT VEHICLE_PLATE, FIRST_NAME_ONE, LAST_NAME_ONE, FIRST_NAME_TWO, LAST_NAME_TWO, ADDRESS_1, CITY, ZIP, ZIP_PLUS, "
-						+ "VEHICLE_YEAR, VEHICLE_MAKE, VEHICLE_BODYSTYLE, VEHICLE_VIN, DRIVERS_ID_ONE, DRIVERS_ID_TWO, COSTCODE_NAME, STATEPROV FROM " + _sCommunityAndSeason
-						+ "_STATE";
-
-				XSaLTDataUtils.exportSQLAsTabDelimitedDataFile(oConn, sSQL, _sCleanFilePath);
-
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-
-		}
-
-	}
-
-	/**
-	 * This method returns the formed URL to manually check bad addresses on USPS' website
+	 * @param _sAddress1 Address 1 field
+	 * @param _sAddress2 Address 2 field
+	 * @param _sCity     City field
+	 * @param _sState    State field
+	 * @param _sZip      Zip field
 	 * 
-	 * @param _sAddress1
-	 *            Address 1 field
-	 * @param _sAddress2
-	 *            Address 2 field
-	 * @param _sCity
-	 *            City field
-	 * @param _sState
-	 *            State field
-	 * @param _sZip
-	 *            Zip field       
-	 *                
 	 * @return The formed URL
 	 */
-	public static String getUSPSLookupURL(String _sAddress1, String _sAddress2, String _sCity, String _sState, String _sZip)
-	{
+	public static String getUSPSLookupURL(String _sAddress1, String _sAddress2, String _sCity, String _sState,
+			String _sZip) {
 
 		_sAddress1 = _sAddress1.replaceAll(" ", "+");
 		_sAddress2 = _sAddress2.replaceAll(" ", "+");
@@ -139,8 +50,9 @@ public class XSaLTTriviaUtils
 		_sState = _sState.replaceAll(" ", "+");
 		_sZip = _sZip.replaceAll(" ", "+");
 
-		String sURL = "https://tools.usps.com/go/ZipLookupResultsAction!input.action?resultMode=0&companyName=&address1=" + _sAddress1 + "&address2=" + _sAddress2 + "&city="
-				+ _sCity + "&state=" + _sState + "&urbanCode=&postalCode=&zip=" + _sZip + "";
+		String sURL = "https://tools.usps.com/go/ZipLookupResultsAction!input.action?resultMode=0&companyName=&address1="
+				+ _sAddress1 + "&address2=" + _sAddress2 + "&city=" + _sCity + "&state=" + _sState
+				+ "&urbanCode=&postalCode=&zip=" + _sZip + "";
 
 		return sURL;
 
@@ -149,77 +61,65 @@ public class XSaLTTriviaUtils
 	/**
 	 * This method saves a truncated lookup of the bad address
 	 * 
-	 * @param _sURL
-	 *            The URL to test
-	 * @param _sFileName
-	 *            The file name to save (without extension)
-	 * @param _sSavePath
-	 *            The save path for the lookup
+	 * @param _sURL      The URL to test
+	 * @param _sFileName The file name to save (without extension)
+	 * @param _sSavePath The save path for the lookup
 	 */
-	public static void saveUSPSLookupPage(String _sURL, String _sFileName, String _sSavePath) throws IOException
-	{
+	public static void saveUSPSLookupPage(String _sURL, String _sFileName, String _sSavePath) throws IOException {
 
 		URL o_item_url = new URL(_sURL);
 		InputStream tempInputStream = o_item_url.openStream();
 		StringBuffer oTempBuffer = new StringBuffer();
 
 		int Content;
-		while ((Content = tempInputStream.read()) != -1)
-		{
+		while ((Content = tempInputStream.read()) != -1) {
 			oTempBuffer.append((char) Content);
 		}
 
 		String sStartTag = "You entered:";
 		String sEndTag = "<!-- Begin Footer -->";
-		oTempBuffer = new StringBuffer(oTempBuffer.substring(oTempBuffer.indexOf(sStartTag) - 4, oTempBuffer.indexOf(sEndTag)));
+		oTempBuffer = new StringBuffer(
+				oTempBuffer.substring(oTempBuffer.indexOf(sStartTag) - 4, oTempBuffer.indexOf(sEndTag)));
 
 		String sReturnReason = "[Unknown]";
-		if (oTempBuffer.indexOf("is not recognized by the US Postal") != -1)
-		{
+		if (oTempBuffer.indexOf("is not recognized by the US Postal") != -1) {
 			sReturnReason = "[MBR]";
 		}
 
-		if (oTempBuffer.indexOf("address wasn't found") != -1)
-		{
+		if (oTempBuffer.indexOf("address wasn't found") != -1) {
 			sReturnReason = "[ANK]";
 		}
 
-		XSaLTFileSystemUtils.writeStringBufferToFile(oTempBuffer, _sSavePath + "/" + sReturnReason + " " + _sFileName + ".html");
+		XSaLTFileSystemUtils.writeStringBufferToFile(oTempBuffer,
+				_sSavePath + "/" + sReturnReason + " " + _sFileName + ".html");
 
 	}
 
 	/**
 	 * This method tests launching the AccuZip software.
 	 */
-	public static void testWindowsLauncher()
-	{
-		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "Starting process...");
+	public static void testWindowsLauncher() {
+		LOGGER.info("Starting process...");
 
-		try
-		{
+		try {
 			Process oProcess = Runtime.getRuntime().exec("D:/AccuZIP/AccuZIPLauncher.bat");
 			oProcess.waitFor();
-		}
-		catch (Exception e)
-		{
-			XSaLTGenericLogger.error("", e);
+		} catch (Exception e) {
+			LOGGER.error(e.toString(), e);
 		}
 
-		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "Process is completed...");
+		LOGGER.info("Process is completed...");
 	}
 
 	/**
-	 * This method returns either the Sebis value for the key or the Sebis key
-	 * for the value.
+	 * This method returns either the Sebis value for the key or the Sebis key for
+	 * the value.
 	 * 
-	 * @param _sKey
-	 *            Key or value to search for
-	 * @param _bGetCharacter
-	 *            Flag if standard character or Sebis value is desired
+	 * @param _sKey          Key or value to search for
+	 * @param _bGetCharacter Flag if standard character or Sebis value is desired
 	 * @return
 	 */
-	public static String getSebis3of9Value(String _sKey, boolean _bGetCharacter)
-	{
+	public static String getSebis3of9Value(String _sKey, boolean _bGetCharacter) {
 
 		HashMap<String, String> oSebisMap = new HashMap<String, String>();
 
@@ -267,20 +167,15 @@ public class XSaLTTriviaUtils
 		oSebisMap.put("41", "+");
 		oSebisMap.put("42", "%");
 
-		if (_bGetCharacter)
-		{
+		if (_bGetCharacter) {
 			return oSebisMap.get(_sKey);
-		}
-		else
-		{
+		} else {
 			String sReturnKey = "";
-			for (Iterator<String> j = oSebisMap.keySet().iterator(); j.hasNext();)
-			{
+			for (Iterator<String> j = oSebisMap.keySet().iterator(); j.hasNext();) {
 				String sKey = j.next();
 				String sValue = oSebisMap.get(sKey);
 
-				if (sValue.equalsIgnoreCase(_sKey))
-				{
+				if (sValue.equalsIgnoreCase(_sKey)) {
 					sReturnKey = sKey;
 				}
 			}
@@ -292,23 +187,17 @@ public class XSaLTTriviaUtils
 	/**
 	 * This method creates the IMB encoded value and returns the USPS bar code.
 	 * 
-	 * @param _sMailerId
-	 *            Mailing ID for the current community
-	 * @param _sZip
-	 *            Zip for mailing address
-	 * @param _sPlusFour
-	 *            Zip Plus4 for mailing address
-	 * @param _sDPBC
-	 *            The DBPC (delivery point bar code)
+	 * @param _sMailerId Mailing ID for the current community
+	 * @param _sZip      Zip for mailing address
+	 * @param _sPlusFour Zip Plus4 for mailing address
+	 * @param _sDPBC     The DBPC (delivery point bar code)
 	 * @return Bar code from IMB encoding from USPS
 	 */
-	public static String doIMBEncode(String _sMailerId, String _sZip, String _sPlusFour, String _sDPBC)
-	{
+	public static String doIMBEncode(String _sMailerId, String _sZip, String _sPlusFour, String _sDPBC) {
 
 		String sEncodeValue = "00700" + _sMailerId + "000000" + _sZip + _sPlusFour + _sDPBC;
 
-		try
-		{
+		try {
 //			String sTrack = sEncodeValue.substring(0, 20);
 //			String sRoute = sEncodeValue.substring(20, 31);
 //			USPS4CB oUSPSEncoder = gov.usps.USPS4CB.getInstance();
@@ -318,50 +207,42 @@ public class XSaLTTriviaUtils
 //			return sBarcode.substring(3, sBarcode.length());
 			return sEncodeValue;
 
-		}
-		catch (Exception e)
-		{
-			XSaLTGenericLogger.error("", e);
+		} catch (Exception e) {
+			LOGGER.error(e.toString(), e);
 			return "";
 		}
 
 	}
 
 	/**
-	 * This method updates records in the specified table, counting vehicles
-	 * by keyified address.
+	 * This method updates records in the specified table, counting vehicles by
+	 * keyified address.
 	 * 
-	 * @param _oConn
-	 *            Database connection object
-	 * @param _sTableName
-	 *            Table for action
-	 * @param _sRowgenColumnName
-	 *            Column name for generated primary key
-	 * @param _asFieldNames
-	 *            Array of field names to select
-	 * @param _sNumberColumnName
-	 *            Column to put vehicle number into
+	 * @param _oConn             Database connection object
+	 * @param _sTableName        Table for action
+	 * @param _sRowgenColumnName Column name for generated primary key
+	 * @param _asFieldNames      Array of field names to select
+	 * @param _sNumberColumnName Column to put vehicle number into
 	 * @throws SQLException
 	 */
-	public static void numberVehicles(Connection _oConn, String _sTableName, String _sRowgenColumnName, String[] _asFieldNames, String _sNumberColumnName) throws SQLException
-	{
+	public static void numberVehicles(Connection _oConn, String _sTableName, String _sRowgenColumnName,
+			String[] _asFieldNames, String _sNumberColumnName) throws SQLException {
 		String sLastAddressKey = "";
 
-		String sSQL = "SELECT " + _sRowgenColumnName + "," + XSaLTObjectUtils.getStringArrayWithDelimiter_String(_asFieldNames, ",") + " FROM " + _sTableName + " ORDER BY "
-				+ XSaLTObjectUtils.getStringArrayWithDelimiter_String(_asFieldNames, ",");
+		String sSQL = "SELECT " + _sRowgenColumnName + ","
+				+ XSaLTObjectUtils.getStringArrayWithDelimiter_String(_asFieldNames, ",") + " FROM " + _sTableName
+				+ " ORDER BY " + XSaLTObjectUtils.getStringArrayWithDelimiter_String(_asFieldNames, ",");
 
 		ResultSet oRs = XSaLTDataUtils.querySQL(_oConn, sSQL);
 
 		int nCycleCount = 0;
 		int nVehicleCount = 1;
-		while (oRs.next())
-		{
+		while (oRs.next()) {
 
 			String sRowgenID = oRs.getString(_sRowgenColumnName);
 
 			StringBuffer oKeyBuffer = new StringBuffer();
-			for (int j = 0; j < _asFieldNames.length; j++)
-			{
+			for (int j = 0; j < _asFieldNames.length; j++) {
 				oKeyBuffer.append(XSaLTStringUtils.getEmptyStringIfNull(oRs.getString(_asFieldNames[j]).toUpperCase()));
 			}
 
@@ -369,17 +250,16 @@ public class XSaLTTriviaUtils
 
 			String sSQL2 = "";
 
-			if (sCurrentAddressKey.equals(sLastAddressKey))
-			{
+			if (sCurrentAddressKey.equals(sLastAddressKey)) {
 				nVehicleCount = nVehicleCount + 1;
-				sSQL2 = "UPDATE " + _sTableName + " SET " + _sNumberColumnName + " = '" + nVehicleCount + "' WHERE " + _sRowgenColumnName + " = '" + sRowgenID + "'";
+				sSQL2 = "UPDATE " + _sTableName + " SET " + _sNumberColumnName + " = '" + nVehicleCount + "' WHERE "
+						+ _sRowgenColumnName + " = '" + sRowgenID + "'";
 				XSaLTDataUtils.executeSQL(_oConn, sSQL2);
 
-			}
-			else
-			{
+			} else {
 				nVehicleCount = 1;
-				sSQL2 = "UPDATE " + _sTableName + " SET " + _sNumberColumnName + " = '" + nVehicleCount + "' WHERE " + _sRowgenColumnName + " = '" + sRowgenID + "'";
+				sSQL2 = "UPDATE " + _sTableName + " SET " + _sNumberColumnName + " = '" + nVehicleCount + "' WHERE "
+						+ _sRowgenColumnName + " = '" + sRowgenID + "'";
 				XSaLTDataUtils.executeSQL(_oConn, sSQL2);
 			}
 
@@ -394,28 +274,22 @@ public class XSaLTTriviaUtils
 	 * This method creates the NCOA file from a table that has had the CASS
 	 * processes previously run on it.
 	 * 
-	 * @param _oConn
-	 *            Database connection object
-	 * @param _sNCOAFilePath
-	 *            Path to write the NCOA file
-	 * @param _sCASSedTable
-	 *            Table to get data fromUSPS4CB
-	 * @param _sAccountFieldSQL
-	 *            SQL for getting account information
+	 * @param _oConn            Database connection object
+	 * @param _sNCOAFilePath    Path to write the NCOA file
+	 * @param _sCASSedTable     Table to get data fromUSPS4CB
+	 * @param _sAccountFieldSQL SQL for getting account information
 	 * @throws Exception
 	 */
-	public static void generateNCOAFile(Connection _oConn, String _sNCOAFilePath, String _sCASSedTable, String _sAccountFieldSQL) throws Exception
-	{
-		//check to see that CASS is complete
+	public static void generateNCOAFile(Connection _oConn, String _sNCOAFilePath, String _sCASSedTable,
+			String _sAccountFieldSQL) throws Exception {
+		// check to see that CASS is complete
 
-		ResultSet rsCASSCount = XSaLTDataUtils.getFirstRecord(_oConn, "SELECT count(*) as cnt from " + _sCASSedTable + " where JQ_FULL_NAME is null");
-		if (rsCASSCount.getInt("cnt") > 0)
-		{
-			XSaLTGenericLogger.logXSaLT(Priority.FATAL_INT, "Can not generate NCOA file, CASS process incomplete for table " + _sCASSedTable);
+		ResultSet rsCASSCount = XSaLTDataUtils.getFirstRecord(_oConn,
+				"SELECT count(*) as cnt from " + _sCASSedTable + " where JQ_FULL_NAME is null");
+		if (rsCASSCount.getInt("cnt") > 0) {
+			LOGGER.fatal("Can not generate NCOA file, CASS process incomplete for table " + _sCASSedTable);
 			return;
-		}
-		else
-		{
+		} else {
 			final long lMaxFileRecords = 10000000;
 			long lRecordCount = 0;
 			long lFileCount = 1;
@@ -423,22 +297,21 @@ public class XSaLTTriviaUtils
 			BufferedWriter bwWriter = new BufferedWriter(new FileWriter(_sNCOAFilePath, false));
 
 			ResultSet rsCASS = XSaLTDataUtils.querySQL(_oConn,
-					"SELECT JQ_FULL_NAME, JQ_ADDRESS_1, JQ_ADDRESS_2, JQ_ADDRESS_3, JQ_ADDRESS_4, JQ_CITY, JQ_STATE, JQ_ZIP5, JQ_PLUS4, " + _sAccountFieldSQL
-							+ " AS JQ_ACCOUNT from " + _sCASSedTable + " order by JQ_ZIP5, JQ_PLUS4, JQ_DPBC, JQ_SORT_ORDER");
+					"SELECT JQ_FULL_NAME, JQ_ADDRESS_1, JQ_ADDRESS_2, JQ_ADDRESS_3, JQ_ADDRESS_4, JQ_CITY, JQ_STATE, JQ_ZIP5, JQ_PLUS4, "
+							+ _sAccountFieldSQL + " AS JQ_ACCOUNT from " + _sCASSedTable
+							+ " order by JQ_ZIP5, JQ_PLUS4, JQ_DPBC, JQ_SORT_ORDER");
 
 			String sName = "", sCity = "", sState = "", sZip5 = "", sPlus4 = "", sAccount = "";
 			StringBuilder sbName, sbAddress, sbCSZ, sbWriteLine;
 			ArrayList<String> lsRawNamesAddresses = new ArrayList<String>();
 
-			while (rsCASS.next())
-			{
+			while (rsCASS.next()) {
 				lRecordCount++;
 				lsRawNamesAddresses = new ArrayList<String>();
 
 				sName = XSaLTStringUtils.getEmptyStringIfNull(rsCASS.getString("JQ_FULL_NAME")).trim();
 
-				if (sName.length() == 0)
-				{
+				if (sName.length() == 0) {
 					continue;
 				}
 
@@ -457,23 +330,16 @@ public class XSaLTTriviaUtils
 				sbAddress = new StringBuilder();
 
 				boolean bPastAddress = false;
-				for (String sStr : lsRawNamesAddresses)
-				{
-					if (bPastAddress)
-					{
+				for (String sStr : lsRawNamesAddresses) {
+					if (bPastAddress) {
 						sbAddress.append(sStr);
 						sbAddress.append(' ');
-					}
-					else
-					{
-						if (XSaLTTriviaUtils.isAddressString(sStr))
-						{ //at address
+					} else {
+						if (XSaLTTriviaUtils.isAddressString(sStr)) { // at address
 							sbAddress.append(sStr);
 							bPastAddress = true;
 							sbAddress.append(' ');
-						}
-						else
-						{
+						} else {
 							sbName.append(sStr);
 							sbName.append(' ');
 						}
@@ -493,28 +359,32 @@ public class XSaLTTriviaUtils
 
 				sbWriteLine = new StringBuilder();
 
-				sbWriteLine.append(XSaLTStringUtils.createFixedLengthString(sZip5, ' ', 5)); //five digit zip
-				sbWriteLine.append(XSaLTStringUtils.createFixedLengthString(sbName.toString(), ' ', 40)); //Name
-				sbWriteLine.append(XSaLTStringUtils.createFixedLengthString(sbAddress.toString(), ' ', 50)); //Address
-				sbWriteLine.append(XSaLTStringUtils.createFixedLengthString(sbCSZ.toString(), ' ', 40)); //City, State, Zip (5)
-				sbWriteLine.append(XSaLTStringUtils.createFixedLengthString(sAccount, ' ', 20)); //Customer/Account Number (optional)
-				sbWriteLine.append(XSaLTStringUtils.createFixedLengthString("", ' ', 10)); //Parsed Primary Number (Street address #, po box #, etc.) (optional) 
-				sbWriteLine.append(XSaLTStringUtils.createFixedLengthString("", ' ', 8)); // Parsed Secondary Number (?) (optional)
-				sbWriteLine.append(XSaLTStringUtils.createFixedLengthString(sZip5, ' ', 5)); //five digit zip
-				sbWriteLine.append(XSaLTStringUtils.createFixedLengthString(sPlus4, ' ', 4)); //plus four code
+				sbWriteLine.append(XSaLTStringUtils.createFixedLengthString(sZip5, ' ', 5)); // five digit zip
+				sbWriteLine.append(XSaLTStringUtils.createFixedLengthString(sbName.toString(), ' ', 40)); // Name
+				sbWriteLine.append(XSaLTStringUtils.createFixedLengthString(sbAddress.toString(), ' ', 50)); // Address
+				sbWriteLine.append(XSaLTStringUtils.createFixedLengthString(sbCSZ.toString(), ' ', 40)); // City, State,
+																											// Zip (5)
+				sbWriteLine.append(XSaLTStringUtils.createFixedLengthString(sAccount, ' ', 20)); // Customer/Account
+																									// Number (optional)
+				sbWriteLine.append(XSaLTStringUtils.createFixedLengthString("", ' ', 10)); // Parsed Primary Number
+																							// (Street address #, po box
+																							// #, etc.) (optional)
+				sbWriteLine.append(XSaLTStringUtils.createFixedLengthString("", ' ', 8)); // Parsed Secondary Number (?)
+																							// (optional)
+				sbWriteLine.append(XSaLTStringUtils.createFixedLengthString(sZip5, ' ', 5)); // five digit zip
+				sbWriteLine.append(XSaLTStringUtils.createFixedLengthString(sPlus4, ' ', 4)); // plus four code
 				sbWriteLine.append(System.getProperty("line.separator"));
 
 				bwWriter.write(sbWriteLine.toString());
 
-				XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, sbWriteLine.toString());
+				LOGGER.info(sbWriteLine.toString());
 
-				//really, if we get to 10 million records (USPS max size)
-				if (lRecordCount % lMaxFileRecords == 0)
-				{
+				// really, if we get to 10 million records (USPS max size)
+				if (lRecordCount % lMaxFileRecords == 0) {
 					bwWriter.flush();
 					bwWriter.close();
 
-					XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "Hit record limit, creating new file");
+					LOGGER.info("Hit record limit, creating new file");
 					lFileCount++;
 					bwWriter = new BufferedWriter(new FileWriter(_sNCOAFilePath + "_" + lFileCount, false));
 				}
@@ -524,31 +394,29 @@ public class XSaLTTriviaUtils
 			bwWriter.flush();
 			bwWriter.close();
 
-			XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "Record Count: " + lRecordCount);
-			XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "File Count: " + lFileCount);
+			LOGGER.info("Record Count: " + lRecordCount);
+			LOGGER.info("File Count: " + lFileCount);
 		}
 	}
 
 	/**
 	 * This method adds the specified number of days to the given date.
 	 * 
-	 * @param _sDate
-	 *            Beginning date string (this will always be in XX/XX/XXXX format)
-	 * @param _nDaysToAdd
-	 *            Number of days to add
+	 * @param _sDate      Beginning date string (this will always be in XX/XX/XXXX
+	 *                    format)
+	 * @param _nDaysToAdd Number of days to add
 	 * @return String representation of modified date
 	 */
-	public static String addDays(String _sDate, int _nDaysToAdd)
-	{
+	public static String addDays(String _sDate, int _nDaysToAdd) {
 		/*
 		 * Suggestion by Keith for mulitple format
 		 * 
-		 *  SimpleDateFormat oSdf = new SimpleDateFormat(XSaLTConstants.XS_DATE_FORMATTER_WITH_SLASHES);
-		 *  Calendar oCalendar = Calendar.getInstance();
-		 *  oCalendar.setTime(oSdf.parse(_sDate));
-		 *  oCalendar.add(Calendar.DATE, _nDaysToAdd);
-		 *  
-		 *  return oSdf.format(oCalendar.getTime()); 
+		 * SimpleDateFormat oSdf = new
+		 * SimpleDateFormat(XSaLTConstants.XS_DATE_FORMATTER_WITH_SLASHES); Calendar
+		 * oCalendar = Calendar.getInstance(); oCalendar.setTime(oSdf.parse(_sDate));
+		 * oCalendar.add(Calendar.DATE, _nDaysToAdd);
+		 * 
+		 * return oSdf.format(oCalendar.getTime());
 		 */
 
 		String sYear = "";
@@ -559,7 +427,8 @@ public class XSaLTTriviaUtils
 		sYear = _sDate.substring(6, 10);
 
 		SimpleDateFormat oSdf = new SimpleDateFormat(XSaLTConstants.XS_DATE_FORMATTER_WITH_SLASHES);
-		GregorianCalendar oGregorianCalendar = new GregorianCalendar(Integer.valueOf(sYear).intValue(), Integer.valueOf(sMonth).intValue() - 1, Integer.valueOf(sDay).intValue());
+		GregorianCalendar oGregorianCalendar = new GregorianCalendar(Integer.valueOf(sYear).intValue(),
+				Integer.valueOf(sMonth).intValue() - 1, Integer.valueOf(sDay).intValue());
 		oGregorianCalendar.add(Calendar.DATE, _nDaysToAdd);
 
 		return oSdf.format(oGregorianCalendar.getTime());
@@ -570,14 +439,13 @@ public class XSaLTTriviaUtils
 	 * This method compares the two passed in dates and returns a String
 	 * representation of the results.
 	 * 
-	 * @param _sDate
-	 *            Date for left side of comparison (this will always be in XX/XX/XXXX format)
-	 * @param _sDateTwo
-	 *            Date for right side of comparison (this will always be in XX/XX/XXXX format)
+	 * @param _sDate    Date for left side of comparison (this will always be in
+	 *                  XX/XX/XXXX format)
+	 * @param _sDateTwo Date for right side of comparison (this will always be in
+	 *                  XX/XX/XXXX format)
 	 * @return String with results of comparison (EQUALS, BEFORE, or AFTER)
 	 */
-	public static String isDateOnOrAfter(String _sDate, String _sDateTwo)
-	{
+	public static String isDateOnOrAfter(String _sDate, String _sDateTwo) {
 
 		String sYear = "";
 		String sMonth = "";
@@ -593,19 +461,16 @@ public class XSaLTTriviaUtils
 		sDay2 = _sDateTwo.substring(3, 5);
 		sYear2 = _sDateTwo.substring(6, 10);
 
-		GregorianCalendar oGregorianCalendar = new GregorianCalendar(Integer.valueOf(sYear).intValue(), Integer.valueOf(sMonth).intValue() - 1, Integer.valueOf(sDay).intValue());
-		GregorianCalendar oGregorianCalendarTwo = new GregorianCalendar(Integer.valueOf(sYear2).intValue(), Integer.valueOf(sMonth2).intValue() - 1, Integer.valueOf(sDay2).intValue());
+		GregorianCalendar oGregorianCalendar = new GregorianCalendar(Integer.valueOf(sYear).intValue(),
+				Integer.valueOf(sMonth).intValue() - 1, Integer.valueOf(sDay).intValue());
+		GregorianCalendar oGregorianCalendarTwo = new GregorianCalendar(Integer.valueOf(sYear2).intValue(),
+				Integer.valueOf(sMonth2).intValue() - 1, Integer.valueOf(sDay2).intValue());
 
-		if (oGregorianCalendar.compareTo(oGregorianCalendarTwo) == 0)
-		{
+		if (oGregorianCalendar.compareTo(oGregorianCalendarTwo) == 0) {
 			return "EQUALS";
-		}
-		else if (oGregorianCalendar.compareTo(oGregorianCalendarTwo) > 0)
-		{
+		} else if (oGregorianCalendar.compareTo(oGregorianCalendarTwo) > 0) {
 			return "BEFORE";
-		}
-		else if (oGregorianCalendar.compareTo(oGregorianCalendarTwo) < 0)
-		{
+		} else if (oGregorianCalendar.compareTo(oGregorianCalendarTwo) < 0) {
 			return "AFTER";
 		}
 
@@ -614,20 +479,16 @@ public class XSaLTTriviaUtils
 	}
 
 	/**
-	 * This method calculates the number of whole days between the start and
-	 * end dates.
+	 * This method calculates the number of whole days between the start and end
+	 * dates.
 	 * 
-	 * @param _sStartDate
-	 *            String representation of start date
-	 * @param _sEndDate
-	 *            String representation of end date
+	 * @param _sStartDate String representation of start date
+	 * @param _sEndDate   String representation of end date
 	 * @return Number of whole days between given dates
 	 */
-	public static int dateDifference(String _sStartDate, String _sEndDate)
-	{
+	public static int dateDifference(String _sStartDate, String _sEndDate) {
 
-		try
-		{
+		try {
 			String sYear = "";
 			String sMonth = "";
 			String sDay = "";
@@ -642,34 +503,30 @@ public class XSaLTTriviaUtils
 			sDay2 = _sStartDate.substring(3, 5);
 			sYear2 = _sStartDate.substring(6, 10);
 
-			GregorianCalendar oGregorianCalendar = new GregorianCalendar(Integer.valueOf(sYear).intValue(), Integer.valueOf(sMonth).intValue() - 1, Integer.valueOf(sDay).intValue());
-			GregorianCalendar oGregorianCalendarTwo = new GregorianCalendar(Integer.valueOf(sYear2).intValue(), Integer.valueOf(sMonth2).intValue() - 1, Integer.valueOf(sDay2).intValue());
+			GregorianCalendar oGregorianCalendar = new GregorianCalendar(Integer.valueOf(sYear).intValue(),
+					Integer.valueOf(sMonth).intValue() - 1, Integer.valueOf(sDay).intValue());
+			GregorianCalendar oGregorianCalendarTwo = new GregorianCalendar(Integer.valueOf(sYear2).intValue(),
+					Integer.valueOf(sMonth2).intValue() - 1, Integer.valueOf(sDay2).intValue());
 
 			long lMilliDiff = oGregorianCalendar.getTimeInMillis() - oGregorianCalendarTwo.getTimeInMillis();
 			return (int) (lMilliDiff / (1000 * 60 * 60 * 24));
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			return 0;
 		}
 
 	}
 
 	/**
-	 * This method looks for records that are marked as a transfer.  For each
-	 * transfer record, it looks for the original record and marks it for
-	 * deletion.
+	 * This method looks for records that are marked as a transfer. For each
+	 * transfer record, it looks for the original record and marks it for deletion.
 	 * 
-	 * @param _oConnection
-	 *            Database connection object
-	 * @param _sTableName
-	 *            Table for action
-	 * @param _sFindTransferCode
-	 *            Cost code that denotes a record is a transfer
+	 * @param _oConnection       Database connection object
+	 * @param _sTableName        Table for action
+	 * @param _sFindTransferCode Cost code that denotes a record is a transfer
 	 * @throws SQLException
 	 */
-	public static void processOutTransfers(Connection _oConnection, String _sTableName, String _sFindTransferCode) throws SQLException
-	{
+	public static void processOutTransfers(Connection _oConnection, String _sTableName, String _sFindTransferCode)
+			throws SQLException {
 
 		LinkedHashMap<String, String> oRegExHashMap = new LinkedHashMap<String, String>();
 		oRegExHashMap.put("\\-DD", "");
@@ -677,35 +534,33 @@ public class XSaLTTriviaUtils
 		oRegExHashMap.put("\\-dD", "");
 		oRegExHashMap.put("\\-Dd", "");
 
-		XSaLTDataUtils.executeSQL(_oConnection, "UPDATE " + _sTableName + " SET FROMWHERE = 'TRANSFERXXX' WHERE COSTCODE = '" + _sFindTransferCode + "'");
+		XSaLTDataUtils.executeSQL(_oConnection, "UPDATE " + _sTableName
+				+ " SET FROMWHERE = 'TRANSFERXXX' WHERE COSTCODE = '" + _sFindTransferCode + "'");
 
-		ResultSet oRs = XSaLTDataUtils.querySQL(_oConnection, "SELECT ROWGENID, PLATE FROM " + _sTableName + " where COSTCODE = '" + _sFindTransferCode + "'");
-		while (oRs.next())
-		{
+		ResultSet oRs = XSaLTDataUtils.querySQL(_oConnection,
+				"SELECT ROWGENID, PLATE FROM " + _sTableName + " where COSTCODE = '" + _sFindTransferCode + "'");
+		while (oRs.next()) {
 			String sRowGenID = oRs.getString("ROWGENID");
 			String sTransferPlate = oRs.getString("PLATE");
 			String sLookForPlate = "";
 
-			if (sTransferPlate.endsWith("-dd") || sTransferPlate.endsWith("-DD"))
-			{
+			if (sTransferPlate.endsWith("-dd") || sTransferPlate.endsWith("-DD")) {
 				sLookForPlate = XSaLTStringUtils.processRegExHashMap(oRegExHashMap, sTransferPlate);
-			}
-			else
-			{
+			} else {
 				sLookForPlate = sTransferPlate + "-dd";
 			}
 
-			ResultSet oRs2 = XSaLTDataUtils.querySQL(_oConnection, "SELECT ROWGENID, COSTCODE FROM " + _sTableName + " where PLATE like '" + sLookForPlate + "'");
-			while (oRs2.next())
-			{
+			ResultSet oRs2 = XSaLTDataUtils.querySQL(_oConnection,
+					"SELECT ROWGENID, COSTCODE FROM " + _sTableName + " where PLATE like '" + sLookForPlate + "'");
+			while (oRs2.next()) {
 				String sNonTransferCostCode = oRs2.getString("COSTCODE");
 				String sPreTransferVehicle = oRs2.getString("ROWGENID");
-				int nRecordsAffected = XSaLTDataUtils.executeSQL(_oConnection, "UPDATE " + _sTableName + " SET COSTCODE = '" + sNonTransferCostCode + "' WHERE ROWGENID = '"
-						+ sRowGenID + "'");
+				int nRecordsAffected = XSaLTDataUtils.executeSQL(_oConnection, "UPDATE " + _sTableName
+						+ " SET COSTCODE = '" + sNonTransferCostCode + "' WHERE ROWGENID = '" + sRowGenID + "'");
 
-				if (nRecordsAffected > 0)
-				{
-					XSaLTDataUtils.executeSQL(_oConnection, "UPDATE " + _sTableName + " SET FROMWHERE = 'DELETETRANSFER' WHERE ROWGENID = '" + sPreTransferVehicle + "'");
+				if (nRecordsAffected > 0) {
+					XSaLTDataUtils.executeSQL(_oConnection, "UPDATE " + _sTableName
+							+ " SET FROMWHERE = 'DELETETRANSFER' WHERE ROWGENID = '" + sPreTransferVehicle + "'");
 				}
 
 			}
@@ -714,26 +569,19 @@ public class XSaLTTriviaUtils
 	}
 
 	/**
-	 * This method imports the given Munis file into the given database table.  
+	 * This method imports the given Munis file into the given database table.
 	 * 
-	 * @param _oConnection
-	 *            Database connection object
-	 * @param _sImportFileName
-	 *            File to import
-	 * @param _sImportTableName
-	 *            Table to import file into
-	 * @param _nMaxDataLength
-	 *            Maximum length of string to insert
-	 * @param _bUseExtendedColumns
-	 *            Flag if extended columns should be used
-	 * @param _bDropUnused
-	 *            Flag if unused columns in table should be dropped
+	 * @param _oConnection         Database connection object
+	 * @param _sImportFileName     File to import
+	 * @param _sImportTableName    Table to import file into
+	 * @param _nMaxDataLength      Maximum length of string to insert
+	 * @param _bUseExtendedColumns Flag if extended columns should be used
+	 * @param _bDropUnused         Flag if unused columns in table should be dropped
 	 * @throws IOException
 	 * @throws SQLException
 	 */
-	public static void importMunisFile(Connection _oConnection, String _sImportFileName, String _sImportTableName, int _nMaxDataLength, boolean _bUseExtendedColumns,
-			boolean _bDropUnused) throws IOException, SQLException
-	{
+	public static void importMunisFile(Connection _oConnection, String _sImportFileName, String _sImportTableName,
+			int _nMaxDataLength, boolean _bUseExtendedColumns, boolean _bDropUnused) throws IOException, SQLException {
 
 		LinkedHashMap<String, Integer> oDbColumnsHashmap = new LinkedHashMap<String, Integer>();
 
@@ -762,52 +610,59 @@ public class XSaLTTriviaUtils
 		oNumericArrayList.add("LN4");
 		oNumericArrayList.add("COL4");
 
-		XSaLTDataUtils.importFixedDataFileToDatabase(_oConnection, "S:/Clients/TMAClientData/H-P/Munis/DataLayout/MunisLayout.txt", oDbColumnsHashmap, oNumericArrayList,
+		XSaLTDataUtils.importFixedDataFileToDatabase(_oConnection,
+				"S:/Clients/TMAClientData/H-P/Munis/DataLayout/MunisLayout.txt", oDbColumnsHashmap, oNumericArrayList,
 				"MUNIS_LAYOUT", "VARCHAR(200)", true, "MyISAM", 0);
 
 		XSaLTDataUtils.dropColumnInTable(_oConnection, "MUNIS_LAYOUT", "FIELD_NO");
 
-		//XSaLTDataUtils.executeSQL(_oConnection, "delete from munis_layout where rowgenid > 364");
+		// XSaLTDataUtils.executeSQL(_oConnection, "delete from munis_layout where
+		// rowgenid > 364");
 
 		oDbColumnsHashmap = new LinkedHashMap<String, Integer>();
 
 		long lFieldNumber = 1;
-		ResultSet oRs = XSaLTDataUtils.querySQL(_oConnection, "SELECT FIELDNAME, SIZE FROM MUNIS_LAYOUT WHERE COL1 > 0 ORDER BY ROWGENID");
-		while (oRs.next())
-		{
-			String sFieldName = XSaLTStringUtils.padLeftWithCharacter(Long.valueOf(lFieldNumber).toString(), '0', 5) + "_"
-					+ XSaLTStringUtils.regExMakeDataColumnName(oRs.getString("FIELDNAME"));
-			//String sFieldName = "FIELD_" + XSaLTStringUtils.padLeftWithCharacter(Long.valueOf(lFieldNumber).toString(), '0', 5) + "";
-			//String sFieldName = "FIELD_" + nFieldNumber;
+		ResultSet oRs = XSaLTDataUtils.querySQL(_oConnection,
+				"SELECT FIELDNAME, SIZE FROM MUNIS_LAYOUT WHERE COL1 > 0 ORDER BY ROWGENID");
+		while (oRs.next()) {
+			String sFieldName = XSaLTStringUtils.padLeftWithCharacter(Long.valueOf(lFieldNumber).toString(), '0', 5)
+					+ "_" + XSaLTStringUtils.regExMakeDataColumnName(oRs.getString("FIELDNAME"));
+			// String sFieldName = "FIELD_" +
+			// XSaLTStringUtils.padLeftWithCharacter(Long.valueOf(lFieldNumber).toString(),
+			// '0', 5) + "";
+			// String sFieldName = "FIELD_" + nFieldNumber;
 
 			int nFieldSize = oRs.getInt("SIZE");
 			oDbColumnsHashmap.put(sFieldName, Integer.valueOf(nFieldSize));
 			lFieldNumber = lFieldNumber + 1;
 		}
 
-		if (_bUseExtendedColumns)
-		{
+		if (_bUseExtendedColumns) {
 
-			oRs = XSaLTDataUtils.querySQL(_oConnection, "SELECT FIELDNAME, SIZE FROM MUNIS_LAYOUT WHERE COL2 > 0 ORDER BY ROWGENID");
-			while (oRs.next())
-			{
-				String sFieldName = XSaLTStringUtils.padLeftWithCharacter(Long.valueOf(lFieldNumber).toString(), '0', 5) + "_"
-						+ XSaLTStringUtils.regExMakeDataColumnName(oRs.getString("FIELDNAME"));
-				//String sFieldName = "FIELD_" + XSaLTStringUtils.padLeftWithCharacter(Long.valueOf(lFieldNumber).toString(), '0', 5) + "";
-				//String sFieldName = "FIELD_" + nFieldNumber;
+			oRs = XSaLTDataUtils.querySQL(_oConnection,
+					"SELECT FIELDNAME, SIZE FROM MUNIS_LAYOUT WHERE COL2 > 0 ORDER BY ROWGENID");
+			while (oRs.next()) {
+				String sFieldName = XSaLTStringUtils.padLeftWithCharacter(Long.valueOf(lFieldNumber).toString(), '0', 5)
+						+ "_" + XSaLTStringUtils.regExMakeDataColumnName(oRs.getString("FIELDNAME"));
+				// String sFieldName = "FIELD_" +
+				// XSaLTStringUtils.padLeftWithCharacter(Long.valueOf(lFieldNumber).toString(),
+				// '0', 5) + "";
+				// String sFieldName = "FIELD_" + nFieldNumber;
 
 				int nFieldSize = oRs.getInt("SIZE");
 				oDbColumnsHashmap.put(sFieldName, Integer.valueOf(nFieldSize));
 				lFieldNumber = lFieldNumber + 1;
 			}
 
-			oRs = XSaLTDataUtils.querySQL(_oConnection, "SELECT FIELDNAME, SIZE FROM MUNIS_LAYOUT WHERE COL3 > 0 ORDER BY ROWGENID");
-			while (oRs.next())
-			{
-				String sFieldName = XSaLTStringUtils.padLeftWithCharacter(Long.valueOf(lFieldNumber).toString(), '0', 5) + "_"
-						+ XSaLTStringUtils.regExMakeDataColumnName(oRs.getString("FIELDNAME"));
-				//String sFieldName = "FIELD_" + XSaLTStringUtils.padLeftWithCharacter(Long.valueOf(lFieldNumber).toString(), '0', 5) + "";
-				//String sFieldName = "FIELD_" + nFieldNumber;
+			oRs = XSaLTDataUtils.querySQL(_oConnection,
+					"SELECT FIELDNAME, SIZE FROM MUNIS_LAYOUT WHERE COL3 > 0 ORDER BY ROWGENID");
+			while (oRs.next()) {
+				String sFieldName = XSaLTStringUtils.padLeftWithCharacter(Long.valueOf(lFieldNumber).toString(), '0', 5)
+						+ "_" + XSaLTStringUtils.regExMakeDataColumnName(oRs.getString("FIELDNAME"));
+				// String sFieldName = "FIELD_" +
+				// XSaLTStringUtils.padLeftWithCharacter(Long.valueOf(lFieldNumber).toString(),
+				// '0', 5) + "";
+				// String sFieldName = "FIELD_" + nFieldNumber;
 
 				int nFieldSize = oRs.getInt("SIZE");
 				oDbColumnsHashmap.put(sFieldName, Integer.valueOf(nFieldSize));
@@ -816,19 +671,20 @@ public class XSaLTTriviaUtils
 
 		}
 
-		XSaLTDataUtils.importFixedDataFileToDatabase(_oConnection, _sImportFileName, oDbColumnsHashmap, oNumericArrayList, _sImportTableName, "VARCHAR(50)", true, "MyISAM",
-				_nMaxDataLength);
+		XSaLTDataUtils.importFixedDataFileToDatabase(_oConnection, _sImportFileName, oDbColumnsHashmap,
+				oNumericArrayList, _sImportTableName, "VARCHAR(50)", true, "MyISAM", _nMaxDataLength);
 
 		StringBuffer oColumnsBuffer = new StringBuffer();
 
-		for (Iterator<String> j = oDbColumnsHashmap.keySet().iterator(); j.hasNext();)
-		{
+		for (Iterator<String> j = oDbColumnsHashmap.keySet().iterator(); j.hasNext();) {
 			String sColumnName = (String) j.next();
 
-			if (sColumnName.toLowerCase().indexOf("customer_number") != -1 || sColumnName.toLowerCase().indexOf("meter_number") != -1
-					|| sColumnName.toLowerCase().indexOf("service_total") != -1 || sColumnName.toLowerCase().indexOf("ce_description__short") != -1
-					|| sColumnName.toLowerCase().indexOf("00021") != -1 || sColumnName.toLowerCase().indexOf("00077") != -1)
-			{
+			if (sColumnName.toLowerCase().indexOf("customer_number") != -1
+					|| sColumnName.toLowerCase().indexOf("meter_number") != -1
+					|| sColumnName.toLowerCase().indexOf("service_total") != -1
+					|| sColumnName.toLowerCase().indexOf("ce_description__short") != -1
+					|| sColumnName.toLowerCase().indexOf("00021") != -1
+					|| sColumnName.toLowerCase().indexOf("00077") != -1) {
 
 				oColumnsBuffer.append(sColumnName + ", ");
 
@@ -838,31 +694,30 @@ public class XSaLTTriviaUtils
 
 		oColumnsBuffer = new StringBuffer(oColumnsBuffer.substring(0, oColumnsBuffer.length() - 2));
 
-		if (_bDropUnused)
-		{
+		if (_bDropUnused) {
 			XSaLTDataUtils.dropUnusedColumnsInTable(_oConnection, _sImportTableName);
 		}
 
 	}
 
 	/**
-	 * This method creates the postal scan line with a checksum digit based
-	 * on the specified value and weights.
+	 * This method creates the postal scan line with a checksum digit based on the
+	 * specified value and weights.
 	 * 
-	 * @param _sValueToEvaluate
-	 *            Scan line string to use
-	 * @param _sWeights
-	 *            String of weights to use for debugging purposes
-	 * @param _bAddSpaceBeforeCheckDigit
-	 *            Flag if a space should be added before the checksum digit
+	 * @param _sValueToEvaluate          Scan line string to use
+	 * @param _sWeights                  String of weights to use for debugging
+	 *                                   purposes
+	 * @param _bAddSpaceBeforeCheckDigit Flag if a space should be added before the
+	 *                                   checksum digit
 	 * @return Formatted scan line string for postal sorting
 	 */
-	public static String createOCRAScanLineWithCheckDigit(String _sValueToEvaluate, String _sWeights, boolean _bAddSpaceBeforeCheckDigit)
-	{
+	public static String createOCRAScanLineWithCheckDigit(String _sValueToEvaluate, String _sWeights,
+			boolean _bAddSpaceBeforeCheckDigit) {
 
-		//		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, _sValueToEvaluate);
-		//		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, _sWeights);
-		//		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "_sValueToEvaluate = " + _sValueToEvaluate.length() + ", _sWeights " + _sWeights.length());
+		// LOGGER.info( _sValueToEvaluate);
+		// LOGGER.info( _sWeights);
+		// LOGGER.info( "_sValueToEvaluate = " + _sValueToEvaluate.length() + ",
+		// _sWeights " + _sWeights.length());
 
 		StringBuffer sReturnScanLine = new StringBuffer();
 		StringBuffer oValueBufferForArrayList = new StringBuffer();
@@ -871,15 +726,11 @@ public class XSaLTTriviaUtils
 		StringBuffer oResultBufferForArrayList = new StringBuffer();
 
 		int[] anValue = new int[_sValueToEvaluate.length()];
-		for (int i = 0; i < _sValueToEvaluate.length(); i++)
-		{
+		for (int i = 0; i < _sValueToEvaluate.length(); i++) {
 			sReturnScanLine.append(_sValueToEvaluate.substring(i, i + 1));
-			if (_sValueToEvaluate.substring(i, i + 1).equals(" "))
-			{
+			if (_sValueToEvaluate.substring(i, i + 1).equals(" ")) {
 				anValue[i] = 0;
-			}
-			else
-			{
+			} else {
 				anValue[i] = Integer.valueOf(_sValueToEvaluate.substring(i, i + 1)).intValue();
 			}
 			oValueBufferForArrayList.append(anValue[i] + "\t");
@@ -887,8 +738,7 @@ public class XSaLTTriviaUtils
 		}
 
 		int[] anWeights = new int[_sValueToEvaluate.length()];
-		for (int i = 0; i < _sValueToEvaluate.length(); i++)
-		{
+		for (int i = 0; i < _sValueToEvaluate.length(); i++) {
 			anWeights[i] = Integer.valueOf(_sWeights.substring(i, i + 1)).intValue();
 			oWeightBufferForArrayList.append(anWeights[i] + "\t");
 		}
@@ -896,8 +746,7 @@ public class XSaLTTriviaUtils
 		int[] nResults = new int[_sValueToEvaluate.length()];
 
 		int nTotal = 0;
-		for (int i = 0; i < anValue.length; i++)
-		{
+		for (int i = 0; i < anValue.length; i++) {
 			int nCurrentDigit = anValue[i];
 			int nCurrentWeight = anWeights[i];
 
@@ -905,16 +754,13 @@ public class XSaLTTriviaUtils
 
 			Integer oResults = Integer.valueOf(nResults[i]);
 
-			if (oResults.toString().length() > 1)
-			{
+			if (oResults.toString().length() > 1) {
 				Integer oNewIntegerOne = Integer.valueOf(oResults.toString().substring(0, 1));
 				Integer oNewIntegerTwo = Integer.valueOf(oResults.toString().substring(1));
 				nResults[i] = oNewIntegerOne.intValue() + oNewIntegerTwo.intValue();
 				oProductBufferForArrayList.append(oNewIntegerOne + "+" + oNewIntegerTwo + "\t");
 
-			}
-			else
-			{
+			} else {
 				oProductBufferForArrayList.append(oResults + "\t");
 			}
 
@@ -924,23 +770,23 @@ public class XSaLTTriviaUtils
 		}
 
 		int nModOut = (nTotal % 10);
-		if (nModOut > 0)
-		{
+		if (nModOut > 0) {
 			nModOut = 10 - nModOut;
 		}
 
-		if (_bAddSpaceBeforeCheckDigit)
-		{
+		if (_bAddSpaceBeforeCheckDigit) {
 			sReturnScanLine.append(" ");
 		}
 
 		sReturnScanLine.append(nModOut);
 
-		//		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "Line:\t" + oValueBufferForArrayList.toString());
-		//		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "Weight:\t" + oWeightBufferForArrayList.toString());
-		//		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "Product:\t" + oProductBufferForArrayList.toString());
-		//		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "Add:\t" + oResultBufferForArrayList.toString() + "\t = " + nTotal + " mod10 is '" + nModOut + "'");
-		//		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "-------------------------------------------------------------------------------------------------");
+		// LOGGER.info( "Line:\t" + oValueBufferForArrayList.toString());
+		// LOGGER.info( "Weight:\t" + oWeightBufferForArrayList.toString());
+		// LOGGER.info( "Product:\t" + oProductBufferForArrayList.toString());
+		// LOGGER.info( "Add:\t" + oResultBufferForArrayList.toString() + "\t = " +
+		// nTotal + " mod10 is '" + nModOut + "'");
+		// LOGGER.info(
+		// "-------------------------------------------------------------------------------------------------");
 
 		return sReturnScanLine.toString();
 	}
@@ -948,57 +794,49 @@ public class XSaLTTriviaUtils
 	/**
 	 * This method will create an OCR-B scan line with a calculated check digit
 	 * 
-	 * @param _sValueToEvaluate
-	 *            Scan line string to use
-	 * @param _sWeights
-	 *            String of weights to use
-	 * @param _bAddSpaceBeforeCheckDigit
-	 *            Flag if a space should be added before the checksum digit
+	 * @param _sValueToEvaluate          Scan line string to use
+	 * @param _sWeights                  String of weights to use
+	 * @param _bAddSpaceBeforeCheckDigit Flag if a space should be added before the
+	 *                                   checksum digit
 	 * @return Formatted OCR-B type scan line for fulfillment scanning.
 	 */
-	public static String createOCRBScanLineWithCheckDigit(String _sValueToEvaluate, String _sWeights, boolean _bAddSpaceBeforeCheckDigit)
-	{
+	public static String createOCRBScanLineWithCheckDigit(String _sValueToEvaluate, String _sWeights,
+			boolean _bAddSpaceBeforeCheckDigit) {
 		StringBuffer oReturnValue = new StringBuffer();
 		oReturnValue.append(_sValueToEvaluate);
 
 		_sValueToEvaluate = _sValueToEvaluate.toUpperCase();
 
 		int[] anValues = new int[_sValueToEvaluate.length()];
-		for (int i = 0; i < _sValueToEvaluate.length(); i++)
-		{
+		for (int i = 0; i < _sValueToEvaluate.length(); i++) {
 			anValues[i] = XO_OCRB_SCANLINE_VALUES_MAP.get(_sValueToEvaluate.charAt(i));
 		}
 
 		// make sure the size of our weights string matches the value to evaluate
-		while (_sWeights.length() < _sValueToEvaluate.length())
-		{
+		while (_sWeights.length() < _sValueToEvaluate.length()) {
 			_sWeights = _sWeights + _sWeights;
 		}
 		_sWeights = _sWeights.substring(0, _sValueToEvaluate.length());
 
 		int[] anWeights = new int[_sValueToEvaluate.length()];
-		for (int i = 0; i < _sValueToEvaluate.length(); i++)
-		{
+		for (int i = 0; i < _sValueToEvaluate.length(); i++) {
 			anWeights[i] = Integer.parseInt(_sWeights.substring(i, i + 1));
 		}
 
 		int[] anProducts = new int[_sValueToEvaluate.length()];
 		int nTotal = 0;
-		for (int i = 0; i < anValues.length; i++)
-		{
+		for (int i = 0; i < anValues.length; i++) {
 			anProducts[i] = anValues[i] * anWeights[i];
 			nTotal += anProducts[i];
 		}
 
 		int nModulo = nTotal % 10;
 		int nCheckDigit = 0;
-		if (nModulo != 0)
-		{
+		if (nModulo != 0) {
 			nCheckDigit = 10 - nModulo;
 		}
 
-		if (_bAddSpaceBeforeCheckDigit)
-		{
+		if (_bAddSpaceBeforeCheckDigit) {
 			oReturnValue.append(" ");
 		}
 
@@ -1008,8 +846,7 @@ public class XSaLTTriviaUtils
 	}
 
 	public static final LinkedHashMap<Character, Integer> XO_OCRB_SCANLINE_VALUES_MAP;
-	static
-	{
+	static {
 		XO_OCRB_SCANLINE_VALUES_MAP = new LinkedHashMap<Character, Integer>();
 		XO_OCRB_SCANLINE_VALUES_MAP.put('0', 0);
 		XO_OCRB_SCANLINE_VALUES_MAP.put('1', 1);
@@ -1085,7 +922,7 @@ public class XSaLTTriviaUtils
 	// String sFullScanLine = asScanLines[i];
 	// String sScanLine = asScanLines[i].substring(0, 20);
 	// String sCheckDigit = asScanLines[i].substring(21, 22);
-	// XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "'" + sScanLine + "', '" + sCheckDigit + "'");
+	// LOGGER.info( "'" + sScanLine + "', '" + sCheckDigit + "'");
 	//
 	// String sScanLineChecker =
 	// XSaLTTriviaUtils.createScanLineWithCheckDigit(sScanLine,
@@ -1093,113 +930,108 @@ public class XSaLTTriviaUtils
 	//
 	// if (sScanLineChecker.equalsIgnoreCase(sFullScanLine))
 	// {
-	// XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "Good");
+	// LOGGER.info( "Good");
 	// }
 	// else
 	// {
-	// XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "Bad");
+	// LOGGER.info( "Bad");
 	// }
 	//
 	// }
 	//
-	// XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "");
+	// LOGGER.info( "");
 
 	/**
 	 * This method checks a generated scan line for accuracy.
 	 * 
-	 * @param _sCheckLineWithCheckDigit
-	 *            Scan line to check
-	 * @param _anWeights
-	 *            Weights to check against
-	 * @param _bPrintSummary
-	 *            Flag if summary should be returned or scan line string with results should be returned
-	 * @return String with test results or scan line string with results appending depending on the value in _bPrintSummary
+	 * @param _sCheckLineWithCheckDigit Scan line to check
+	 * @param _anWeights                Weights to check against
+	 * @param _bPrintSummary            Flag if summary should be returned or scan
+	 *                                  line string with results should be returned
+	 * @return String with test results or scan line string with results appending
+	 *         depending on the value in _bPrintSummary
 	 */
-	public static String Mod10Test(String _sCheckLineWithCheckDigit, int[] _anWeights, boolean _bPrintSummary)
-	{
+	public static String Mod10Test(String _sCheckLineWithCheckDigit, int[] _anWeights, boolean _bPrintSummary) {
 
 		String oReturnMod10Output = _sCheckLineWithCheckDigit + "\n";
 
 		/*
-		
-		int[] anWeights = { 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1 };
-		
-		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, XSaLTTriviaUtils.Mod10Test("0200000148000000030008", anWeights, true));
-		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, XSaLTTriviaUtils.Mod10Test("0200000983000000030006", anWeights, true));
-		
-		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, XSaLTTriviaUtils.Mod10Test("0200000818000000030007", anWeights, true));
-		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, XSaLTTriviaUtils.Mod10Test("0200001161000000050006", anWeights, true));
-		
-		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, XSaLTTriviaUtils.Mod10Test("0200000034000000050003", anWeights, true));
-		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, XSaLTTriviaUtils.Mod10Test("0200001588000000050001", anWeights, true));
-		
-		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, XSaLTTriviaUtils.Mod10Test("0200000982000000040006", anWeights, true));
-		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, XSaLTTriviaUtils.Mod10Test("0200001541000000050007", anWeights, true));
-		
-		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, XSaLTTriviaUtils.Mod10Test("0200000876000000030006", anWeights, true));
-		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, XSaLTTriviaUtils.Mod10Test("0200002611000000030002", anWeights, true));
-		
-		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, XSaLTTriviaUtils.Mod10Test("0200001581000000020001", anWeights, true));
-		XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, XSaLTTriviaUtils.Mod10Test("0200002102000000050006", anWeights, true));
-		
-		*/
+		 * 
+		 * int[] anWeights = { 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2,
+		 * 1, 2, 1 };
+		 * 
+		 * LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200000148000000030008", anWeights,
+		 * true)); LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200000983000000030006",
+		 * anWeights, true));
+		 * 
+		 * LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200000818000000030007", anWeights,
+		 * true)); LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200001161000000050006",
+		 * anWeights, true));
+		 * 
+		 * LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200000034000000050003", anWeights,
+		 * true)); LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200001588000000050001",
+		 * anWeights, true));
+		 * 
+		 * LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200000982000000040006", anWeights,
+		 * true)); LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200001541000000050007",
+		 * anWeights, true));
+		 * 
+		 * LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200000876000000030006", anWeights,
+		 * true)); LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200002611000000030002",
+		 * anWeights, true));
+		 * 
+		 * LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200001581000000020001", anWeights,
+		 * true)); LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200002102000000050006",
+		 * anWeights, true));
+		 * 
+		 */
 
 		// 000620714
 		int[] anTestCheckDigitFinal = new int[_sCheckLineWithCheckDigit.length()];
 
-		for (int i = 0; i < (anTestCheckDigitFinal.length - 1); i++)
-		{
+		for (int i = 0; i < (anTestCheckDigitFinal.length - 1); i++) {
 			///
 
-			if (i == 0)
-			{
+			if (i == 0) {
 
-				XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, _sCheckLineWithCheckDigit.substring(i, 1));
+				LOGGER.info(_sCheckLineWithCheckDigit.substring(i, 1));
 
-				if (_sCheckLineWithCheckDigit.substring(i, 1).equals(" "))
-				{
+				if (_sCheckLineWithCheckDigit.substring(i, 1).equals(" ")) {
 					anTestCheckDigitFinal[i] = 0;
-				}
-				else
-				{
+				} else {
 					anTestCheckDigitFinal[i] = Integer.valueOf(_sCheckLineWithCheckDigit.substring(i, 1)).intValue();
 				}
-			}
-			else
-			{
-				if (_sCheckLineWithCheckDigit.substring(i, i + 1).equals(" "))
-				{
+			} else {
+				if (_sCheckLineWithCheckDigit.substring(i, i + 1).equals(" ")) {
 					anTestCheckDigitFinal[i] = 0;
-				}
-				else
-				{
-					anTestCheckDigitFinal[i] = Integer.valueOf(_sCheckLineWithCheckDigit.substring(i, i + 1)).intValue();
+				} else {
+					anTestCheckDigitFinal[i] = Integer.valueOf(_sCheckLineWithCheckDigit.substring(i, i + 1))
+							.intValue();
 				}
 			}
 
 		}
 
-		int nCheckDigit = Integer.valueOf(_sCheckLineWithCheckDigit.substring(_sCheckLineWithCheckDigit.length() - 1, _sCheckLineWithCheckDigit.length())).intValue();
+		int nCheckDigit = Integer.valueOf(_sCheckLineWithCheckDigit.substring(_sCheckLineWithCheckDigit.length() - 1,
+				_sCheckLineWithCheckDigit.length())).intValue();
 
 		int[] nResults = new int[_sCheckLineWithCheckDigit.length()];
 		int nTotal = 0;
 
-		for (int i = 0; i < anTestCheckDigitFinal.length - 1; i++)
-		{
+		for (int i = 0; i < anTestCheckDigitFinal.length - 1; i++) {
 			nResults[i] = anTestCheckDigitFinal[i] * _anWeights[i];
 			Integer oResults = Integer.valueOf(nResults[i]);
-			if (oResults.toString().length() > 1)
-			{
+			if (oResults.toString().length() > 1) {
 				Integer oNewIntegerOne = Integer.valueOf(oResults.toString().substring(0, 1));
 				Integer oNewIntegerTwo = Integer.valueOf(oResults.toString().substring(1));
 				nResults[i] = oNewIntegerOne.intValue() + oNewIntegerTwo.intValue();
 
-				oReturnMod10Output = oReturnMod10Output + anTestCheckDigitFinal[i] + " * " + _anWeights[i] + " = " + oResults.toString() + "(" + oNewIntegerOne.intValue() + " + "
-						+ oNewIntegerTwo.intValue() + ") = " + nResults[i] + "\n";
-			}
-			else
-			{
-				oReturnMod10Output = oReturnMod10Output + anTestCheckDigitFinal[i] + " * " + _anWeights[i] + " =           = " + nResults[i] + "\n";
+				oReturnMod10Output = oReturnMod10Output + anTestCheckDigitFinal[i] + " * " + _anWeights[i] + " = "
+						+ oResults.toString() + "(" + oNewIntegerOne.intValue() + " + " + oNewIntegerTwo.intValue()
+						+ ") = " + nResults[i] + "\n";
+			} else {
+				oReturnMod10Output = oReturnMod10Output + anTestCheckDigitFinal[i] + " * " + _anWeights[i]
+						+ " =           = " + nResults[i] + "\n";
 			}
 
 			nTotal = nTotal + nResults[i];
@@ -1210,32 +1042,26 @@ public class XSaLTTriviaUtils
 		int nModOut = (nTotal % 10);
 		oReturnMod10Output = oReturnMod10Output + "Mod 10 Remainder  = " + nModOut + "\n";
 
-		if (nModOut > 0)
-		{
+		if (nModOut > 0) {
 			nModOut = 10 - nModOut;
 		}
 
 		String sIsGood = "";
 
-		if (nCheckDigit == nModOut)
-		{
+		if (nCheckDigit == nModOut) {
 			oReturnMod10Output = oReturnMod10Output + "Good!" + "\n";
 			sIsGood = "Good!";
-		}
-		else
-		{
+		} else {
 			oReturnMod10Output = oReturnMod10Output + "No good!!!!!!!!!!!!!!!!!!" + "\n";
 			sIsGood = "No Good!";
 		}
 
-		oReturnMod10Output = oReturnMod10Output + "-----------------------------------------------------------------------------" + "\n";
+		oReturnMod10Output = oReturnMod10Output
+				+ "-----------------------------------------------------------------------------" + "\n";
 
-		if (_bPrintSummary)
-		{
+		if (_bPrintSummary) {
 			return oReturnMod10Output;
-		}
-		else
-		{
+		} else {
 			return _sCheckLineWithCheckDigit + " --> " + sIsGood;
 		}
 
@@ -1246,8 +1072,7 @@ public class XSaLTTriviaUtils
 	 * 
 	 * @return LinkedHashMap of US States and Canadian Provinces
 	 */
-	public static LinkedHashMap<String, String> getStatesAbbrvMap()
-	{
+	public static LinkedHashMap<String, String> getStatesAbbrvMap() {
 		LinkedHashMap<String, String> oTempLinkedHashMap = new LinkedHashMap<String, String>();
 		oTempLinkedHashMap.put("AL", "USA - ALABAMA");
 		oTempLinkedHashMap.put("AK", "USO - ALASKA");
@@ -1335,8 +1160,7 @@ public class XSaLTTriviaUtils
 	 * 
 	 * @return LinkedHashMap of mail unit abbreviations
 	 */
-	public static LinkedHashMap<String, String> getUnitAbbrvMap()
-	{
+	public static LinkedHashMap<String, String> getUnitAbbrvMap() {
 		LinkedHashMap<String, String> oTempLinkedHashMap = new LinkedHashMap<String, String>();
 		oTempLinkedHashMap.put("APT", "Apartment");
 		oTempLinkedHashMap.put("BSMT", "Basement");
@@ -1371,8 +1195,7 @@ public class XSaLTTriviaUtils
 	 * 
 	 * @return LinkedHashMap of abbreviated mail unit abbreviations
 	 */
-	public static LinkedHashMap<String, String> getUnitDeliveryAbbrvMap()
-	{
+	public static LinkedHashMap<String, String> getUnitDeliveryAbbrvMap() {
 		LinkedHashMap<String, String> oTempLinkedHashMap = new LinkedHashMap<String, String>();
 		oTempLinkedHashMap.put("APT", "Apartment");
 		oTempLinkedHashMap.put("BLDG", "Building");
@@ -1389,14 +1212,13 @@ public class XSaLTTriviaUtils
 	}
 
 	/**
-	 * This method returns a LinkedHashMap of common street suffixes.  The
-	 * common incorrect String is the key and the corrected value is the value
-	 * for each key-value pair.
+	 * This method returns a LinkedHashMap of common street suffixes. The common
+	 * incorrect String is the key and the corrected value is the value for each
+	 * key-value pair.
 	 * 
 	 * @return HashMap with common street suffixes and corrections
 	 */
-	public static LinkedHashMap<String, String> getStreetSuffixesMap()
-	{
+	public static LinkedHashMap<String, String> getStreetSuffixesMap() {
 		LinkedHashMap<String, String> oTempLinkedHashMap = new LinkedHashMap<String, String>();
 		oTempLinkedHashMap.put("ALLEE", "ALY");
 		oTempLinkedHashMap.put("ALLEY", "ALY");
@@ -1933,28 +1755,19 @@ public class XSaLTTriviaUtils
 	 * This method searches the given string for one of the standard directional
 	 * characters (N S E W).
 	 * 
-	 * @param _sStreetAddress
-	 *            Street address to search
+	 * @param _sStreetAddress Street address to search
 	 * @return Directional string if it is found
 	 */
-	public static String getDirectionalFromStreetString(String _sStreetAddress)
-	{
+	public static String getDirectionalFromStreetString(String _sStreetAddress) {
 		String sReturnDirectional = "";
 
-		if (_sStreetAddress.indexOf(" N ") != -1)
-		{
+		if (_sStreetAddress.indexOf(" N ") != -1) {
 			sReturnDirectional = "N";
-		}
-		else if (_sStreetAddress.indexOf(" S ") != -1)
-		{
+		} else if (_sStreetAddress.indexOf(" S ") != -1) {
 			sReturnDirectional = "S";
-		}
-		else if (_sStreetAddress.indexOf(" W ") != -1)
-		{
+		} else if (_sStreetAddress.indexOf(" W ") != -1) {
 			sReturnDirectional = "W";
-		}
-		else if (_sStreetAddress.indexOf(" E ") != -1)
-		{
+		} else if (_sStreetAddress.indexOf(" E ") != -1) {
 			sReturnDirectional = "E";
 		}
 
@@ -1964,38 +1777,30 @@ public class XSaLTTriviaUtils
 	/**
 	 * This method checks if a String is in a standard address format.
 	 * 
-	 * @param _sStringToCheck
-	 *            Address String to check
+	 * @param _sStringToCheck Address String to check
 	 * @return Flag if String is in a standard address format
 	 */
-	public static boolean isAddressString(String _sStringToCheck)
-	{
-		if (_sStringToCheck.length() < 2)
-		{
+	public static boolean isAddressString(String _sStringToCheck) {
+		if (_sStringToCheck.length() < 2) {
 			return false;
 		}
 
-		if (_sStringToCheck.toUpperCase().startsWith("POBOX"))
-		{
+		if (_sStringToCheck.toUpperCase().startsWith("POBOX")) {
 			return true;
 		}
 
-		if (_sStringToCheck.toUpperCase().startsWith("PO BOX"))
-		{
+		if (_sStringToCheck.toUpperCase().startsWith("PO BOX")) {
 			return true;
 		}
 
-		if (_sStringToCheck.toUpperCase().startsWith("P.O. BOX"))
-		{
+		if (_sStringToCheck.toUpperCase().startsWith("P.O. BOX")) {
 			return true;
 		}
 
 		char[] acChars = _sStringToCheck.split(" ")[0].toCharArray();
 
-		for (char c : acChars)
-		{
-			if (c >= '0' && c <= '9')
-			{
+		for (char c : acChars) {
+			if (c >= '0' && c <= '9') {
 				return true;
 			}
 		}
@@ -2005,67 +1810,58 @@ public class XSaLTTriviaUtils
 
 	/**
 	 * This method traverses a directory looking for files with the given
-	 * extensions.  If the found file has a desired extension, the method will
-	 * rename the file based on the regular expression strings.
+	 * extensions. If the found file has a desired extension, the method will rename
+	 * the file based on the regular expression strings.
 	 * 
-	 * @param _sFilePath
-	 *            File path to search
-	 * @param _sWhatToLookForRegExp
-	 *            Regular expression to search for
-	 * @param _sWhatToReplaceWithRegExp
-	 *            Replacement string when regex is found
-	 * @param _oIncludeExtensions
-	 *            HashMap of extensions to modify
+	 * @param _sFilePath                File path to search
+	 * @param _sWhatToLookForRegExp     Regular expression to search for
+	 * @param _sWhatToReplaceWithRegExp Replacement string when regex is found
+	 * @param _oIncludeExtensions       HashMap of extensions to modify
 	 */
-	public static void truncerRename(String _sFilePath, String _sWhatToLookForRegExp, String _sWhatToReplaceWithRegExp, HashMap<String, String> _oIncludeExtensions)
-	{
+	public static void truncerRename(String _sFilePath, String _sWhatToLookForRegExp, String _sWhatToReplaceWithRegExp,
+			HashMap<String, String> _oIncludeExtensions) {
 		File f = new File(_sFilePath);
 		File myFiles[] = f.listFiles();
-		if (myFiles.length != 0)
-		{
-			for (int i = 0; i < myFiles.length; i++)
-			{
+		if (myFiles.length != 0) {
+			for (int i = 0; i < myFiles.length; i++) {
 
-				if (myFiles[i].isDirectory() == false)
-				{
+				if (myFiles[i].isDirectory() == false) {
 					boolean bProcessFileName = false;
-					for (Iterator<String> j = _oIncludeExtensions.keySet().iterator(); j.hasNext();)
-					{
+					for (Iterator<String> j = _oIncludeExtensions.keySet().iterator(); j.hasNext();) {
 						String sExtension = (String) j.next();
-						if (myFiles[i].getAbsolutePath().endsWith(sExtension) == true)
-						{
+						if (myFiles[i].getAbsolutePath().endsWith(sExtension) == true) {
 							bProcessFileName = true;
 						}
 					}
 
-					if (bProcessFileName)
-					{
+					if (bProcessFileName) {
 
 						String sOriginalFileName = myFiles[i].getAbsolutePath();
-						String sModifiedFileName = XSaLTStringUtils.processRegEx(sOriginalFileName, _sWhatToLookForRegExp, _sWhatToReplaceWithRegExp);
-						if (!sOriginalFileName.equals(sModifiedFileName))
-						{
-							XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, sOriginalFileName + ", " + sModifiedFileName);
+						String sModifiedFileName = XSaLTStringUtils.processRegEx(sOriginalFileName,
+								_sWhatToLookForRegExp, _sWhatToReplaceWithRegExp);
+						if (!sOriginalFileName.equals(sModifiedFileName)) {
+							LOGGER.info(sOriginalFileName + ", " + sModifiedFileName);
 							File oFile = new File(sModifiedFileName);
 							myFiles[i].renameTo(oFile);
 						}
 
 					}
 
-					//                    int strIndex = myFiles[i].getName().indexOf(whatToLoookFor);
-					//                    if (strIndex != -1)
-					//                    {
+					// int strIndex = myFiles[i].getName().indexOf(whatToLoookFor);
+					// if (strIndex != -1)
+					// {
 					//
-					//                        String s_file_name = myFiles[i].getName();
-					//                        String s_file_number = ".0" + s_file_name.substring(16, 19);
+					// String s_file_name = myFiles[i].getName();
+					// String s_file_number = ".0" + s_file_name.substring(16, 19);
 					//
-					//                        strIndex = strIndex + whatToLoookFor.length();
-					//                        String newName = myFiles[i].getName().substring(strIndex, myFiles[i].getName().length());
+					// strIndex = strIndex + whatToLoookFor.length();
+					// String newName = myFiles[i].getName().substring(strIndex,
+					// myFiles[i].getName().length());
 					//
-					//                        File myTemp = new File(s_filepath, whatToLoookFor + s_file_number);
+					// File myTemp = new File(s_filepath, whatToLoookFor + s_file_number);
 					//
-					//                        myFiles[i].renameTo(myTemp);
-					//                    }
+					// myFiles[i].renameTo(myTemp);
+					// }
 
 				}
 			}
@@ -2073,25 +1869,19 @@ public class XSaLTTriviaUtils
 	}
 
 	/**
-	 * This method takes an address string and parses it into the following pieces in a HashMap:
-	 * STREET_NUMBER
-	 * STREET_DIRECTIONAL
-	 * STREET_NAME
-	 * STREET_SUFFIX
-	 * UNIT_DESIGNATION
-	 * UNIT_NUMBER
+	 * This method takes an address string and parses it into the following pieces
+	 * in a HashMap: STREET_NUMBER STREET_DIRECTIONAL STREET_NAME STREET_SUFFIX
+	 * UNIT_DESIGNATION UNIT_NUMBER
 	 * 
-	 * If any of the above is absent in the address, the value associated in the HashMap with
-	 * that key will be an empty String.
-	 * If the address is invalid for some reason, the value associated with the key ERROR will
-	 * reflect the reason for the error.
+	 * If any of the above is absent in the address, the value associated in the
+	 * HashMap with that key will be an empty String. If the address is invalid for
+	 * some reason, the value associated with the key ERROR will reflect the reason
+	 * for the error.
 	 * 
-	 * @param _sAddress
-	 *           The address to parse.
+	 * @param _sAddress The address to parse.
 	 * @return HashMap<String, String> containing the address parts.
 	 */
-	public static HashMap<String, String> splitAddressIntoParts(String _sAddress)
-	{
+	public static HashMap<String, String> splitAddressIntoParts(String _sAddress) {
 		HashMap<String, String> oAddressParts = new HashMap<String, String>();
 		oAddressParts.put("STREET_NUMBER", "");
 		oAddressParts.put("STREET_DIRECTIONAL", "");
@@ -2103,66 +1893,41 @@ public class XSaLTTriviaUtils
 
 		_sAddress = _sAddress.trim().toUpperCase().replaceAll("[.,]", "").replaceAll("[ ]{2,}", " ");
 
-		if (_sAddress.matches("^P[ ]?O[ ]?BOX[ ]?[0-9A-Z ]*$"))
-		{
+		if (_sAddress.matches("^P[ ]?O[ ]?BOX[ ]?[0-9A-Z ]*$")) {
 			oAddressParts.put("STREET_NAME", _sAddress.replaceFirst("^P ", "P").replaceFirst("^PO[ ]?", "PO "));
-		}
-		else
-		{
-			if (_sAddress.matches("^(ONE|TWO|THREE|FOUR|FIVE|SIX|SEVEN|EIGHT|NINE|TEN) .*"))
-			{
+		} else {
+			if (_sAddress.matches("^(ONE|TWO|THREE|FOUR|FIVE|SIX|SEVEN|EIGHT|NINE|TEN) .*")) {
 				String sNumerical = _sAddress.split(" ")[0];
-				if (sNumerical.equalsIgnoreCase("ONE"))
-				{
+				if (sNumerical.equalsIgnoreCase("ONE")) {
 					_sAddress = _sAddress.replaceFirst("^ONE ", "1 ");
-				}
-				else if (sNumerical.equalsIgnoreCase("TWO"))
-				{
+				} else if (sNumerical.equalsIgnoreCase("TWO")) {
 					_sAddress = _sAddress.replaceFirst("^TWO ", "2 ");
-				}
-				else if (sNumerical.equalsIgnoreCase("THREE"))
-				{
+				} else if (sNumerical.equalsIgnoreCase("THREE")) {
 					_sAddress = _sAddress.replaceFirst("^THREE ", "3 ");
-				}
-				else if (sNumerical.equalsIgnoreCase("FOUR"))
-				{
+				} else if (sNumerical.equalsIgnoreCase("FOUR")) {
 					_sAddress = _sAddress.replaceFirst("^FOUR ", "4 ");
-				}
-				else if (sNumerical.equalsIgnoreCase("FIVE"))
-				{
+				} else if (sNumerical.equalsIgnoreCase("FIVE")) {
 					_sAddress = _sAddress.replaceFirst("^FIVE ", "5 ");
-				}
-				else if (sNumerical.equalsIgnoreCase("SIX"))
-				{
+				} else if (sNumerical.equalsIgnoreCase("SIX")) {
 					_sAddress = _sAddress.replaceFirst("^SIX ", "6 ");
-				}
-				else if (sNumerical.equalsIgnoreCase("SEVEN"))
-				{
+				} else if (sNumerical.equalsIgnoreCase("SEVEN")) {
 					_sAddress = _sAddress.replaceFirst("^SEVEN ", "7 ");
-				}
-				else if (sNumerical.equalsIgnoreCase("EIGHT"))
-				{
+				} else if (sNumerical.equalsIgnoreCase("EIGHT")) {
 					_sAddress = _sAddress.replaceFirst("^EIGHT ", "8 ");
-				}
-				else if (sNumerical.equalsIgnoreCase("NINE"))
-				{
+				} else if (sNumerical.equalsIgnoreCase("NINE")) {
 					_sAddress = _sAddress.replaceFirst("^NINE ", "9 ");
-				}
-				else if (sNumerical.equalsIgnoreCase("TEN"))
-				{
+				} else if (sNumerical.equalsIgnoreCase("TEN")) {
 					_sAddress = _sAddress.replaceFirst("^TEN ", "10 ");
 				}
 			}
 
-			if (_sAddress.matches("^[0-9][0-9A-Z\\-]* .*$"))
-			{
+			if (_sAddress.matches("^[0-9][0-9A-Z\\-]* .*$")) {
 				int nIdx = _sAddress.indexOf(" ");
 				String sStreetNumber = _sAddress.substring(0, nIdx).trim();
 				oAddressParts.put("STREET_NUMBER", sStreetNumber);
 				_sAddress = _sAddress.substring(nIdx).trim();
 
-				if (_sAddress.matches("^[NESW] .*$"))
-				{
+				if (_sAddress.matches("^[NESW] .*$")) {
 					nIdx = _sAddress.indexOf(" ");
 					String sDirectional = _sAddress.substring(0, nIdx).trim();
 					oAddressParts.put("STREET_DIRECTIONAL", sDirectional);
@@ -2170,29 +1935,21 @@ public class XSaLTTriviaUtils
 				}
 
 				ArrayList<String> oParts = XSaLTStringUtils.splitStringToArrayList(_sAddress, " ");
-				if (oParts.size() == 1)
-				{
+				if (oParts.size() == 1) {
 					oAddressParts.put("STREET_NAME", oParts.get(0).trim());
-				}
-				else
-				{
+				} else {
 					HashMap<String, String> oUnitMap = new HashMap<String, String>();
 					oUnitMap.putAll(getUnitAbbrvMap());
-					for (String sUnit : oUnitMap.keySet())
-					{
-						if (oParts.contains(sUnit))
-						{
+					for (String sUnit : oUnitMap.keySet()) {
+						if (oParts.contains(sUnit)) {
 							int nUnitIdx = oParts.indexOf(sUnit);
-							if (nUnitIdx == (oParts.size() - 2))
-							{
+							if (nUnitIdx == (oParts.size() - 2)) {
 								oAddressParts.put("UNIT_DESIGNATION", oParts.get(nUnitIdx));
 								oAddressParts.put("UNIT_NUMBER", oParts.get(nUnitIdx + 1));
 								oParts.remove(nUnitIdx + 1);
 								oParts.remove(nUnitIdx);
 							}
-						}
-						else if (oParts.get(oParts.size() - 1).matches("#.*"))
-						{
+						} else if (oParts.get(oParts.size() - 1).matches("#.*")) {
 							oAddressParts.put("UNIT_DESIGNATION", "#");
 							oAddressParts.put("UNIT_NUMBER", oParts.get(oParts.size() - 1).replaceFirst("#", ""));
 							int nRmv = oParts.size() - 1;
@@ -2200,59 +1957,50 @@ public class XSaLTTriviaUtils
 						}
 					}
 
-					if (oParts.size() == 1)
-					{
+					if (oParts.size() == 1) {
 						oAddressParts.put("STREET_NAME", oParts.get(0));
-					}
-					else
-					{
+					} else {
 						HashMap<String, String> oSuffixMap = new HashMap<String, String>();
 						oSuffixMap.putAll(getStreetSuffixesMap());
 
-						if (oSuffixMap.containsKey(oParts.get(oParts.size() - 1)) || oSuffixMap.containsValue(oParts.get(oParts.size() - 1)))
-						{
+						if (oSuffixMap.containsKey(oParts.get(oParts.size() - 1))
+								|| oSuffixMap.containsValue(oParts.get(oParts.size() - 1))) {
 							oAddressParts.put("STREET_SUFFIX", oParts.get(oParts.size() - 1));
 							oParts.remove(oParts.size() - 1);
 						}
 
-						if (oParts.size() > 0)
-						{
+						if (oParts.size() > 0) {
 							StringBuffer oStreetName = new StringBuffer();
-							for (int i = 0; i < oParts.size(); i++)
-							{
+							for (int i = 0; i < oParts.size(); i++) {
 								oStreetName.append(oParts.get(i) + " ");
 							}
 
 							oAddressParts.put("STREET_NAME", oStreetName.toString().replaceAll("_", " ").trim());
-						}
-						else
-						{
+						} else {
 							oAddressParts.put("ERROR", "Invalid street name");
 						}
 					}
 
 				}
-			}
-			else
-			{
+			} else {
 				oAddressParts.put("ERROR", "No street number or PO BOX");
 			}
 		}
 
-		if (oAddressParts.get("ERROR") == null)
-		{
-			String sFullComposedsAddress = (oAddressParts.get("STREET_NUMBER") + " " + oAddressParts.get("STREET_DIRECTIONAL") + " " + oAddressParts.get("STREET_NAME") + " "
-					+ oAddressParts.get("STREET_SUFFIX") + " " + oAddressParts.get("UNIT_DESIGNATION") + " " + oAddressParts.get("UNIT_NUMBER")).replaceAll(",", " ")
-					.replaceAll("\\.", " ").replaceAll(" +", " ").trim();
+		if (oAddressParts.get("ERROR") == null) {
+			String sFullComposedsAddress = (oAddressParts.get("STREET_NUMBER") + " "
+					+ oAddressParts.get("STREET_DIRECTIONAL") + " " + oAddressParts.get("STREET_NAME") + " "
+					+ oAddressParts.get("STREET_SUFFIX") + " " + oAddressParts.get("UNIT_DESIGNATION") + " "
+					+ oAddressParts.get("UNIT_NUMBER")).replaceAll(",", " ").replaceAll("\\.", " ")
+							.replaceAll(" +", " ").trim();
 
 			oAddressParts.put("COMPOSED_ADDRESS", sFullComposedsAddress);
 		}
 
 		return oAddressParts;
 	}
-	
-	public static double roundUpToNearestUSCent(double _dVal)
-	{
+
+	public static double roundUpToNearestUSCent(double _dVal) {
 		double dTmp = Math.ceil(_dVal * 100);
 		return dTmp / 100;
 	}

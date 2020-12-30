@@ -1,14 +1,8 @@
 package com.codef.xsalt.utils;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
-
-import javax.servlet.http.HttpServletRequest;
-
-import com.codef.xsalt.arch.XSaLTConstants;
-import com.codef.xsalt.arch.special.XSaLTAuthenticationObject;
 
 /**
  * @author Stephan P. Cossette
@@ -17,38 +11,6 @@ import com.codef.xsalt.arch.special.XSaLTAuthenticationObject;
 public class XSaLTObjectUtils
 {
 
-	/**
-	 * This method puts each of the request parameters from the HttpServletRequest
-	 * into a StringBuffer.
-	 * 
-	 * @param _oRequest
-	 *            HttpServletRequest from servlet
-	 * @return Listing of each request parameter and XSaLTAuthenticationObject attributes
-	 */
-	public static String enumerateRequestToString(HttpServletRequest _oRequest)
-	{
-		StringBuffer oRequestBuffer = new StringBuffer("Request --> {");
-		Enumeration<?> st = _oRequest.getParameterNames();
-		while (st.hasMoreElements())
-		{
-			String sKey = (String) st.nextElement();
-			oRequestBuffer.append(sKey + " = " + _oRequest.getParameter(sKey) + ", ");
-		}
-		if (!oRequestBuffer.toString().equalsIgnoreCase("Request --> {"))
-		{
-			oRequestBuffer = new StringBuffer(oRequestBuffer.substring(0, oRequestBuffer.length() - 2));
-		}
-		oRequestBuffer.append("}");
-
-		XSaLTAuthenticationObject oXAuthObject = (XSaLTAuthenticationObject) _oRequest.getSession().getAttribute(XSaLTConstants.XS_SESSION_AUTHENTICATION_OBJECT);
-
-		if (oXAuthObject != null)
-		{
-			oRequestBuffer.append("\n\tXSaLTAuthenticationObject --> " + oXAuthObject.getXSaLTAuthenticationObjectAsString() + "");
-		}
-
-		return oRequestBuffer.toString();
-	}
 
 	/*
 	

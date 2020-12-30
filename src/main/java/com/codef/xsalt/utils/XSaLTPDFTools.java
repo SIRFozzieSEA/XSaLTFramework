@@ -156,7 +156,7 @@ public class XSaLTPDFTools
 	//	}
 	//	catch (Exception e)
 	//	{
-	//		XSaLTGenericLogger.error("", e);
+	//		LOGGER.error(e.toString(), e);
 	//	}
 
 	//	public XSaLTPDFTools(String _sPDFFilePath, Rectangle _oPageSize) throws DocumentException, IOException
@@ -204,7 +204,7 @@ public class XSaLTPDFTools
 		}
 		catch (Exception e)
 		{
-			XSaLTGenericLogger.error("", e);
+			LOGGER.error(e.toString(), e);
 		}
 	
 	
@@ -307,7 +307,7 @@ public class XSaLTPDFTools
 		}
 		catch (Exception e)
 		{
-			XSaLTGenericLogger.error("", e);
+			LOGGER.error(e.toString(), e);
 		}
 
 	

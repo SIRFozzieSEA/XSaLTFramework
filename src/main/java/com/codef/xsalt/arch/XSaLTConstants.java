@@ -15,7 +15,7 @@ public class XSaLTConstants
 	/**
 	 * The static String XSaLT version
 	 */
-	public static final String XS_XSALT_FRAMEWORK_VERSION = "3.1";
+	public static final String XS_XSALT_FRAMEWORK_VERSION = "4.0";
 
 	/**
 	 * The static constant for the date format MMddyyyy_HHmmss

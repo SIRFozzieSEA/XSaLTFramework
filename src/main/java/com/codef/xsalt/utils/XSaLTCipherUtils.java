@@ -21,7 +21,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
 import com.codef.xsalt.arch.XSaLTConstants;
-import com.codef.xsalt.arch.special.XSaLTStreamGobbler;
+import com.codef.xsalt.arch.XSaLTStreamGobbler;
 
 /**
  * @author Stephan P. Cossette
