@@ -47,6 +47,20 @@ public class XSaLTFileSystemUtils {
 	private static final Logger LOGGER = Logger.getLogger(XSaLTFileSystemUtils.class.getName());
 
 	/**
+	 * Get the MD5 hash of a file
+	 * 
+	 * @param fileName The path to the file
+	 * @return String representation of the MD5 hash
+	 * @throws IOException
+	 */
+	public static String getMD5Hash(String fileName) throws IOException {
+		FileInputStream fis = new FileInputStream(new File(fileName));
+		String md5 = org.apache.commons.codec.digest.DigestUtils.md5Hex(fis);
+		fis.close();
+		return md5;
+	}
+
+	/**
 	 * This method uses a native operating system call to recode video files found
 	 * in the path.
 	 * 

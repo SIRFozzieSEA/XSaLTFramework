@@ -4188,6 +4188,21 @@ public class XSaLTDataUtils {
 	}
 
 	/***
+	 * This method creates a LOCAL H2 connection object.
+	 * 
+	 * @param _sSchemaName Database schema to attach to
+	 * @param _sUsername   Database user name
+	 * @param _sPassword   Password for user name
+	 * @return Connection to LOCAL H2 database
+	 * @throws SQLException
+	 */
+	public static Connection getLocalH2Connection(String _sDbPath, String _sUsername, String _sPassword)
+			throws SQLException {
+		return DriverManager.getConnection("jdbc:h2:" + _sDbPath, "sa", "");
+
+	}
+
+	/***
 	 * This method creates a getPostgres connection object.
 	 * 
 	 * @param _sHostName   Host where database is stored
