@@ -1,29 +1,45 @@
 package com.codef.xsalt.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author Stephan P. Cossette
  * @author Copyright 2011 Codef.com
  */
-public class XSaLTNetUtils
-{
+public class XSaLTNetUtils {
 
 	/**
 	 * Main Constructor
 	 */
-	public XSaLTNetUtils()
-	{
+	public XSaLTNetUtils() {
 
-		//		try
-		//		{
-		//			XSaLTNetUtils oNU = new XSaLTNetUtils();
-		//			oNU.getLinksysLanIP("192.168.1.1", "admin", "admin", "3.0.0.19");
-		//		}
-		//		catch (IOException e)
-		//		{
-		//			
-		//		}
+		// try
+		// {
+		// XSaLTNetUtils oNU = new XSaLTNetUtils();
+		// oNU.getLinksysLanIP("192.168.1.1", "admin", "admin", "3.0.0.19");
+		// }
+		// catch (IOException e)
+		// {
+		//
+		// }
 
+	}
+
+	/**
+	 * The method that gets the content of a webpage and returns it as a string
+	 * 
+	 * @param requestURL The webpage URL
+	 * @return The HTML content as string
+	 * @throws IOException
+	 */
+	public static String readStringFromURL(String requestURL) throws IOException {
+		URL u = new URL(requestURL);
+		try (InputStream in = u.openStream()) {
+			return new String(in.readAllBytes(), StandardCharsets.UTF_8);
+		}
 	}
 
 //	/**
