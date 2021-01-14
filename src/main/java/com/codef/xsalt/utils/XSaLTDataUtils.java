@@ -4198,7 +4198,7 @@ public class XSaLTDataUtils {
 	 */
 	public static Connection getLocalH2Connection(String _sDbPath, String _sUsername, String _sPassword)
 			throws SQLException {
-		return DriverManager.getConnection("jdbc:h2:" + _sDbPath, "sa", "");
+		return DriverManager.getConnection("jdbc:h2:" + _sDbPath + ";DB_CLOSE_DELAY=-1", _sUsername, _sPassword);
 
 	}
 
