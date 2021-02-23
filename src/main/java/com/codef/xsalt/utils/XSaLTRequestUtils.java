@@ -1,10 +1,10 @@
 package com.codef.xsalt.utils;
 
-import java.util.Enumeration;
+//import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import javax.servlet.http.HttpServletRequest;
+//import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Stephan P. Cossette
@@ -44,65 +44,65 @@ public class XSaLTRequestUtils
 	 * @return The XSaLTDatabaseHashMap - this is just a glorified HashMap (really!)
 	 */
 
-	public static HashMap<String, HashMap<String, HashMap<String, String>>> getXSaLTDatabaseHashMapFromRequest(HttpServletRequest _oRequest)
-	{
-		HashMap<String, HashMap<String, HashMap<String, String>>> oTableDataHashMap = new HashMap<String, HashMap<String, HashMap<String, String>>>();
-		
-		for (Enumeration<?> e = _oRequest.getParameterNames(); e.hasMoreElements();)
-		{
-			String sTabColPkValue = e.nextElement().toString();
-			if (sTabColPkValue.indexOf("__") != -1)
-			{
-				String as[] = sTabColPkValue.split("__");
-				if (as.length == 5)
-				{
-					String sUniqueName = as[0] + "__" + as[1] + "__" + as[2];
-					HashMap<String, String> oValueHashMap = new HashMap<String, String>();
-
-					/*
-					 oValueHashMap.put("TABLE_TO_EDIT", XSaLTStringUtils.getEmptyStringIfNull(as[0]));
-					 oValueHashMap.put("EDIT_MODE", XSaLTStringUtils.getEmptyStringIfNull(as[1]));
-					 oValueHashMap.put("EDIT_PK_OR_SEQUENCE", XSaLTStringUtils.getEmptyStringIfNull(as[2]));
-					 */
-
-					oValueHashMap.put("FIELD_NAME", XSaLTStringUtils.getEmptyStringIfNull(as[3]));
-					if (as[4].equalsIgnoreCase("PK"))
-					{
-						oValueHashMap.put("IS_PK_FIELD_FLAG", "true");
-					}
-					else
-					{
-						oValueHashMap.put("IS_PK_FIELD_FLAG", "false");
-					}
-					if (as[4].equalsIgnoreCase("UNIQUE"))
-					{
-						oValueHashMap.put("IS_UNIQUE_FLAG", "true");
-					}
-					else
-					{
-						oValueHashMap.put("IS_UNIQUE_FLAG", "false");
-					}
-					oValueHashMap.put("VALUE_OF_REQUEST_ITEM", XSaLTStringUtils
-							.getEmptyStringIfNull(_oRequest.getParameter(sTabColPkValue)).trim());
-					oValueHashMap.put("USE_QUOTES_FLAG", "true");
-
-					if (oTableDataHashMap.containsKey(sUniqueName))
-					{
-						HashMap<String, HashMap<String, String>> oTempHashMap = XSaLTObjectUtils
-								.getObjectAsHashMap_String_HashMapStringString(oTableDataHashMap.get(sUniqueName));
-						oTempHashMap.put(XSaLTStringUtils.getEmptyStringIfNull(as[3]), oValueHashMap);
-					}
-					else
-					{
-						HashMap<String, HashMap<String, String>> oTempHashMap = new HashMap<String, HashMap<String, String>>();
-						oTempHashMap.put(XSaLTStringUtils.getEmptyStringIfNull(as[3]), oValueHashMap);
-						oTableDataHashMap.put(sUniqueName, oTempHashMap);
-					}
-				}
-			}
-		}
-		return oTableDataHashMap;
-	}
+//	public static HashMap<String, HashMap<String, HashMap<String, String>>> getXSaLTDatabaseHashMapFromRequest(HttpServletRequest _oRequest)
+//	{
+//		HashMap<String, HashMap<String, HashMap<String, String>>> oTableDataHashMap = new HashMap<String, HashMap<String, HashMap<String, String>>>();
+//		
+//		for (Enumeration<?> e = _oRequest.getParameterNames(); e.hasMoreElements();)
+//		{
+//			String sTabColPkValue = e.nextElement().toString();
+//			if (sTabColPkValue.indexOf("__") != -1)
+//			{
+//				String as[] = sTabColPkValue.split("__");
+//				if (as.length == 5)
+//				{
+//					String sUniqueName = as[0] + "__" + as[1] + "__" + as[2];
+//					HashMap<String, String> oValueHashMap = new HashMap<String, String>();
+//
+//					/*
+//					 oValueHashMap.put("TABLE_TO_EDIT", XSaLTStringUtils.getEmptyStringIfNull(as[0]));
+//					 oValueHashMap.put("EDIT_MODE", XSaLTStringUtils.getEmptyStringIfNull(as[1]));
+//					 oValueHashMap.put("EDIT_PK_OR_SEQUENCE", XSaLTStringUtils.getEmptyStringIfNull(as[2]));
+//					 */
+//
+//					oValueHashMap.put("FIELD_NAME", XSaLTStringUtils.getEmptyStringIfNull(as[3]));
+//					if (as[4].equalsIgnoreCase("PK"))
+//					{
+//						oValueHashMap.put("IS_PK_FIELD_FLAG", "true");
+//					}
+//					else
+//					{
+//						oValueHashMap.put("IS_PK_FIELD_FLAG", "false");
+//					}
+//					if (as[4].equalsIgnoreCase("UNIQUE"))
+//					{
+//						oValueHashMap.put("IS_UNIQUE_FLAG", "true");
+//					}
+//					else
+//					{
+//						oValueHashMap.put("IS_UNIQUE_FLAG", "false");
+//					}
+//					oValueHashMap.put("VALUE_OF_REQUEST_ITEM", XSaLTStringUtils
+//							.getEmptyStringIfNull(_oRequest.getParameter(sTabColPkValue)).trim());
+//					oValueHashMap.put("USE_QUOTES_FLAG", "true");
+//
+//					if (oTableDataHashMap.containsKey(sUniqueName))
+//					{
+//						HashMap<String, HashMap<String, String>> oTempHashMap = XSaLTObjectUtils
+//								.getObjectAsHashMap_String_HashMapStringString(oTableDataHashMap.get(sUniqueName));
+//						oTempHashMap.put(XSaLTStringUtils.getEmptyStringIfNull(as[3]), oValueHashMap);
+//					}
+//					else
+//					{
+//						HashMap<String, HashMap<String, String>> oTempHashMap = new HashMap<String, HashMap<String, String>>();
+//						oTempHashMap.put(XSaLTStringUtils.getEmptyStringIfNull(as[3]), oValueHashMap);
+//						oTableDataHashMap.put(sUniqueName, oTempHashMap);
+//					}
+//				}
+//			}
+//		}
+//		return oTableDataHashMap;
+//	}
 
 	/**
 	 * This method gets a particular value from a XSaLTDatabaseHashMap (glorified HashMap)

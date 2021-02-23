@@ -14,12 +14,12 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Enumeration;
+//import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-import javax.servlet.http.HttpServletRequest;
+//import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
@@ -3589,30 +3589,30 @@ public class XSaLTDataUtils {
 	 * @return Key generated from insert or null for update
 	 * @throws SQLException
 	 */
-	public static String insertOrUpdateRowFromRequest(Connection _oConnection, HttpServletRequest _oRequest,
-			String _sDbTableAndPkColumn, String _sDelimiter) throws SQLException {
-
-		String sTableName = _sDbTableAndPkColumn.substring(0, _sDbTableAndPkColumn.indexOf(_sDelimiter));
-		String sColumnPkName = _sDbTableAndPkColumn.substring(
-				_sDbTableAndPkColumn.indexOf(_sDelimiter) + _sDelimiter.length(), _sDbTableAndPkColumn.length());
-
-		LinkedHashMap<String, String> oValuesLinkedHashMap = new LinkedHashMap<String, String>();
-		oValuesLinkedHashMap.put(sColumnPkName,
-				XSaLTStringUtils.getEmptyStringIfNull(_oRequest.getParameter(_sDbTableAndPkColumn)));
-
-		for (Enumeration<?> e = _oRequest.getParameterNames(); e.hasMoreElements();) {
-			String sRequestElement = e.nextElement().toString();
-			if (sRequestElement.startsWith(sTableName + _sDelimiter)) {
-				String sColumnName = sRequestElement.substring(
-						sRequestElement.indexOf(_sDelimiter) + _sDelimiter.length(), sRequestElement.length());
-				oValuesLinkedHashMap.put(sColumnName,
-						XSaLTStringUtils.getEmptyStringIfNull(_oRequest.getParameter(sRequestElement)));
-			}
-		}
-
-		return insertOrUpdateRowFromLinkedHashMap(_oConnection, sTableName, oValuesLinkedHashMap);
-
-	}
+//	public static String insertOrUpdateRowFromRequest(Connection _oConnection, HttpServletRequest _oRequest,
+//			String _sDbTableAndPkColumn, String _sDelimiter) throws SQLException {
+//
+//		String sTableName = _sDbTableAndPkColumn.substring(0, _sDbTableAndPkColumn.indexOf(_sDelimiter));
+//		String sColumnPkName = _sDbTableAndPkColumn.substring(
+//				_sDbTableAndPkColumn.indexOf(_sDelimiter) + _sDelimiter.length(), _sDbTableAndPkColumn.length());
+//
+//		LinkedHashMap<String, String> oValuesLinkedHashMap = new LinkedHashMap<String, String>();
+//		oValuesLinkedHashMap.put(sColumnPkName,
+//				XSaLTStringUtils.getEmptyStringIfNull(_oRequest.getParameter(_sDbTableAndPkColumn)));
+//
+//		for (Enumeration<?> e = _oRequest.getParameterNames(); e.hasMoreElements();) {
+//			String sRequestElement = e.nextElement().toString();
+//			if (sRequestElement.startsWith(sTableName + _sDelimiter)) {
+//				String sColumnName = sRequestElement.substring(
+//						sRequestElement.indexOf(_sDelimiter) + _sDelimiter.length(), sRequestElement.length());
+//				oValuesLinkedHashMap.put(sColumnName,
+//						XSaLTStringUtils.getEmptyStringIfNull(_oRequest.getParameter(sRequestElement)));
+//			}
+//		}
+//
+//		return insertOrUpdateRowFromLinkedHashMap(_oConnection, sTableName, oValuesLinkedHashMap);
+//
+//	}
 
 	/**
 	 * This method inserts or updates a record in the given table based on the
