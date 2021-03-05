@@ -12,6 +12,22 @@ import java.util.Iterator;
  */
 public class XSaLTRequestUtils 
 {
+	
+//	public static iterateParameterMap() {
+//		Map<String, String[]> requestParameterMap = request.getParameterMap();
+//		for (Object key : requestParameterMap.keySet()) {
+//			String keyStr = (String) key;
+//	
+//			String[] value = (String[]) map.get(keyStr);
+//			System.out.println(keyStr + " = " + Arrays.toString(value));
+//			
+//			String valueTwo = value[0];
+//			System.out.println(keyStr + " = " + valueTwo);
+//	
+//		}
+//	}
+	
+	
 	/**
 	 * This method will grab the request and form a special hashmap of all names, values and operations for a data table
 	 * 
