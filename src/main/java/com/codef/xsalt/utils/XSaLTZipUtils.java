@@ -12,6 +12,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.log4j.Logger;
+
 public class XSaLTZipUtils {
 
 //			String sourceDirectoryPath = "C:\\Users\\sir_f\\Downloads\\input";
@@ -25,6 +27,7 @@ public class XSaLTZipUtils {
 //			String destDir = "C:\\Users\\sir_f\\Downloads\\output";
 //			unzipRename(zipFilePath, destDir);
 
+	private static final Logger LOGGER = Logger.getLogger(XSaLTZipUtils.class.getName());
 
 	public static void zipDirectory(String sourceDirectoryPath, String zipPath) throws IOException {
 		Path zipFilePath = Files.createFile(Paths.get(zipPath));
@@ -98,7 +101,7 @@ public class XSaLTZipUtils {
 				fileName = fileName.replaceAll("[^a-zA-Z0-9\\-]", "");
 
 				File newFile = new File(destDir + File.separator + fileName);
-				System.out.println("Unzipping to " + newFile.getAbsolutePath());
+				LOGGER.info("Unzipping to " + newFile.getAbsolutePath());
 				// create directories for sub directories in zip
 				new File(newFile.getParent()).mkdirs();
 				FileOutputStream fos = new FileOutputStream(newFile);
