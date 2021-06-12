@@ -1,6 +1,8 @@
 package com.codef.xsalt.utils;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -8,8 +10,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
 import org.w3c.dom.Attr;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -474,146 +489,156 @@ public class XSaLTXMLUtils {
 		}
 	}
 
-	// TODO: XSaLTXMLUtils Fix (when time permits)
+	/**
+	 * This method grabs all information from a result set and puts it into a
+	 * Excel-type XML tree.
+	 * 
+	 * @param _oRs          The result set to put into XML
+	 * @param _sSheetName   The name to give to the Excel work sheet
+	 * @param _bWriteHeader Flag if column headers should be written
+	 * @return An XML document for Excel
+	 * @throws SQLException
+	 */
+	public static Document exportSQLAsExcelXMLTree(ResultSet _oRs, String _sSheetName, boolean _bWriteHeader)
+			throws SQLException {
+		// NOT SURE IF THIS WORKS OR NOT
+		// DOMImplementation oDomImp = new DOMImplementationImpl();
+		DOMImplementation oDomImp = new DOMImplementation() {
 
-//	/**
-//	 * This method grabs all information from a result set and puts it into a Excel-type
-//	 * XML tree.
-//	 * 
-//	 * @param _oRs
-//	 *            The result set to put into XML
-//	 * @param _sSheetName
-//	 *            The name to give to the Excel work sheet
-//	 * @param _bWriteHeader
-//	 *            Flag if column headers should be written
-//	 * @return An XML document for Excel
-//	 * @throws SQLException
-//	 */
-//	public static Document exportSQLAsExcelXMLTree(ResultSet _oRs,  String _sSheetName, boolean _bWriteHeader) throws SQLException
-//	{
-//		DOMImplementation oDomImp = new DOMImplementationImpl();		
-//		Document oDoc = oDomImp.createDocument("urn:schemas-microsoft-com:office:spreadsheet", "ss:Workbook", null);
-//		
-//		ArrayList<String> oColumnNames = new ArrayList<String>();
-//		ArrayList<String> oColumnTypes = new ArrayList<String>();
-//		
-//		ResultSetMetaData oRsMd = _oRs.getMetaData();
-//		// ResultSet & ResultSetMetaData column indices start at 1
-//		for (int i = 1; i <= oRsMd.getColumnCount(); i++)
-//		{
-//			oColumnNames.add(oRsMd.getColumnName(i));
-//			oColumnTypes.add(oRsMd.getColumnTypeName(i));
-//		}
-//		
-//		Element oRootElement = oDoc.getDocumentElement();
-//		oRootElement.setAttribute("xmlns:ss", "urn:schemas-microsoft-com:office:spreadsheet");
-//		
-//		Element oWorksheet = addTextNodeWithAttribute(oDoc, oRootElement, "ss:Worksheet", null, "ss:Name",
-//				(_sSheetName == null || _sSheetName.trim().equals("") ? "Sheet1" : _sSheetName));		
-//		Element oTable = XSaLTXMLUtils.addSimpleTextNode(oDoc, oWorksheet, "ss:Table", null);
-//		
-//		if (_bWriteHeader)
-//		{
-//			Element oRow = XSaLTXMLUtils.addSimpleTextNode(oDoc, oTable, "ss:Row", null);
-//			for (int i = 0; i < oColumnNames.size(); i++)
-//			{
-//				Element oCell = addSimpleTextNode(oDoc, oRow, "ss:Cell", null);
-//				
-//				addTextNodeWithAttribute(oDoc, oCell, "ss:Data", oColumnNames.get(i).toUpperCase(), "ss:Type", "String");
-//			}
-//		}
-//		
-//		while (_oRs.next())
-//		{
-//			Element oRow = addSimpleTextNode(oDoc, oTable, "ss:Row", null);
-//			for (int i = 0; i < oColumnNames.size(); i++)
-//			{
-//				Element oCell = addSimpleTextNode(oDoc, oRow, "ss:Cell", null);
-//				
-//				String sColumnType = oColumnTypes.get(i).toUpperCase();
-//				String sDataType = "String";
-//				if (sColumnType.contains("INT") || sColumnType.contains("DOUBLE"))
-//				{
-//					sDataType = "Number";
-//				}
-//				else if (sColumnType.contains("DATE"))
-//				{
-//					sDataType = "DateTime";
-//				}
-//				
-//				addTextNodeWithAttribute(oDoc, oCell, "ss:Data", _oRs.getString(oColumnNames.get(i)), "ss:Type", sDataType);				
-//			}
-//		}
-//		
-//		return oDoc;
-//	}
+			@Override
+			public boolean hasFeature(String feature, String version) {
+				return false;
+			}
 
-//	
-//	
-//	/**
-//	 * This method converts an XML node to a String
-//	 * 
-//	 * @param _oDoc The XML node you want to convert
-//	 * @return The String representation of the node
-//	 * @throws IOException
-//	 */
-//	public static String nodeToString(Node node) throws Exception {
-//		StringWriter sw = new StringWriter();
-//
-//		Transformer t = TransformerFactory.newInstance().newTransformer();
-//		t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-//		t.setOutputProperty(OutputKeys.INDENT, "yes");
-//		t.transform(new DOMSource(node), new StreamResult(sw));
-//
-//		return sw.toString();
-//	}
-//	
-//	
-//
-//	/**
-//	 * This method converts an XML document to a StringBuffer
-//	 * 
-//	 * @param _oDoc The XML document you want to convert
-//	 * @return The String representation of the document
-//	 * @throws IOException
-//	 */
-//	public static String xmlDocumentToString(Document _oDoc)
-//	{
-//		OutputFormat oOutputFormat = new OutputFormat(_oDoc);
-//		StringWriter oStringWriter = new StringWriter();
-//
-//		try
-//		{
-//			XMLSerializer oXmlSerializer = new XMLSerializer(oStringWriter, oOutputFormat);
-//			oXmlSerializer.asDOMSerializer();
-//			oXmlSerializer.serialize(_oDoc.getDocumentElement());
-//		}
-//		catch (IOException e)
-//		{
-//			XSaLTGenericLogger.logXSaLT(Priority.WARN_INT, "XML Document may have extended characters in it.", e);
-////			
-//		}
-//
-//		return oStringWriter.getBuffer().toString();
-//	}
-//
+			@Override
+			public Object getFeature(String feature, String version) {
+				return null;
+			}
 
-//	/**
-//	 * This method returns an XPathResult of an XPath query
-//	 * 
-//	 * @param _oDoc The XML document you are querying
-//	 * @param _oElement The element you wish to begin at
-//	 * @param _sXPathQueryString The XPath query
-//	 * @return The XPathResult (nodes and such)
-//	 */
-//	public static XPathResult getXPathResult(Document _oDoc, Element _oElement, String _sXPathQueryString)
-//	{
-//		XPathEvaluator oXpathEvaluator = new XPathEvaluatorImpl(_oDoc);
-//		XPathNSResolver oXpathResolver = oXpathEvaluator.createNSResolver(_oElement);
-//		XPathResult oXpathResult = (XPathResult) oXpathEvaluator.evaluate(_sXPathQueryString, _oDoc, oXpathResolver,
-//				XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
-//		return oXpathResult;
-//	}
-//
+			@Override
+			public DocumentType createDocumentType(String qualifiedName, String publicId, String systemId)
+					throws DOMException {
+				return null;
+			}
+
+			@Override
+			public Document createDocument(String namespaceURI, String qualifiedName, DocumentType doctype)
+					throws DOMException {
+				return null;
+			}
+		};
+
+		Document oDoc = oDomImp.createDocument("urn:schemas-microsoft-com:office:spreadsheet", "ss:Workbook", null);
+
+		ArrayList<String> oColumnNames = new ArrayList<String>();
+		ArrayList<String> oColumnTypes = new ArrayList<String>();
+
+		ResultSetMetaData oRsMd = _oRs.getMetaData();
+		// ResultSet & ResultSetMetaData column indices start at 1
+		for (int i = 1; i <= oRsMd.getColumnCount(); i++) {
+			oColumnNames.add(oRsMd.getColumnName(i));
+			oColumnTypes.add(oRsMd.getColumnTypeName(i));
+		}
+
+		Element oRootElement = oDoc.getDocumentElement();
+		oRootElement.setAttribute("xmlns:ss", "urn:schemas-microsoft-com:office:spreadsheet");
+
+		Element oWorksheet = addTextNodeWithAttribute(oDoc, oRootElement, "ss:Worksheet", null, "ss:Name",
+				(_sSheetName == null || _sSheetName.trim().equals("") ? "Sheet1" : _sSheetName));
+		Element oTable = XSaLTXMLUtils.addSimpleTextNode(oDoc, oWorksheet, "ss:Table", null);
+
+		if (_bWriteHeader) {
+			Element oRow = XSaLTXMLUtils.addSimpleTextNode(oDoc, oTable, "ss:Row", null);
+			for (int i = 0; i < oColumnNames.size(); i++) {
+				Element oCell = addSimpleTextNode(oDoc, oRow, "ss:Cell", null);
+
+				addTextNodeWithAttribute(oDoc, oCell, "ss:Data", oColumnNames.get(i).toUpperCase(), "ss:Type",
+						"String");
+			}
+		}
+
+		while (_oRs.next()) {
+			Element oRow = addSimpleTextNode(oDoc, oTable, "ss:Row", null);
+			for (int i = 0; i < oColumnNames.size(); i++) {
+				Element oCell = addSimpleTextNode(oDoc, oRow, "ss:Cell", null);
+
+				String sColumnType = oColumnTypes.get(i).toUpperCase();
+				String sDataType = "String";
+				if (sColumnType.contains("INT") || sColumnType.contains("DOUBLE")) {
+					sDataType = "Number";
+				} else if (sColumnType.contains("DATE")) {
+					sDataType = "DateTime";
+				}
+
+				addTextNodeWithAttribute(oDoc, oCell, "ss:Data", _oRs.getString(oColumnNames.get(i)), "ss:Type",
+						sDataType);
+			}
+		}
+
+		return oDoc;
+	}
+
+	/**
+	 * This method converts an XML node to a String
+	 * 
+	 * @param _oDoc The XML node you want to convert
+	 * @return The String representation of the node
+	 * @throws IOException
+	 */
+	public static String nodeToString(Node node) throws Exception {
+		StringWriter sw = new StringWriter();
+
+		Transformer t = TransformerFactory.newInstance().newTransformer();
+		t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+		t.setOutputProperty(OutputKeys.INDENT, "yes");
+		t.transform(new DOMSource(node), new StreamResult(sw));
+
+		return sw.toString();
+	}
+
+	/**
+	 * This method converts an XML document to a StringBuffer
+	 * 
+	 * @param _oDoc The XML document you want to convert
+	 * @return The String representation of the document
+	 * @throws IOException
+	 */
+	public static String xmlDocumentToString(Document _oDoc, boolean omitXmlDeclaration) {
+
+		String xmlString = "";
+
+		TransformerFactory tf = TransformerFactory.newInstance();
+		Transformer transformer;
+		try {
+			transformer = tf.newTransformer();
+
+			if (omitXmlDeclaration) {
+				transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+			}
+
+			StringWriter writer = new StringWriter();
+			transformer.transform(new DOMSource(_oDoc), new StreamResult(writer));
+			xmlString = writer.getBuffer().toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return xmlString;
+	}
+
+	/**
+	 * This method returns an XPathResult of an XPath query
+	 * 
+	 * @param _oDoc              The XML document you are querying
+	 * @param _oElement          The element you wish to begin at
+	 * @param _sXPathQueryString The XPath query
+	 * @return The NodeList (nodes and such)
+	 * @throws XPathExpressionException
+	 */
+	public static NodeList getXPathResult(Document _oDoc, String _sXPathQueryString) throws XPathExpressionException {
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		NodeList nodes = (NodeList) xpath.evaluate("//staff", _oDoc, XPathConstants.NODESET);
+		return nodes;
+	}
 
 }

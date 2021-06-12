@@ -62,13 +62,10 @@
 			<version>5.5.13.1</version>
 		</dependency>
 
-		<!-- 
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-			<scope>provided</scope>
-		</dependency> -->
+		<!-- <dependency> <groupId>javax.servlet</groupId> <artifactId>servlet-api</artifactId> 
+			<version>2.5</version> <scope>provided</scope> </dependency> -->
+
+
 
 		<dependency>
 			<groupId>com.sun.mail</groupId>
@@ -114,8 +111,6 @@
 			<version>1.4.200</version>
 			<scope>runtime</scope>
 		</dependency>
-
-
 
 	</dependencies>
 
