@@ -637,7 +637,7 @@ public class XSaLTXMLUtils {
 	 */
 	public static NodeList getXPathResult(Document _oDoc, String _sXPathQueryString) throws XPathExpressionException {
 		XPath xpath = XPathFactory.newInstance().newXPath();
-		NodeList nodes = (NodeList) xpath.evaluate("//staff", _oDoc, XPathConstants.NODESET);
+		NodeList nodes = (NodeList) xpath.evaluate(_sXPathQueryString, _oDoc, XPathConstants.NODESET);
 		return nodes;
 	}
 
