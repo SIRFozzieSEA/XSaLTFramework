@@ -176,6 +176,10 @@ public class XSaLTFileSystemUtils {
 		return new String(Files.readAllBytes(new File(pathToFile).toPath()));
 	}
 
+	public static String readFile(File file) throws IOException {
+		return Files.readString(file.toPath());
+	}
+
 	public static String readResourceFile(String pathToFile) throws URISyntaxException, IOException {
 		Path path = Paths.get(XSaLTFileSystemUtils.class.getResource(pathToFile).toURI());
 		return new String(Files.readAllBytes(path));
