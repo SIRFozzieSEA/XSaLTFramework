@@ -184,7 +184,12 @@ public class XSaLTFileSystemUtils {
 		Path path = Paths.get(XSaLTFileSystemUtils.class.getResource(pathToFile).toURI());
 		return new String(Files.readAllBytes(path));
 	}
-	
+
+	public static boolean fileExists(String pathToFile) {
+		Path path = Paths.get(pathToFile);
+		return Files.exists(path);
+	}
+
 //	private String readResourceFile(String pathToFile) throws URISyntaxException, IOException {
 //
 //		ClassLoader classLoader = getClass().getClassLoader();
