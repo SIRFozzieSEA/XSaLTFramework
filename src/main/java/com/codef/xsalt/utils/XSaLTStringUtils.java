@@ -11,7 +11,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.codef.xsalt.arch.XSaLTConstants;
 
@@ -21,7 +22,7 @@ import com.codef.xsalt.arch.XSaLTConstants;
  */
 public class XSaLTStringUtils {
 
-	private static final Logger LOGGER = Logger.getLogger(XSaLTStringUtils.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(XSaLTStringUtils.class.getName());
 
 	/**
 	 * This method gets the MD5 hash equivalent of the input

@@ -12,7 +12,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class XSaLTZipUtils {
 
@@ -27,7 +28,7 @@ public class XSaLTZipUtils {
 //			String destDir = "C:\\Users\\sir_f\\Downloads\\output";
 //			unzipRename(zipFilePath, destDir);
 
-	private static final Logger LOGGER = Logger.getLogger(XSaLTZipUtils.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(XSaLTZipUtils.class.getName());
 
 	public static void zipDirectory(String sourceDirectoryPath, String zipPath) throws IOException {
 		Path zipFilePath = Files.createFile(Paths.get(zipPath));

@@ -8,7 +8,8 @@ import java.util.HashMap;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Stephan P. Cossette
@@ -16,7 +17,7 @@ import org.apache.log4j.Logger;
  */
 public class XSaLTFileDeDupeUtils {
 
-	private static final Logger LOGGER = Logger.getLogger(XSaLTFileDeDupeUtils.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(XSaLTFileDeDupeUtils.class.getName());
 
 	/**
 	 * The current file being examined

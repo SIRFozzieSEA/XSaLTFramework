@@ -6,7 +6,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Stephan P. Cossette
@@ -14,7 +15,7 @@ import org.apache.log4j.Logger;
  */
 public class XSaLTStreamGobbler extends Thread {
 
-	private static final Logger LOGGER = Logger.getLogger(XSaLTStreamGobbler.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(XSaLTStreamGobbler.class.getName());
 
 	/**
 	 * The instance input stream for the java process

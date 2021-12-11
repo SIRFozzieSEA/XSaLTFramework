@@ -16,7 +16,9 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PiePlot;
@@ -133,7 +135,7 @@ public class XSaLTGraphicTools {
 
 	private HashMap<Integer, String> ioOBrienInserterFirstDigitMap = null;
 
-	private static final Logger LOGGER = Logger.getLogger(XSaLTGraphicTools.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(XSaLTGraphicTools.class.getName());
 
 	/**
 	 * Generic constructor.

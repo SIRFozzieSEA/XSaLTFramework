@@ -21,7 +21,8 @@ import java.util.LinkedHashMap;
 
 //import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.codef.xsalt.arch.XSaLTTripleStringLinkedHashMap;
 import com.linuxense.javadbf.DBFField;
@@ -43,7 +44,7 @@ public class XSaLTDataUtils {
 
 	public static final String XS_ENCRYPT_KEY = "0steve1and2bob3are4awesome5";
 
-	private static final Logger LOGGER = Logger.getLogger(XSaLTDataUtils.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(XSaLTDataUtils.class.getName());
 
 	/**
 	 * This method will sum each numeric column in the specified table and output

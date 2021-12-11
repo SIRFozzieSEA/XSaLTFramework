@@ -4,11 +4,12 @@ import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Field;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class XSaLTRobot {
 	
-	private static final Logger LOGGER = Logger.getLogger(XSaLTRobot.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(XSaLTRobot.class.getName());
 
 	public static void getKeyPressKeysForString(Robot robot, String stringForKeypress, int nKeyPressDelay) {
 		for (int i = 0; i < stringForKeypress.length(); i++) {

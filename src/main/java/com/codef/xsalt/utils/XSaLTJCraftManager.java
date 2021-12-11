@@ -6,8 +6,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
@@ -32,7 +34,7 @@ public class XSaLTJCraftManager {
 	 */
 	
 
-	private static final Logger LOGGER = Logger.getLogger(XSaLTJCraftManager.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(XSaLTJCraftManager.class.getName());
 
 	private String username;
 	private String password;
@@ -60,7 +62,7 @@ public class XSaLTJCraftManager {
 			this.timeout = timeout;
 
 		} catch (JSchException e) {
-			LOGGER.log(Level.SEVERE, e.toString(), e);
+			LOGGER.log(Level.ERROR, e.toString(), e);
 		}
 
 	}
@@ -75,7 +77,7 @@ public class XSaLTJCraftManager {
 			// sesConnection.setConfig("StrictHostKeyChecking", "no"); // TESTING ONLY
 			jscSession.connect(timeout);
 		} catch (JSchException e) {
-			LOGGER.log(Level.SEVERE, e.toString(), e);
+			LOGGER.log(Level.ERROR, e.toString(), e);
 			errorMessage = e.getMessage();
 		}
 
@@ -115,7 +117,7 @@ public class XSaLTJCraftManager {
 
 			channel.disconnect();
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, e.toString(), e);
+			LOGGER.log(Level.ERROR, e.toString(), e);
 			return null;
 		}
 
@@ -196,12 +198,12 @@ public class XSaLTJCraftManager {
 			channel.disconnect();
 
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, e.toString(), e);
+			LOGGER.log(Level.ERROR, e.toString(), e);
 			try {
 				if (fis != null)
 					fis.close();
 			} catch (Exception ee) {
-				LOGGER.log(Level.SEVERE, ee.toString(), ee);
+				LOGGER.log(Level.ERROR, ee.toString(), ee);
 			}
 		}
 
@@ -303,12 +305,12 @@ public class XSaLTJCraftManager {
 			channel.disconnect();
 
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, e.toString(), e);
+			LOGGER.log(Level.ERROR, e.toString(), e);
 			try {
 				if (fos != null)
 					fos.close();
 			} catch (Exception ee) {
-				LOGGER.log(Level.SEVERE, ee.toString(), ee);
+				LOGGER.log(Level.ERROR, ee.toString(), ee);
 			}
 		}
 

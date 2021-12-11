@@ -17,7 +17,8 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
 import javax.mail.internet.MimeMultipart;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.codef.xsalt.arch.XSaLTMailMessageObject;
 
@@ -31,7 +32,7 @@ public class XSaLTMailUtils
 	public static boolean XB_TEST_MODE = false;
 	public static boolean XB_IS_TEST_SERVER = false;
 	
-	private static final Logger LOGGER = Logger.getLogger(XSaLTMailUtils.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(XSaLTMailUtils.class.getName());
 
 	/**
 	 * Mails a com.codef.xsalt.arch.XSaLTMailMessageObject

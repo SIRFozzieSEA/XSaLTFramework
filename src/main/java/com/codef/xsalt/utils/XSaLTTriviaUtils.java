@@ -19,7 +19,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.codef.xsalt.arch.XSaLTConstants;
 
@@ -29,7 +30,7 @@ import com.codef.xsalt.arch.XSaLTConstants;
  */
 public class XSaLTTriviaUtils {
 
-	private static final Logger LOGGER = Logger.getLogger(XSaLTTriviaUtils.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(XSaLTTriviaUtils.class.getName());
 
 	/**
 	 * This method returns the formed URL to manually check bad addresses on USPS'

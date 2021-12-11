@@ -35,7 +35,9 @@ import java.util.zip.ZipOutputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.w3c.dom.Document;
 
 /**
@@ -44,7 +46,7 @@ import org.w3c.dom.Document;
  */
 public class XSaLTFileSystemUtils {
 
-	private static final Logger LOGGER = Logger.getLogger(XSaLTFileSystemUtils.class.getName());
+	private static final Logger LOGGER = LogManager.getLogger(XSaLTFileSystemUtils.class.getName());
 
 	/**
 	 * Get the MD5 hash of a file
