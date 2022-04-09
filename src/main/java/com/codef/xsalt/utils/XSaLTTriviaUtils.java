@@ -99,22 +99,6 @@ public class XSaLTTriviaUtils {
 	}
 
 	/**
-	 * This method tests launching the AccuZip software.
-	 */
-	public static void testWindowsLauncher() {
-		LOGGER.info("Starting process...");
-
-		try {
-			Process oProcess = Runtime.getRuntime().exec("D:/AccuZIP/AccuZIPLauncher.bat");
-			oProcess.waitFor();
-		} catch (Exception e) {
-			LOGGER.error(e.toString(), e);
-		}
-
-		LOGGER.info("Process is completed...");
-	}
-
-	/**
 	 * This method returns either the Sebis value for the key or the Sebis key for
 	 * the value.
 	 * 

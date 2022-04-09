@@ -239,9 +239,8 @@ public class XSaLTCipherUtils
 		String sFilepath = _sFilePathToCompress.substring(0, _sFilePathToCompress.lastIndexOf('\\') + 1);
 		String sFilename = _sFilePathToCompress.substring(_sFilePathToCompress.lastIndexOf('\\') + 1, _sFilePathToCompress.length());
 
-		String sZipFile = "jar cvfM \"" + _sDestinationFilepath + "\" \"" + sFilepath + "" + sFilename + "\"";
-
-		Process o_process = oRuntime.exec(sZipFile);
+		String commandArray[] = new String[] { "cmd.exe", "/c", "jar cvfM \"" + _sDestinationFilepath + "\" \"" + sFilepath + "" + sFilename + "\""};
+		Process o_process = oRuntime.exec(commandArray);
 
 		XSaLTStreamGobbler oErrorGobbler = new XSaLTStreamGobbler(o_process.getErrorStream());
 		XSaLTStreamGobbler oInputGobbler = new XSaLTStreamGobbler(o_process.getInputStream());
