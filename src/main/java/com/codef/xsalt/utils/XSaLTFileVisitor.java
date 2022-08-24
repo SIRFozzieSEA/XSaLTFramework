@@ -35,6 +35,24 @@ public class XSaLTFileVisitor {
 	public void startVisit(String filePath) {
 		visitFiles(Paths.get(filePath));
 	}
+	
+	public void startVisitFolders(String filePath) {
+		visitFolders(Paths.get(filePath));
+	}
+	
+	private void visitFolders(Path path) {
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
+			for (Path entry : stream) {
+				if (entry.toFile().isDirectory()) {
+					visitFolderCode(entry.toString());
+					visitFolders(entry);
+					fileCount++;
+				}
+			}
+		} catch (IOException e) {
+			LOGGER.error(e.toString(), e);
+		}
+	}
 
 	private void visitFiles(Path path) {
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
@@ -53,6 +71,10 @@ public class XSaLTFileVisitor {
 
 	public void visitFileCode(String filePath) {
 		LOGGER.info("File " + filePath + " has been visited.");
+	}
+	
+	public void visitFolderCode(String filePath) {
+		LOGGER.info("Folder " + filePath + " has been visited.");
 	}
 
 }
