@@ -671,8 +671,7 @@ public class XSaLTDataUtils {
 
 		StringBuffer oCreateSqlStringbuffer = new StringBuffer("CREATE TABLE " + _sTableName.toUpperCase() + " (");
 
-		if (_oConn.getClientInfo("ApplicationName") != null
-				&& _oConn.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+		if (_sDefaultTableType.equals("H2")) {
 			oCreateSqlStringbuffer.append("\n   ROWGENID serial PRIMARY KEY, ");
 		} else {
 			oCreateSqlStringbuffer.append("\n   ROWGENID bigint(20) NOT NULL auto_increment PRIMARY KEY, ");
@@ -718,9 +717,7 @@ public class XSaLTDataUtils {
 
 		oAllColumnsForInsert.append(") ");
 
-		if (_oConn.getClientInfo("ApplicationName") != null
-				&& _oConn.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
-
+		if (_sDefaultTableType.equals("H2")) {
 			oCreateSqlStringbuffer.append(")");
 		} else {
 			oCreateSqlStringbuffer.append(")\nENGINE=" + _sDefaultTableType);
@@ -729,9 +726,7 @@ public class XSaLTDataUtils {
 		executeSQL(_oConn, oCreateSqlStringbuffer.toString());
 
 		StringBuffer oFinalInsertBuffer = new StringBuffer("");
-		if (_oConn.getClientInfo("ApplicationName") != null
-				&& _oConn.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
-
+		if (_sDefaultTableType.equals("H2")) {
 			oFinalInsertBuffer
 					.append("INSERT INTO " + _sTableName.toUpperCase() + " " + oAllColumnsForInsert + " VALUES ");
 		} else {
@@ -746,8 +741,7 @@ public class XSaLTDataUtils {
 				continue;
 			}
 
-			if (_oConn.getClientInfo("ApplicationName") != null
-					&& _oConn.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+			if (_sDefaultTableType.equals("H2")) {
 
 				if (_bAddDupeRow) {
 					oFinalInsertBuffer.append(
@@ -788,8 +782,7 @@ public class XSaLTDataUtils {
 				}
 
 				oFinalInsertBuffer = new StringBuffer("");
-				if (_oConn.getClientInfo("ApplicationName") != null
-						&& _oConn.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+				if (_sDefaultTableType.equals("H2")) {
 
 					oFinalInsertBuffer.append(
 							"INSERT INTO " + _sTableName.toUpperCase() + " " + oAllColumnsForInsert + " VALUES ");
@@ -1061,7 +1054,7 @@ public class XSaLTDataUtils {
 
 		StringBuffer oCreateSqlStringbuffer = new StringBuffer("CREATE TABLE " + _sTableName.toUpperCase() + " (");
 
-		if (_oConn.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+		if (_sDefaultTableType.equals("H2")) {
 			oCreateSqlStringbuffer.append("\n   ROWGENID serial auto_increment PRIMARY KEY, ");
 		} else {
 			oCreateSqlStringbuffer.append("\n   ROWGENID bigint(20) NOT NULL auto_increment PRIMARY KEY, ");
@@ -1105,7 +1098,12 @@ public class XSaLTDataUtils {
 		}
 		oCreateSqlStringbuffer = new StringBuffer(
 				oCreateSqlStringbuffer.substring(0, oCreateSqlStringbuffer.length() - 2));
-		oCreateSqlStringbuffer.append(")\nENGINE=" + _sDefaultTableType);
+		
+		if (_sDefaultTableType.equals("H2")) {
+			oCreateSqlStringbuffer.append(")");
+		} else {
+			oCreateSqlStringbuffer.append(")\nENGINE=" + _sDefaultTableType);
+		}
 
 		executeSQL(_oConn, oCreateSqlStringbuffer.toString());
 
@@ -2506,10 +2504,10 @@ public class XSaLTDataUtils {
 	 */
 	public static void createMySqlTableFromODBCMetaData(ResultSetMetaData _oAccessMetaData,
 			Connection _oMySQLConnection, String _sNewImportTableName, String _sTableName, String _sDefaultColumnType,
-			String _sTableType) throws SQLException {
+			String _sDefaultTableType) throws SQLException {
 
-		if (_sTableType == null) {
-			_sTableType = "MyISAM";
+		if (_sDefaultTableType == null) {
+			_sDefaultTableType = "MyISAM";
 		}
 
 		dropTableInDatabase(_oMySQLConnection, _sNewImportTableName.toUpperCase());
@@ -2517,7 +2515,7 @@ public class XSaLTDataUtils {
 		StringBuffer oCreateSqlStringbuffer = new StringBuffer(
 				"CREATE TABLE " + _sNewImportTableName.toUpperCase() + " (");
 
-		if (_oMySQLConnection.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+		if (_sDefaultTableType.equals("H2")) {
 			oCreateSqlStringbuffer.append("\n\tROWGENID serial PRIMARY KEY, ");
 		} else {
 			oCreateSqlStringbuffer.append("\n\tROWGENID bigint(20) NOT NULL auto_increment PRIMARY KEY, ");
@@ -2536,7 +2534,12 @@ public class XSaLTDataUtils {
 		}
 		oCreateSqlStringbuffer = new StringBuffer(
 				oCreateSqlStringbuffer.substring(0, oCreateSqlStringbuffer.length() - 2));
-		oCreateSqlStringbuffer.append(")\nENGINE=" + _sTableType);
+
+		if (_sDefaultTableType.equals("H2")) {
+			oCreateSqlStringbuffer.append(")");
+		} else {
+			oCreateSqlStringbuffer.append(")\nENGINE=" + _sDefaultTableType);
+		}
 
 		executeSQL(_oMySQLConnection, oCreateSqlStringbuffer.toString());
 
@@ -3316,6 +3319,7 @@ public class XSaLTDataUtils {
 	 * @param _oDecimalColumns    Columns to make a decimal data type
 	 * @param _sTableName         Name of table to create
 	 * @param _sDefaultColumnType Default data type for columns
+	 * @param _sDefaultTableType  The default data type, can be null
 	 * @param _bEmptyColumnAsNull Flag if blank data string should be inserted as
 	 *                            NULL
 	 * @param _sTableType         Engine type for table (MyISAM or InnoDB- default
@@ -3326,18 +3330,18 @@ public class XSaLTDataUtils {
 	 */
 	public static void importFixedDataFileToDatabase(Connection _oConnection, String _sFilePath,
 			LinkedHashMap<String, Integer> _oColumnsOrderedmap, ArrayList<String> _oDecimalColumns, String _sTableName,
-			String _sDefaultColumnType, boolean _bEmptyColumnAsNull, String _sTableType, int _nMaxSizeOfData)
+			String _sDefaultColumnType, String _sDefaultTableType, boolean _bEmptyColumnAsNull, int _nMaxSizeOfData)
 			throws IOException, SQLException {
 
-		if (_sTableType == null) {
-			_sTableType = "MyISAM";
+		if (_sDefaultTableType == null) {
+			_sDefaultTableType = "MyISAM";
 		}
 
 		dropTableInDatabase(_oConnection, _sTableName);
 
 		StringBuffer oCreateSqlStringbuffer = new StringBuffer("CREATE TABLE " + _sTableName.toUpperCase() + " (");
 
-		if (_oConnection.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+		if (_sDefaultTableType.equals("H2")) {
 			oCreateSqlStringbuffer.append("\n\tROWGENID serial PRIMARY KEY, ");
 		} else {
 			oCreateSqlStringbuffer.append("\n\tROWGENID bigint(20) NOT NULL auto_increment PRIMARY KEY, ");
@@ -3368,7 +3372,12 @@ public class XSaLTDataUtils {
 
 		oCreateSqlStringbuffer = new StringBuffer(
 				oCreateSqlStringbuffer.substring(0, oCreateSqlStringbuffer.length() - 2));
-		oCreateSqlStringbuffer.append(")\nENGINE=" + _sTableType);
+
+		if (_sDefaultTableType.equals("H2")) {
+			oCreateSqlStringbuffer.append(")");
+		} else {
+			oCreateSqlStringbuffer.append(")\nENGINE=" + _sDefaultTableType);
+		}
 
 		executeSQL(_oConnection, oCreateSqlStringbuffer.toString());
 
@@ -3450,26 +3459,26 @@ public class XSaLTDataUtils {
 	 * @param _oTripleHashMap     Object holding column names, types, and sizes.
 	 * @param _sTableName         Name of table to import into
 	 * @param _sDefaultColumnType Default data type of columns
-	 * @param _bEmptyColumnAsNull Flag if data is empty to insert NULL
-	 * @param _sTableType         Engine type for table (MyISAM or InnoDB- default
+	 * @param _sDefaultTableType         Engine type for table (MyISAM or InnoDB- default
 	 *                            MyISAM)
+	 * @param _bEmptyColumnAsNull Flag if data is empty to insert NULL
 	 * @param _nMaxSizeOfData     Max length of strings to insert
 	 * @throws IOException
 	 * @throws SQLException
 	 */
 	public static void importFixedDataFileToDatabaseWithTripleHashMap(Connection _oConnection, String _sFilePath,
 			XSaLTTripleStringLinkedHashMap _oTripleHashMap, String _sTableName, String _sDefaultColumnType,
-			boolean _bEmptyColumnAsNull, String _sTableType, int _nMaxSizeOfData) throws IOException, SQLException {
+			String _sDefaultTableType, boolean _bEmptyColumnAsNull, int _nMaxSizeOfData) throws IOException, SQLException {
 
-		if (_sTableType == null) {
-			_sTableType = "MyISAM";
+		if (_sDefaultTableType == null) {
+			_sDefaultTableType = "MyISAM";
 		}
 
 		dropTableInDatabase(_oConnection, _sTableName);
 
 		StringBuffer oCreateSqlStringbuffer = new StringBuffer("CREATE TABLE " + _sTableName.toUpperCase() + " (");
 
-		if (_oConnection.getClientInfo("ApplicationName").equals("PostgreSQL JDBC Driver")) {
+		if (_sDefaultTableType.equals("H2")) {
 			oCreateSqlStringbuffer.append("\n\tROWGENID serial PRIMARY KEY, ");
 		} else {
 			oCreateSqlStringbuffer.append("\n\tROWGENID bigint(20) NOT NULL auto_increment PRIMARY KEY, ");
@@ -3530,7 +3539,12 @@ public class XSaLTDataUtils {
 
 		oCreateSqlStringbuffer = new StringBuffer(
 				oCreateSqlStringbuffer.substring(0, oCreateSqlStringbuffer.length() - 2));
-		oCreateSqlStringbuffer.append(")\nENGINE=" + _sTableType);
+
+		if (_sDefaultTableType.equals("H2")) {
+			oCreateSqlStringbuffer.append(")");
+		} else {
+			oCreateSqlStringbuffer.append(")\nENGINE=" + _sDefaultTableType);
+		}
 
 		executeSQL(_oConnection, oCreateSqlStringbuffer.toString());
 
@@ -4467,6 +4481,49 @@ public class XSaLTDataUtils {
 
 		}
 	}
+	
+	/**
+	 * This method will turn a SQL string into an ArrayList<HashMap<String, String>>
+	 * 
+	 * @param _oConnection      The connection to the database
+	 * @param _sSqlText    The SQL query to execute
+	 * @return a ArrayList<HashMap<String, String>> of the data
+	 * @throws SQLException
+	 */
+	public static ArrayList<HashMap<String, String>> makeSQLAsArrayListHashMap(Connection _oConnection, String _sSqlText)
+			throws SQLException, IOException {
+
+		ArrayList<String> columnList = new ArrayList<String>();
+		ArrayList<HashMap<String, String>> returnList = new ArrayList<HashMap<String, String>>();
+
+		ResultSet resultset = _oConnection.createStatement().executeQuery(_sSqlText);
+		ResultSetMetaData oRsmd = resultset.getMetaData();
+
+		for (int i = 0; i < oRsmd.getColumnCount(); i++) {
+			columnList.add(oRsmd.getColumnName(i + 1));
+		}
+
+		while (resultset.next()) {
+
+			HashMap<String, String> rowRecord = new HashMap<String, String>();
+
+			for (int i = 0; i < oRsmd.getColumnCount(); i++) {
+				String sValue = resultset.getString(i + 1);
+				if (sValue == null || sValue.equals("null")) {
+					sValue = "";
+				}
+				rowRecord.put(columnList.get(i).toUpperCase(), sValue);
+			}
+
+			returnList.add(rowRecord);
+
+		}
+
+		return returnList;
+
+	}
+
+	
 
 	// ------------------------------
 

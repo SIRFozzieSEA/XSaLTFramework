@@ -650,7 +650,7 @@ public class XSaLTTriviaUtils {
 
 		XSaLTDataUtils.importFixedDataFileToDatabase(_oConnection,
 				"S:/Clients/TMAClientData/H-P/Munis/DataLayout/MunisLayout.txt", oDbColumnsHashmap, oNumericArrayList,
-				"MUNIS_LAYOUT", "VARCHAR(200)", true, "MyISAM", 0);
+				"MUNIS_LAYOUT", "VARCHAR(200)", "MyISAM", true, 0);
 
 		XSaLTDataUtils.dropColumnInTable(_oConnection, "MUNIS_LAYOUT", "FIELD_NO");
 
@@ -710,7 +710,7 @@ public class XSaLTTriviaUtils {
 		}
 
 		XSaLTDataUtils.importFixedDataFileToDatabase(_oConnection, _sImportFileName, oDbColumnsHashmap,
-				oNumericArrayList, _sImportTableName, "VARCHAR(50)", true, "MyISAM", _nMaxDataLength);
+				oNumericArrayList, _sImportTableName, "VARCHAR(50)", "MyISAM", true, _nMaxDataLength);
 
 		StringBuffer oColumnsBuffer = new StringBuffer();
 
