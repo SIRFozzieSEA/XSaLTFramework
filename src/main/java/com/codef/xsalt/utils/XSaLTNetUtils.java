@@ -2,6 +2,8 @@ package com.codef.xsalt.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
@@ -34,10 +36,11 @@ public class XSaLTNetUtils {
 	 * @param requestURL The webpage URL
 	 * @return The HTML content as string
 	 * @throws IOException
+	 * @throws URISyntaxException 
 	 */
-	public static String readStringFromURL(String requestURL) throws IOException {
-		URL u = new URL(requestURL);
-		try (InputStream in = u.openStream()) {
+	public static String readStringFromURL(String requestURL) throws IOException, URISyntaxException {
+		URL o_item_url = new URI(requestURL).toURL();
+		try (InputStream in = o_item_url.openStream()) {
 			return new String(in.readAllBytes(), StandardCharsets.UTF_8);
 		}
 	}

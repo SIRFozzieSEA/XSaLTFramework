@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -67,10 +69,11 @@ public class XSaLTTriviaUtils {
 	 * @param _sURL      The URL to test
 	 * @param _sFileName The file name to save (without extension)
 	 * @param _sSavePath The save path for the lookup
+	 * @throws URISyntaxException 
 	 */
-	public static void saveUSPSLookupPage(String _sURL, String _sFileName, String _sSavePath) throws IOException {
+	public static void saveUSPSLookupPage(String _sURL, String _sFileName, String _sSavePath) throws IOException, URISyntaxException {
 
-		URL o_item_url = new URL(_sURL);
+		URL o_item_url = new URI(_sURL).toURL();
 		InputStream tempInputStream = o_item_url.openStream();
 		StringBuffer oTempBuffer = new StringBuffer();
 
