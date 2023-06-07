@@ -15,6 +15,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>18</java.version>
+		<multivalent.jarpath>C:/GitRepos/XSaLTFramework/src/main/resources/Multivalent20091027.jar</multivalent.jarpath>
 	</properties>
 
 	<dependencies>
@@ -116,6 +117,15 @@
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<version>2.20.0</version>
+		</dependency>
+		
+		
+		<dependency>
+			<groupId>multivalent</groupId>
+			<artifactId>multivalent</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${multivalent.jarpath}</systemPath>
 		</dependency>
 
 	</dependencies>
