@@ -143,17 +143,45 @@ public class XSaLTGraphicTools {
 	public XSaLTGraphicTools() {
 
 	}
-	
-	
-	public static BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) throws IOException {
-	    BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
-	    Graphics2D graphics2D = resizedImage.createGraphics();
-	    graphics2D.drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
-	    graphics2D.dispose();
-	    return resizedImage;
+
+	public static BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight)
+			throws IOException {
+		BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
+		Graphics2D graphics2D = resizedImage.createGraphics();
+		graphics2D.drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
+		graphics2D.dispose();
+		return resizedImage;
+	}
+
+	public static void scaleImageFile(String _sTargetFile, String _sImageFormatName, String _sDestinationFile) {
+
+		try {
+			File imageFile = new File(_sTargetFile);
+			BufferedImage bufferedImage = ImageIO.read(imageFile);
+			File pathFile = new File(_sDestinationFile);
+			ImageIO.write(bufferedImage, _sImageFormatName, pathFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 	
+	// NOT SURE WHERE THIS WAS EVER USED, BUT WHATEVS
+	public static void cropImage(String imageFileName, File pathFile, BufferedImage bufferedImage) throws IOException {
+		if (imageFileName.contains("land")) {
+			// landscape
+			ImageIO.write(XSaLTGraphicTools.cropImage(bufferedImage, 87, 468, 600, 400), "jpg", pathFile);
+		} else {
+			// portrait
+			ImageIO.write(XSaLTGraphicTools.cropImage(bufferedImage, 179, 466, 400, 600), "jpg", pathFile);
+		}
+	}
 	
+
+	public static BufferedImage cropImage(BufferedImage bufferedImage, int x, int y, int width, int height) {
+		BufferedImage croppedImage = bufferedImage.getSubimage(x, y, width, height);
+		return croppedImage;
+	}
 
 	/**
 	 * This method reads a PDF file and converts the file and writes it into a JPEG
