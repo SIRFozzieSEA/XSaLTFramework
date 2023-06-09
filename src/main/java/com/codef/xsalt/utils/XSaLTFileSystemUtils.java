@@ -739,6 +739,19 @@ public class XSaLTFileSystemUtils {
 			throws IOException {
 		writeStringToFile(_oStringBufferToWrite.toString(), _sFilePath);
 	}
+	
+	/**
+	 * This method writes a StringBuffer out to a file as text
+	 * 
+	 * @param _oStringBufferToWrite The String to write to the file
+	 * @param _sFilePath            The path to the file you wish to write to
+	 *                              (create)
+	 * @throws IOException
+	 */
+	public static synchronized void writeStringBuilderToFile(StringBuilder _oStringBuilderToWrite, String _sFilePath)
+			throws IOException {
+		writeStringToFile(_oStringBuilderToWrite.toString(), _sFilePath);
+	}
 
 	/**
 	 * This method reads a file into a StringBuffer
