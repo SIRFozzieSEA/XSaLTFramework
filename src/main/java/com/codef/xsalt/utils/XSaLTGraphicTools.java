@@ -2503,13 +2503,13 @@ public class XSaLTGraphicTools {
 
 	public void createPieChart(String _sTitle, LinkedHashMap<String, Double> _oDataSet, float _fLeft, float _fTop,
 			int _nWidth, int _nHeight) throws IOException, DocumentException {
-		DefaultPieDataset oChartDataSet = new DefaultPieDataset();
+		DefaultPieDataset<String> oChartDataSet = new DefaultPieDataset<String>();
 		for (String sKey : _oDataSet.keySet()) {
 			oChartDataSet.setValue(sKey, _oDataSet.get(sKey).doubleValue());
 		}
 
 		JFreeChart oPieChart = ChartFactory.createPieChart(_sTitle, oChartDataSet, false, false, false);
-		PiePlot oPiePlot = (PiePlot) oPieChart.getPlot();
+		PiePlot<?> oPiePlot = (PiePlot<?>) oPieChart.getPlot();
 		oPiePlot.setInteriorGap(0);
 		oPiePlot.setBackgroundPaint(java.awt.Color.WHITE);
 
