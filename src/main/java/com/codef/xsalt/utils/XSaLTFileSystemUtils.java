@@ -1416,6 +1416,38 @@ public class XSaLTFileSystemUtils {
 
 		return _sFinalFileName;
 	}
+	
+	/**
+	 * Concatenates Files in the same directory
+	 * 
+	 * @param _sInputFiles    Files to be concatenated, with first one being the output file
+	 * @return The final file name
+	 * @throws Exception
+	 */
+	public static String concatFilesSimple(String[] _sInputFiles) {
+		// file name at position 0 is the place where files will be coalesced
+		String finalOutputFile = _sInputFiles[0];
+		String[] realInputFiles = Arrays.copyOfRange(_sInputFiles, 1, _sInputFiles.length);
+
+		try (FileWriter writer = new FileWriter(finalOutputFile)) {
+			// Read and write the contents of each input file
+			for (String inputFile : realInputFiles) {
+				try (FileReader reader = new FileReader(inputFile);
+						BufferedReader bufferedReader = new BufferedReader(reader)) {
+					String line;
+					while ((line = bufferedReader.readLine()) != null) {
+						writer.write(line);
+						writer.write("\n");
+					}
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return finalOutputFile;
+	}
+	
 
 	/**
 	 * Concatenates Files in the same directory

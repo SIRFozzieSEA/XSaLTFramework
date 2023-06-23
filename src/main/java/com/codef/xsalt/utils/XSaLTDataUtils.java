@@ -6,7 +6,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.LineNumberReader;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,12 +22,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 //import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.codef.xsalt.arch.XSaLTDataProcessInterface;
 import com.codef.xsalt.arch.XSaLTTripleStringLinkedHashMap;
 import com.linuxense.javadbf.DBFField;
 import com.linuxense.javadbf.DBFReader;
@@ -1098,7 +1108,7 @@ public class XSaLTDataUtils {
 		}
 		oCreateSqlStringbuffer = new StringBuffer(
 				oCreateSqlStringbuffer.substring(0, oCreateSqlStringbuffer.length() - 2));
-		
+
 		if (_sDefaultTableType.equals("H2")) {
 			oCreateSqlStringbuffer.append(")");
 		} else {
@@ -3468,7 +3478,8 @@ public class XSaLTDataUtils {
 	 */
 	public static void importFixedDataFileToDatabaseWithTripleHashMap(Connection _oConnection, String _sFilePath,
 			XSaLTTripleStringLinkedHashMap _oTripleHashMap, String _sTableName, String _sDefaultColumnType,
-			String _sDefaultTableType, boolean _bEmptyColumnAsNull, int _nMaxSizeOfData) throws IOException, SQLException {
+			String _sDefaultTableType, boolean _bEmptyColumnAsNull, int _nMaxSizeOfData)
+			throws IOException, SQLException {
 
 		if (_sDefaultTableType == null) {
 			_sDefaultTableType = "MyISAM";
@@ -4481,7 +4492,7 @@ public class XSaLTDataUtils {
 
 		}
 	}
-	
+
 	/**
 	 * This method will turn a SQL string into an ArrayList<HashMap<String, String>>
 	 * 
@@ -4490,8 +4501,8 @@ public class XSaLTDataUtils {
 	 * @return a ArrayList<HashMap<String, String>> of the data
 	 * @throws SQLException
 	 */
-	public static ArrayList<HashMap<String, String>> makeSQLAsArrayListHashMap(Connection _oConnection, String _sSqlText)
-			throws SQLException, IOException {
+	public static ArrayList<HashMap<String, String>> makeSQLAsArrayListHashMap(Connection _oConnection,
+			String _sSqlText) throws SQLException, IOException {
 
 		ArrayList<String> columnList = new ArrayList<String>();
 		ArrayList<HashMap<String, String>> returnList = new ArrayList<HashMap<String, String>>();
@@ -4522,8 +4533,6 @@ public class XSaLTDataUtils {
 		return returnList;
 
 	}
-
-	
 
 	// ------------------------------
 
@@ -4754,6 +4763,178 @@ public class XSaLTDataUtils {
 		sbList.append(_sEnd);
 
 		return sbList.toString();
+	}
+
+	/**
+	 * Generate a comma-delimited list of column names in a table in alphabetical order
+	 * 
+	 * @param _oConnection
+	 * @param _sTableName
+	 * @return The string
+	 * @throws SQLException
+	 */
+	public static String getColumnNamesInAlphabeticalOrder(Connection _oConnection, String _sTableName)
+			throws SQLException {
+
+		SortedSet<String> oColumnNames = new TreeSet<>();
+		ResultSet rs = _oConnection.createStatement().executeQuery("SELECT * FROM " + _sTableName + " LIMIT 1");
+		ResultSetMetaData metaData = rs.getMetaData();
+		int colCount = metaData.getColumnCount();
+		for (int i = 1; i <= colCount; i++) {
+			oColumnNames.add(metaData.getColumnName(i).toUpperCase());
+		}
+		return String.join(", ", oColumnNames);
+	}
+
+	/**
+	 * Adds a limit and offset to a given SQL query
+	 * 
+	 * @param _sSql			The SQL
+	 * @param _iMaxRows		The maximum number of rows	
+	 * @param iQueryPasses	The number of passes (0 to whatever)
+	 * @return The string SQL
+	 * @throws SQLException
+	 */
+	public static String addPagingToQuery(String _sSql, int _iMaxRows, int iQueryPasses) {
+		return _sSql + " LIMIT " + _iMaxRows + " OFFSET " + (iQueryPasses * _iMaxRows) + "";
+	}
+
+	/**
+	 * Creates a blank database file with an identity column
+	 * 
+	 * @param _oConnection
+	 * @param _sTableName
+	 * @param _bDropFirst
+	 * @return The string
+	 * @throws SQLException
+	 */
+	public static void makeBlankDatabaseWithIdentityColumn(Connection _oConnection, String _sTableName,
+			boolean _bDropFirst) throws SQLException {
+
+		if (_bDropFirst) {
+			executeSQL(_oConnection, "DROP TABLE IF EXISTS " + _sTableName);
+		}
+
+		DatabaseMetaData metadata = _oConnection.getMetaData();
+		String databaseProductName = metadata.getDatabaseProductName();
+		String tableSQL = "CREATE TABLE " + _sTableName + " ";
+		if (databaseProductName.equalsIgnoreCase("PostgreSQL")) {
+			tableSQL = tableSQL + "(id BIGSERIAL PRIMARY KEY)";
+		} else if (databaseProductName.equalsIgnoreCase("MySQL")) {
+			tableSQL = tableSQL + "(id INT AUTO_INCREMENT, PRIMARY KEY (id))";
+		} else {
+			tableSQL = tableSQL + "(id INT AUTO_INCREMENT PRIMARY KEY)";
+		}
+		executeSQL(_oConnection, tableSQL);
+
+	}
+
+	public static void provisionTableWithColumns(Connection _oConnection, String _sInputFileText, String _sTableName,
+			XSaLTDataProcessInterface processor) throws SQLException, IOException {
+
+		TreeMap<String, Long> sizeParams = new TreeMap<>();
+		List<String> fileLines = null;
+		fileLines = Files.readAllLines(Paths.get(_sInputFileText), StandardCharsets.UTF_8);
+
+		for (String line : fileLines) {
+			TreeMap<String, String> testParams = processor.performOperation(line);
+			handleParamSizes(sizeParams, testParams);
+		}
+
+		makeBlankDatabaseWithIdentityColumn(_oConnection, _sTableName, true);
+
+		for (Map.Entry<String, Long> entry : sizeParams.entrySet()) {
+			String columnName = entry.getKey();
+			long columnSize = (sizeParams.get(columnName) == null || sizeParams.get(columnName) == 0) ? 5
+					: sizeParams.get(columnName);
+
+			columnName = entry.getKey();
+
+			String addColumnSql = "";
+			try {
+				addColumnSql = "ALTER TABLE " + _sTableName.toUpperCase() + " ADD COLUMN " + columnName + " VARCHAR("
+						+ columnSize + ")";
+				executeSQL(_oConnection, addColumnSql);
+			} catch (SQLException e) {
+				LOGGER.warn("Cannot alter table: {}, reason {}", addColumnSql, e.toString());
+			}
+
+		}
+
+	}
+
+	public static void writeTableWithColumns(Connection _oConnection, String _sInputFileText, String _sTableName,
+			XSaLTDataProcessInterface processor) throws SQLException, IOException {
+
+		int lineCount = 1;
+		List<String> fileLines = null;
+		fileLines = Files.readAllLines(Paths.get(_sInputFileText), StandardCharsets.UTF_8);
+
+		for (String line : fileLines) {
+
+			lineCount++;
+			TreeMap<String, String> finalParams = processor.performOperation(line);
+
+			try {
+				makeAndInsertRows(_oConnection, _sTableName, finalParams);
+				if (lineCount % 100 == 0) {
+					LOGGER.info("row {} added!", lineCount);
+				}
+			} catch (SQLException ee) {
+				ee.printStackTrace();
+			}
+
+		}
+
+	}
+
+	public static void makeAndInsertRows(Connection conn, String tableName, TreeMap<String, String> dbColumns)
+			throws SQLException {
+
+		ArrayList<String> columnNames = new ArrayList<>();
+		ArrayList<String> columnValues = new ArrayList<>();
+
+		for (Map.Entry<String, String> entry : dbColumns.entrySet()) {
+			columnNames.add(entry.getKey());
+			columnValues.add("'" + XSaLTStringUtils.getEmptyStringIfNull(entry.getValue()).replaceAll("\\'", "") + "'");
+		}
+
+		String insertSQL = "INSERT INTO " + tableName + " (" + String.join(", ", columnNames) + ") VALUES ("
+				+ String.join(", ", columnValues) + ")";
+
+		try {
+			conn.createStatement().execute(insertSQL);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	private static void handleParamSizes(TreeMap<String, Long> _oSizeParams, TreeMap<String, String> _oTestParams) {
+		for (Map.Entry<String, String> entry : _oTestParams.entrySet()) {
+			String key = entry.getKey();
+			if (entry.getValue() != null) {
+				int value = entry.getValue().length();
+				if (_oSizeParams.containsKey(key)) {
+					Long testLongValue = _oSizeParams.get(key);
+					if (value > testLongValue) {
+						_oSizeParams.put(key, (long) value);
+					}
+				} else {
+					_oSizeParams.put(key, (long) value);
+				}
+			} else {
+				int value = 0;
+				if (_oSizeParams.containsKey(key)) {
+					Long testLongValue = _oSizeParams.get(key);
+					if (value > testLongValue) {
+						_oSizeParams.put(key, (long) value);
+					}
+				} else {
+					_oSizeParams.put(key, (long) value);
+				}
+			}
+		}
 	}
 
 }
