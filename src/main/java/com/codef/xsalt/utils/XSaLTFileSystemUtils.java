@@ -215,6 +215,17 @@ public class XSaLTFileSystemUtils {
 			return null;
 		}
 	}
+	
+	public static Properties loadOutsideProperties(String resourceName) {
+		Properties properties = new Properties();
+		try (FileInputStream fileInputStream = new FileInputStream(resourceName)) {
+		    properties.load(fileInputStream);
+		} catch (IOException e) {
+			LOGGER.error(e.toString(), e);
+		}
+		return properties;
+	}
+
 
 	/**
 	 * This method renames a given file.
