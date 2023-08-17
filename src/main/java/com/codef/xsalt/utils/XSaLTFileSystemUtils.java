@@ -13,6 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -47,6 +48,35 @@ import org.w3c.dom.Document;
 public class XSaLTFileSystemUtils {
 
 	private static final Logger LOGGER = LogManager.getLogger(XSaLTFileSystemUtils.class.getName());
+	
+	
+	public static double getFolderSize(String folderPath, String filePrefixFilter) {
+
+		double directorySize = 0.0;
+		Path directory = Paths.get(folderPath);
+		if (Files.exists(directory) && Files.isDirectory(directory)) {
+			try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(directory)) {
+				for (Path file : directoryStream) {
+					if (Files.isRegularFile(file)) {
+
+						if (file.getFileName().toString().startsWith(filePrefixFilter)) {
+							long fileSizeBytes = Files.size(file);
+							double fileSizeMB = (double) fileSizeBytes / (1024 * 1024);
+							directorySize = directorySize + fileSizeMB;
+						}
+					}
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			System.out.println("The directory does not exist or is not a directory.");
+		}
+
+		return directorySize;
+
+	}
+	
 
 	/**
 	 * Get the MD5 hash of a file
