@@ -1,3 +1,3 @@
 # XSaLTFramework
 
-This needs Java 15.
+This needs Java 20.
