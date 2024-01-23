@@ -101,6 +101,12 @@ public class XSaLTRobot {
 			robot.keyRelease(KeyEvent.VK_2);
 			robot.keyRelease(KeyEvent.VK_SHIFT);
 			break;
+		case '#':
+			robot.keyPress(KeyEvent.VK_SHIFT);
+			robot.keyPress(KeyEvent.VK_3);
+			robot.keyRelease(KeyEvent.VK_3);
+			robot.keyRelease(KeyEvent.VK_SHIFT);
+			break;
 		case '\b':
 			robot.keyPress(KeyEvent.VK_BACK_SPACE);
 			robot.keyRelease(KeyEvent.VK_BACK_SPACE);
