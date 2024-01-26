@@ -20,15 +20,15 @@ public class XSaLTObjectUtils {
 		for (int i = 0; i < ctorlist.length; i++)
 		{
 			Constructor ct = ctorlist[i];
-			XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "name  = " + ct.getName());
-			XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "decl class = " + ct.getDeclaringClass());
+			XSaLTGeneric// LOGGER.logXSaLT(Priority.INFO_INT, "name  = " + ct.getName());
+			XSaLTGeneric// LOGGER.logXSaLT(Priority.INFO_INT, "decl class = " + ct.getDeclaringClass());
 			Class pvec[] = ct.getParameterTypes();
 			for (int j = 0; j < pvec.length; j++)
-				XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "param #" + j + " " + pvec[j]);
+				XSaLTGeneric// LOGGER.logXSaLT(Priority.INFO_INT, "param #" + j + " " + pvec[j]);
 			Class evec[] = ct.getExceptionTypes();
 			for (int j = 0; j < evec.length; j++)
-				XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "exc #" + j + " " + evec[j]);
-			XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, "-----");
+				XSaLTGeneric// LOGGER.logXSaLT(Priority.INFO_INT, "exc #" + j + " " + evec[j]);
+			XSaLTGeneric// LOGGER.logXSaLT(Priority.INFO_INT, "-----");
 		}
 
 	}

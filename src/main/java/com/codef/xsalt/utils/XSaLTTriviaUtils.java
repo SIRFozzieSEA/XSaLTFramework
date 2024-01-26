@@ -21,8 +21,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+// import org.apache.logging.log4j.LogManager;
+// import org.apache.logging.log4j.Logger;
 
 import com.codef.xsalt.arch.XSaLTConstants;
 
@@ -32,7 +32,7 @@ import com.codef.xsalt.arch.XSaLTConstants;
  */
 public class XSaLTTriviaUtils {
 
-	private static final Logger LOGGER = LogManager.getLogger(XSaLTTriviaUtils.class.getName());
+	// private static final Logger LOGGER = LogManager.getLogger(XSaLTTriviaUtils.class.getName());
 
 	/**
 	 * This method returns the formed URL to manually check bad addresses on USPS'
@@ -198,7 +198,7 @@ public class XSaLTTriviaUtils {
 			return sEncodeValue;
 
 		} catch (Exception e) {
-			LOGGER.error(e.toString(), e);
+			// LOGGER.error(e.toString(), e);
 			return "";
 		}
 
@@ -277,7 +277,7 @@ public class XSaLTTriviaUtils {
 		ResultSet rsCASSCount = XSaLTDataUtils.getFirstRecord(_oConn,
 				"SELECT count(*) as cnt from " + _sCASSedTable + " where JQ_FULL_NAME is null");
 		if (rsCASSCount.getInt("cnt") > 0) {
-			LOGGER.fatal("Can not generate NCOA file, CASS process incomplete for table " + _sCASSedTable);
+			// LOGGER.fatal("Can not generate NCOA file, CASS process incomplete for table " + _sCASSedTable);
 			return;
 		} else {
 			final long lMaxFileRecords = 10000000;
@@ -367,14 +367,14 @@ public class XSaLTTriviaUtils {
 
 				bwWriter.write(sbWriteLine.toString());
 
-				LOGGER.info(sbWriteLine.toString());
+				// LOGGER.info(sbWriteLine.toString());
 
 				// really, if we get to 10 million records (USPS max size)
 				if (lRecordCount % lMaxFileRecords == 0) {
 					bwWriter.flush();
 					bwWriter.close();
 
-					LOGGER.info("Hit record limit, creating new file");
+					// LOGGER.info("Hit record limit, creating new file");
 					lFileCount++;
 					bwWriter = new BufferedWriter(new FileWriter(_sNCOAFilePath + "_" + lFileCount, false));
 				}
@@ -384,8 +384,8 @@ public class XSaLTTriviaUtils {
 			bwWriter.flush();
 			bwWriter.close();
 
-			LOGGER.info("Record Count: " + lRecordCount);
-			LOGGER.info("File Count: " + lFileCount);
+			// LOGGER.info("Record Count: " + lRecordCount);
+			// LOGGER.info("File Count: " + lFileCount);
 		}
 	}
 
@@ -755,9 +755,9 @@ public class XSaLTTriviaUtils {
 	public static String createOCRAScanLineWithCheckDigit(String _sValueToEvaluate, String _sWeights,
 			boolean _bAddSpaceBeforeCheckDigit) {
 
-		// LOGGER.info( _sValueToEvaluate);
-		// LOGGER.info( _sWeights);
-		// LOGGER.info( "_sValueToEvaluate = " + _sValueToEvaluate.length() + ",
+		// // LOGGER.info( _sValueToEvaluate);
+		// // LOGGER.info( _sWeights);
+		// // LOGGER.info( "_sValueToEvaluate = " + _sValueToEvaluate.length() + ",
 		// _sWeights " + _sWeights.length());
 
 		StringBuffer sReturnScanLine = new StringBuffer();
@@ -821,12 +821,12 @@ public class XSaLTTriviaUtils {
 
 		sReturnScanLine.append(nModOut);
 
-		// LOGGER.info( "Line:\t" + oValueBufferForArrayList.toString());
-		// LOGGER.info( "Weight:\t" + oWeightBufferForArrayList.toString());
-		// LOGGER.info( "Product:\t" + oProductBufferForArrayList.toString());
-		// LOGGER.info( "Add:\t" + oResultBufferForArrayList.toString() + "\t = " +
+		// // LOGGER.info( "Line:\t" + oValueBufferForArrayList.toString());
+		// // LOGGER.info( "Weight:\t" + oWeightBufferForArrayList.toString());
+		// // LOGGER.info( "Product:\t" + oProductBufferForArrayList.toString());
+		// // LOGGER.info( "Add:\t" + oResultBufferForArrayList.toString() + "\t = " +
 		// nTotal + " mod10 is '" + nModOut + "'");
-		// LOGGER.info(
+		// // LOGGER.info(
 		// "-------------------------------------------------------------------------------------------------");
 
 		return sReturnScanLine.toString();
@@ -963,7 +963,7 @@ public class XSaLTTriviaUtils {
 	// String sFullScanLine = asScanLines[i];
 	// String sScanLine = asScanLines[i].substring(0, 20);
 	// String sCheckDigit = asScanLines[i].substring(21, 22);
-	// LOGGER.info( "'" + sScanLine + "', '" + sCheckDigit + "'");
+	// // LOGGER.info( "'" + sScanLine + "', '" + sCheckDigit + "'");
 	//
 	// String sScanLineChecker =
 	// XSaLTTriviaUtils.createScanLineWithCheckDigit(sScanLine,
@@ -971,16 +971,16 @@ public class XSaLTTriviaUtils {
 	//
 	// if (sScanLineChecker.equalsIgnoreCase(sFullScanLine))
 	// {
-	// LOGGER.info( "Good");
+	// // LOGGER.info( "Good");
 	// }
 	// else
 	// {
-	// LOGGER.info( "Bad");
+	// // LOGGER.info( "Bad");
 	// }
 	//
 	// }
 	//
-	// LOGGER.info( "");
+	// // LOGGER.info( "");
 
 	/**
 	 * This method checks a generated scan line for accuracy.
@@ -1001,28 +1001,28 @@ public class XSaLTTriviaUtils {
 		 * int[] anWeights = { 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2,
 		 * 1, 2, 1 };
 		 * 
-		 * LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200000148000000030008", anWeights,
-		 * true)); LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200000983000000030006",
+		 * // LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200000148000000030008", anWeights,
+		 * true)); // LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200000983000000030006",
 		 * anWeights, true));
 		 * 
-		 * LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200000818000000030007", anWeights,
-		 * true)); LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200001161000000050006",
+		 * // LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200000818000000030007", anWeights,
+		 * true)); // LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200001161000000050006",
 		 * anWeights, true));
 		 * 
-		 * LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200000034000000050003", anWeights,
-		 * true)); LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200001588000000050001",
+		 * // LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200000034000000050003", anWeights,
+		 * true)); // LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200001588000000050001",
 		 * anWeights, true));
 		 * 
-		 * LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200000982000000040006", anWeights,
-		 * true)); LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200001541000000050007",
+		 * // LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200000982000000040006", anWeights,
+		 * true)); // LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200001541000000050007",
 		 * anWeights, true));
 		 * 
-		 * LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200000876000000030006", anWeights,
-		 * true)); LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200002611000000030002",
+		 * // LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200000876000000030006", anWeights,
+		 * true)); // LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200002611000000030002",
 		 * anWeights, true));
 		 * 
-		 * LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200001581000000020001", anWeights,
-		 * true)); LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200002102000000050006",
+		 * // LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200001581000000020001", anWeights,
+		 * true)); // LOGGER.info( XSaLTTriviaUtils.Mod10Test("0200002102000000050006",
 		 * anWeights, true));
 		 * 
 		 */
@@ -1035,7 +1035,7 @@ public class XSaLTTriviaUtils {
 
 			if (i == 0) {
 
-				LOGGER.info(_sCheckLineWithCheckDigit.substring(i, 1));
+				// LOGGER.info(_sCheckLineWithCheckDigit.substring(i, 1));
 
 				if (_sCheckLineWithCheckDigit.substring(i, 1).equals(" ")) {
 					anTestCheckDigitFinal[i] = 0;
@@ -1881,7 +1881,7 @@ public class XSaLTTriviaUtils {
 						String sModifiedFileName = XSaLTStringUtils.processRegEx(sOriginalFileName,
 								_sWhatToLookForRegExp, _sWhatToReplaceWithRegExp);
 						if (!sOriginalFileName.equals(sModifiedFileName)) {
-							LOGGER.info(sOriginalFileName + ", " + sModifiedFileName);
+							// LOGGER.info(sOriginalFileName + ", " + sModifiedFileName);
 							File oFile = new File(sModifiedFileName);
 							myFiles[i].renameTo(oFile);
 						}

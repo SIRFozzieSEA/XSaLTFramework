@@ -12,8 +12,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+// import org.apache.logging.log4j.LogManager;
+// import org.apache.logging.log4j.Logger;
 
 /**
  * @author Stephan P. Cossette
@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class XSaLTDataScrubUtils {
 
-	private static final Logger LOGGER = LogManager.getLogger(XSaLTDataScrubUtils.class.getName());
+	// private static final Logger LOGGER = LogManager.getLogger(XSaLTDataScrubUtils.class.getName());
 
 	/**
 	 * Cleans phone number data, removing non-numerical data from phone numbers.
@@ -952,7 +952,7 @@ public class XSaLTDataScrubUtils {
 
 			XSaLTStringUtils.formatDateForMySQL(oMatcher.group(1), _sDateFormat);
 			if (sDate == null || sDate.trim().length() == 0) {
-				LOGGER.info("====> " + sLabelAndDate);
+				// LOGGER.info("====> " + sLabelAndDate);
 				sDate = null;
 			} else {
 				sDate = "'" + sDate + "'";
@@ -1059,7 +1059,7 @@ public class XSaLTDataScrubUtils {
 		}
 
 		if (sZN4.length() < 5 || sZN4.length() > 10) {
-			LOGGER.warn("Address Line split encountered non-standard data: " + _sAddressLine);
+			// LOGGER.warn("Address Line split encountered non-standard data: " + _sAddressLine);
 		}
 
 		String[] asZN4 = sZN4.split("-");

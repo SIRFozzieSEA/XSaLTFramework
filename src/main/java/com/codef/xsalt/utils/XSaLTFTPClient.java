@@ -14,8 +14,8 @@ import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+// import org.apache.logging.log4j.LogManager;
+// import org.apache.logging.log4j.Logger;
 
 /**
  * @author Stephan P. Cossette
@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class XSaLTFTPClient {
 
-	private static final Logger LOGGER = LogManager.getLogger(XSaLTFTPClient.class.getName());
+	// private static final Logger LOGGER = LogManager.getLogger(XSaLTFTPClient.class.getName());
 
 	private FTPClient ioFTPClient = new FTPClient();
 
@@ -101,7 +101,7 @@ public class XSaLTFTPClient {
 				}
 			}
 		} catch (IOException e) {
-			LOGGER.error(e.toString(), e);
+			// LOGGER.error(e.toString(), e);
 		}
 	}
 

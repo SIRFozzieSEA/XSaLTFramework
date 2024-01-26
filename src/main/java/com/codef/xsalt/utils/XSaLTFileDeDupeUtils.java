@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+// import org.apache.logging.log4j.LogManager;
+// import org.apache.logging.log4j.Logger;
 
 /**
  * @author Stephan P. Cossette
@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class XSaLTFileDeDupeUtils {
 
-	private static final Logger LOGGER = LogManager.getLogger(XSaLTFileDeDupeUtils.class.getName());
+	// private static final Logger LOGGER = LogManager.getLogger(XSaLTFileDeDupeUtils.class.getName());
 
 	/**
 	 * The current file being examined
@@ -80,7 +80,7 @@ public class XSaLTFileDeDupeUtils {
 		try {
 			new XSaLTFileDeDupeUtils("", "", true, true);
 		} catch (IOException e) {
-			LOGGER.error(e.toString(), e);
+			// LOGGER.error(e.toString(), e);
 		}
 
 	}
@@ -192,7 +192,7 @@ public class XSaLTFileDeDupeUtils {
 		if (_oStartDirectory.isDirectory()) {
 			String sDirectoryMessage = "In directory: " + _oStartDirectory.getAbsolutePath();
 			if (_bShowDirectoryProgress) {
-				LOGGER.info(sDirectoryMessage);
+				// LOGGER.info(sDirectoryMessage);
 			}
 			ioLogBuffer.append(sDirectoryMessage);
 
@@ -237,7 +237,7 @@ public class XSaLTFileDeDupeUtils {
 									+ isExistingFileInDirectory + "'";
 
 							if (_bShowFileDupes) {
-								LOGGER.info(sMessageOne);
+								// LOGGER.info(sMessageOne);
 								if (sMessageOne != null) {
 									ioReportFilesBuffer.append(sMessageOne);
 								}

@@ -36,8 +36,8 @@ import java.util.zip.ZipOutputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+// import org.apache.logging.log4j.LogManager;
+// import org.apache.logging.log4j.Logger;
 
 import org.w3c.dom.Document;
 
@@ -47,7 +47,7 @@ import org.w3c.dom.Document;
  */
 public class XSaLTFileSystemUtils {
 
-	private static final Logger LOGGER = LogManager.getLogger(XSaLTFileSystemUtils.class.getName());
+	// private static final Logger LOGGER = LogManager.getLogger(XSaLTFileSystemUtils.class.getName());
 	
 	
 	public static double getFolderSize(String folderPath, String filePrefixFilter) {
@@ -127,7 +127,7 @@ public class XSaLTFileSystemUtils {
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.error(e.toString(), e);
+			// LOGGER.error(e.toString(), e);
 		}
 	}
 
@@ -147,7 +147,7 @@ public class XSaLTFileSystemUtils {
 				out.write(mynumber);
 			}
 		} catch (Exception e) {
-			LOGGER.error(e.toString(), e);
+			// LOGGER.error(e.toString(), e);
 		}
 	}
 
@@ -173,7 +173,7 @@ public class XSaLTFileSystemUtils {
 		File oFile = new File(_sPath);
 		if (oFile.exists()) {
 			if (_bLogEvent) {
-				LOGGER.info("Deleting: " + _sPath);
+				// LOGGER.info("Deleting: " + _sPath);
 			}
 			oFile.delete();
 		}
@@ -241,7 +241,7 @@ public class XSaLTFileSystemUtils {
 			oProps.load(oInputStream);
 			return oProps;
 		} catch (IOException e) {
-			LOGGER.error(e.toString(), e);
+			// LOGGER.error(e.toString(), e);
 			return null;
 		}
 	}
@@ -251,7 +251,7 @@ public class XSaLTFileSystemUtils {
 		try (FileInputStream fileInputStream = new FileInputStream(resourceName)) {
 		    properties.load(fileInputStream);
 		} catch (IOException e) {
-			LOGGER.error(e.toString(), e);
+			// LOGGER.error(e.toString(), e);
 		}
 		return properties;
 	}
@@ -269,7 +269,7 @@ public class XSaLTFileSystemUtils {
 
 		boolean success = oFile1.renameTo(oFile2);
 		if (!success) {
-			LOGGER.info("File '" + _sOldPathName + "' was not successfully renamed to '" + _sNewPathName + "'");
+			// LOGGER.info("File '" + _sOldPathName + "' was not successfully renamed to '" + _sNewPathName + "'");
 		}
 
 	}
@@ -295,7 +295,7 @@ public class XSaLTFileSystemUtils {
 		for (File oFile : oEmptyFileFolders) {
 			boolean isDeleted = oFile.delete();
 			if (isDeleted) {
-				LOGGER.error(oFile.getPath() + " deleted");
+				// LOGGER.error(oFile.getPath() + " deleted");
 			}
 		}
 	}
@@ -518,7 +518,7 @@ public class XSaLTFileSystemUtils {
 		zipFile(_oDirectoryToZip, _oDirectoryToZip, oZipOutputStream, _bShowFileProgress);
 		oZipOutputStream.close();
 
-		LOGGER.info("Zipped 1: " + _sPathToNewZipFile);
+		// LOGGER.info("Zipped 1: " + _sPathToNewZipFile);
 	}
 
 	/**
@@ -541,7 +541,7 @@ public class XSaLTFileSystemUtils {
 			} else {
 				FileInputStream oFileInputStream = new FileInputStream(oFilesToZip[i]);
 				if (_bShowFileProgress) {
-					LOGGER.info(oFilesToZip[i].getPath().substring(_oMasterFileDirectory.getPath().length() + 1));
+					// LOGGER.info(oFilesToZip[i].getPath().substring(_oMasterFileDirectory.getPath().length() + 1));
 				}
 				ZipEntry oZipEntry = new ZipEntry(
 						oFilesToZip[i].getPath().substring(_oMasterFileDirectory.getPath().length() + 1));
@@ -588,7 +588,7 @@ public class XSaLTFileSystemUtils {
 		zipFileNoEmbeddedZips(_oDirectoryToZip, _oDirectoryToZip, oZipOutputStream, _bShowFileProgress);
 		oZipOutputStream.close();
 
-		LOGGER.info("Zipped 2: " + _sPathToNewZipFile);
+		// LOGGER.info("Zipped 2: " + _sPathToNewZipFile);
 	}
 
 	/**
@@ -615,7 +615,7 @@ public class XSaLTFileSystemUtils {
 
 					FileInputStream oFileInputStream = new FileInputStream(oFilesToZip[i]);
 					if (_bShowFileProgress) {
-						LOGGER.info(oFilesToZip[i].getPath().substring(_oMasterFileDirectory.getPath().length() + 1));
+						// LOGGER.info(oFilesToZip[i].getPath().substring(_oMasterFileDirectory.getPath().length() + 1));
 					}
 					ZipEntry oZipEntry = new ZipEntry(
 							oFilesToZip[i].getPath().substring(_oMasterFileDirectory.getPath().length() + 1));
@@ -716,7 +716,7 @@ public class XSaLTFileSystemUtils {
 		oFileInputStream.close();
 		oZipOutputStream.close();
 
-		LOGGER.info("Zipped 3: " + _sPathToNewZipFile);
+		// LOGGER.info("Zipped 3: " + _sPathToNewZipFile);
 	}
 
 	/**
@@ -740,7 +740,7 @@ public class XSaLTFileSystemUtils {
 	 */
 	public static synchronized void writeStringToFile(String _sStringToWrite, String _sFilePath) throws IOException {
 		Files.write(Paths.get(_sFilePath), _sStringToWrite.getBytes());
-		LOGGER.info("Writing: " + _sFilePath);
+		// LOGGER.info("Writing: " + _sFilePath);
 	}
 
 	/**
@@ -1703,7 +1703,7 @@ public class XSaLTFileSystemUtils {
 			doc.getDocumentElement().normalize();
 			return doc;
 		} catch (Exception e) {
-			LOGGER.error(e.toString(), e);
+			// LOGGER.error(e.toString(), e);
 			return null;
 		}
 
@@ -1728,7 +1728,7 @@ public class XSaLTFileSystemUtils {
 			doc.getDocumentElement().normalize();
 			return doc;
 		} catch (Exception e) {
-			LOGGER.error(e.toString(), e);
+			// LOGGER.error(e.toString(), e);
 			return null;
 		}
 

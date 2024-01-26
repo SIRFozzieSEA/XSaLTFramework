@@ -16,8 +16,8 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+// import org.apache.logging.log4j.LogManager;
+// import org.apache.logging.log4j.Logger;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -135,7 +135,7 @@ public class XSaLTGraphicTools {
 
 	private HashMap<Integer, String> ioOBrienInserterFirstDigitMap = null;
 
-	private static final Logger LOGGER = LogManager.getLogger(XSaLTGraphicTools.class.getName());
+	// private static final Logger LOGGER = LogManager.getLogger(XSaLTGraphicTools.class.getName());
 
 	/**
 	 * Generic constructor.
@@ -253,7 +253,7 @@ public class XSaLTGraphicTools {
 			Toolkit oToolkik = Toolkit.getDefaultToolkit();
 			return oToolkik.getImage(oloader.getResource(_oResourcePath));
 		} catch (Exception e) {
-			LOGGER.error(e.toString(), e);
+			// LOGGER.error(e.toString(), e);
 			return null;
 		}
 	}
@@ -270,7 +270,7 @@ public class XSaLTGraphicTools {
 		try {
 			return new ImageIcon(oloader.getResource(_oResourcePath));
 		} catch (Exception e) {
-			LOGGER.error(e.toString(), e);
+			// LOGGER.error(e.toString(), e);
 			return null;
 		}
 	}
@@ -303,7 +303,7 @@ public class XSaLTGraphicTools {
 	// }
 	// catch (Exception e)
 	// {
-	// LOGGER.error(e.toString(), e);
+	// // LOGGER.error(e.toString(), e);
 	// }
 
 	// public XSaLTPDFTools(String _sPDFFilePath, Rectangle _oPageSize) throws
@@ -346,7 +346,7 @@ public class XSaLTGraphicTools {
 	 * oPageSize.getHeight(), sTextCopy, false, false, true);
 	 * ioPDFTools.ioPdfDocument.close();
 	 * 
-	 * } catch (Exception e) { LOGGER.error(e.toString(), e); }
+	 * } catch (Exception e) { // LOGGER.error(e.toString(), e); }
 	 * 
 	 * 
 	 * 
@@ -476,7 +476,7 @@ public class XSaLTGraphicTools {
 	 * 
 	 * ioPDFTools.ioPdfDocument.close();
 	 * 
-	 * } catch (Exception e) { LOGGER.error(e.toString(), e); }
+	 * } catch (Exception e) { // LOGGER.error(e.toString(), e); }
 	 * 
 	 * 
 	 */

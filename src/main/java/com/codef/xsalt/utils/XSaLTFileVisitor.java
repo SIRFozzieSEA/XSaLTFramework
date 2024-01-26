@@ -7,8 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+// import org.apache.logging.log4j.LogManager;
+// import org.apache.logging.log4j.Logger;
 
 /**
  * @author Stephan P. Cossette
@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class XSaLTFileVisitor {
 
-	private static final Logger LOGGER = LogManager.getLogger(XSaLTFileVisitor.class.getName());
+	// private static final Logger LOGGER = LogManager.getLogger(XSaLTFileVisitor.class.getName());
 
 	public static int fileCount = 0;
 
@@ -50,7 +50,7 @@ public class XSaLTFileVisitor {
 				}
 			}
 		} catch (IOException e) {
-			LOGGER.error(e.toString(), e);
+			// LOGGER.error(e.toString(), e);
 		}
 	}
 
@@ -65,16 +65,16 @@ public class XSaLTFileVisitor {
 				}
 			}
 		} catch (IOException e) {
-			LOGGER.error(e.toString(), e);
+			// LOGGER.error(e.toString(), e);
 		}
 	}
 
 	public void visitFileCode(String filePath) {
-		LOGGER.info("File " + filePath + " has been visited.");
+		// LOGGER.info("File " + filePath + " has been visited.");
 	}
 	
 	public void visitFolderCode(String filePath) {
-		LOGGER.info("Folder " + filePath + " has been visited.");
+		// LOGGER.info("Folder " + filePath + " has been visited.");
 	}
 
 }

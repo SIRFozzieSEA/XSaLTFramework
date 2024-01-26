@@ -72,7 +72,7 @@ public class XSaLTFileFolderFlattener
 			{
 				String sOriginalFile = (String) j.next();
 				String sCopyToLocation = ioFilePathHashMap.get(sOriginalFile);
-				//					XSaLTGenericLogger.logXSaLT(Priority.INFO_INT, sOriginalFile + " --> " + sCopyToLocation);
+				//					XSaLTGeneric// LOGGER.logXSaLT(Priority.INFO_INT, sOriginalFile + " --> " + sCopyToLocation);
 				XSaLTFileSystemUtils.copyFile(sOriginalFile, sCopyToLocation);
 
 			}

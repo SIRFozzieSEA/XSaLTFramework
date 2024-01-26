@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+// import org.apache.logging.log4j.LogManager;
+// import org.apache.logging.log4j.Logger;
 
 import com.codef.xsalt.arch.XSaLTConstants;
 
@@ -22,7 +22,7 @@ import com.codef.xsalt.arch.XSaLTConstants;
  */
 public class XSaLTStringUtils {
 
-	private static final Logger LOGGER = LogManager.getLogger(XSaLTStringUtils.class.getName());
+	// private static final Logger LOGGER = LogManager.getLogger(XSaLTStringUtils.class.getName());
 
 	/**
 	 * This method gets the MD5 hash equivalent of the input
@@ -226,7 +226,7 @@ public class XSaLTStringUtils {
 			Date oDate = oDateFormat.parse(_sDate);
 			sRv = oMySQLDateFormat.format(oDate);
 		} catch (Exception e) {
-			LOGGER.error(e.toString(), e);
+			// LOGGER.error(e.toString(), e);
 		}
 		return sRv;
 	}
@@ -1621,7 +1621,7 @@ public class XSaLTStringUtils {
 			SimpleDateFormat oDateFmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			oRv = oDateFmt.parse(_sDateString);
 		} catch (ParseException e) {
-			LOGGER.error("Unable to parse date string: " + _sDateString, e);
+			// LOGGER.error("Unable to parse date string: " + _sDateString, e);
 		}
 
 		return oRv;
@@ -1640,7 +1640,7 @@ public class XSaLTStringUtils {
 			SimpleDateFormat oDateFmt = new SimpleDateFormat("yyyy-MM-dd");
 			oRv = oDateFmt.parse(_sDateString);
 		} catch (ParseException e) {
-			LOGGER.error("Unable to parse date string: " + _sDateString, e);
+			// LOGGER.error("Unable to parse date string: " + _sDateString, e);
 		}
 
 		return oRv;
