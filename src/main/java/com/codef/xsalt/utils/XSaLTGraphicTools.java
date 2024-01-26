@@ -16,14 +16,12 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-// import org.apache.logging.log4j.LogManager;
-// import org.apache.logging.log4j.Logger;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.data.general.DefaultPieDataset;
 
+import com.codef.xsalt.arch.XSaLTLoggerWrapper;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -135,8 +133,6 @@ public class XSaLTGraphicTools {
 
 	private HashMap<Integer, String> ioOBrienInserterFirstDigitMap = null;
 
-	// private static final Logger LOGGER = LogManager.getLogger(XSaLTGraphicTools.class.getName());
-
 	/**
 	 * Generic constructor.
 	 */
@@ -165,7 +161,7 @@ public class XSaLTGraphicTools {
 		}
 
 	}
-	
+
 	// NOT SURE WHERE THIS WAS EVER USED, BUT WHATEVS
 	public static void cropImage(String imageFileName, File pathFile, BufferedImage bufferedImage) throws IOException {
 		if (imageFileName.contains("land")) {
@@ -176,7 +172,6 @@ public class XSaLTGraphicTools {
 			ImageIO.write(XSaLTGraphicTools.cropImage(bufferedImage, 179, 466, 400, 600), "jpg", pathFile);
 		}
 	}
-	
 
 	public static BufferedImage cropImage(BufferedImage bufferedImage, int x, int y, int width, int height) {
 		BufferedImage croppedImage = bufferedImage.getSubimage(x, y, width, height);
@@ -253,7 +248,7 @@ public class XSaLTGraphicTools {
 			Toolkit oToolkik = Toolkit.getDefaultToolkit();
 			return oToolkik.getImage(oloader.getResource(_oResourcePath));
 		} catch (Exception e) {
-			// LOGGER.error(e.toString(), e);
+			XSaLTLoggerWrapper.error(XSaLTGraphicTools.class.getName(), e.toString(), e);
 			return null;
 		}
 	}
@@ -270,7 +265,7 @@ public class XSaLTGraphicTools {
 		try {
 			return new ImageIcon(oloader.getResource(_oResourcePath));
 		} catch (Exception e) {
-			// LOGGER.error(e.toString(), e);
+			XSaLTLoggerWrapper.error(XSaLTGraphicTools.class.getName(), e.toString(), e);
 			return null;
 		}
 	}
@@ -303,7 +298,7 @@ public class XSaLTGraphicTools {
 	// }
 	// catch (Exception e)
 	// {
-	// // LOGGER.error(e.toString(), e);
+	// XSaLTLoggerWrapper.error(e.toString(), e);
 	// }
 
 	// public XSaLTPDFTools(String _sPDFFilePath, Rectangle _oPageSize) throws
@@ -346,7 +341,7 @@ public class XSaLTGraphicTools {
 	 * oPageSize.getHeight(), sTextCopy, false, false, true);
 	 * ioPDFTools.ioPdfDocument.close();
 	 * 
-	 * } catch (Exception e) { // LOGGER.error(e.toString(), e); }
+	 * } catch (Exception e) { XSaLTLoggerWrapper.error(e.toString(), e); }
 	 * 
 	 * 
 	 * 
@@ -476,7 +471,7 @@ public class XSaLTGraphicTools {
 	 * 
 	 * ioPDFTools.ioPdfDocument.close();
 	 * 
-	 * } catch (Exception e) { // LOGGER.error(e.toString(), e); }
+	 * } catch (Exception e) { XSaLTLoggerWrapper.error(e.toString(), e); }
 	 * 
 	 * 
 	 */

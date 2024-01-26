@@ -6,16 +6,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-// import org.apache.logging.log4j.LogManager;
-// import org.apache.logging.log4j.Logger;
-
 /**
  * @author Stephan P. Cossette
  * @author Copyright 2011 Codef.com
  */
 public class XSaLTStreamGobbler extends Thread {
-
-	// private static final Logger LOGGER = LogManager.getLogger(XSaLTStreamGobbler.class.getName());
 
 	/**
 	 * The instance input stream for the java process
@@ -56,7 +51,7 @@ public class XSaLTStreamGobbler extends Thread {
 				ioOutputLines.add(sOutputLine);
 			}
 		} catch (IOException e) {
-			// LOGGER.error(e.toString(), e);
+			XSaLTLoggerWrapper.error(XSaLTStreamGobbler.class.getName(), e.toString(), e);
 		}
 	}
 

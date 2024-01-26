@@ -7,10 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-// import org.apache.logging.log4j.Level;
-// import org.apache.logging.log4j.LogManager;
-// import org.apache.logging.log4j.Logger;
-
+import com.codef.xsalt.arch.XSaLTLoggerWrapper;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
@@ -18,11 +15,10 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
 public class XSaLTJCraftManager {
-	
-	
-	/*
 
- 		XSaLTJCraftManager instance = new XSaLTJCraftManager(username, password, hostname, port, timeout, knownHostPath);
+	/*
+	
+		XSaLTJCraftManager instance = new XSaLTJCraftManager(username, password, hostname, port, timeout, knownHostPath);
 		instance.sendCommand("ls -lsa", null);
 		instance.sendCommand("ls -lsa; tree", null);
 		instance.sendCommand("echo 'hello'", password);
@@ -30,11 +26,8 @@ public class XSaLTJCraftManager {
 		instance.sendFile("C:/Filez/samplezipfilefromlocal.zip", "filez/samplezipfilefromlocal.zip");
 		instance.receiveFile("filez/sampletextfilefromserver.txt", "C:/Filez/sampletextfilefromserver.txt");
 		instance.receiveFile("filez/samplezipfilefromserver.zip", "C:/Filez/samplezipfilefromserver.zip");
-
-	 */
 	
-
-	// private static final Logger LOGGER = LogManager.getLogger(XSaLTJCraftManager.class.getName());
+	 */
 
 	private String username;
 	private String password;
@@ -62,7 +55,7 @@ public class XSaLTJCraftManager {
 			this.timeout = timeout;
 
 		} catch (JSchException e) {
-			// LOGGER.log(Level.ERROR, e.toString(), e);
+			XSaLTLoggerWrapper.error(XSaLTJCraftManager.class.getName(), e.toString(), e);
 		}
 
 	}
@@ -77,7 +70,7 @@ public class XSaLTJCraftManager {
 			// sesConnection.setConfig("StrictHostKeyChecking", "no"); // TESTING ONLY
 			jscSession.connect(timeout);
 		} catch (JSchException e) {
-			// LOGGER.log(Level.ERROR, e.toString(), e);
+			XSaLTLoggerWrapper.error(XSaLTJCraftManager.class.getName(), e.toString(), e);
 			errorMessage = e.getMessage();
 		}
 
@@ -117,7 +110,7 @@ public class XSaLTJCraftManager {
 
 			channel.disconnect();
 		} catch (Exception e) {
-			// LOGGER.log(Level.ERROR, e.toString(), e);
+			XSaLTLoggerWrapper.error(XSaLTJCraftManager.class.getName(), e.toString(), e);
 			return null;
 		}
 
@@ -198,12 +191,12 @@ public class XSaLTJCraftManager {
 			channel.disconnect();
 
 		} catch (Exception e) {
-			// LOGGER.log(Level.ERROR, e.toString(), e);
+			XSaLTLoggerWrapper.error(XSaLTJCraftManager.class.getName(), e.toString(), e);
 			try {
 				if (fis != null)
 					fis.close();
 			} catch (Exception ee) {
-				// LOGGER.log(Level.ERROR, ee.toString(), ee);
+				XSaLTLoggerWrapper.error(XSaLTJCraftManager.class.getName(), ee.toString(), ee);
 			}
 		}
 
@@ -305,12 +298,12 @@ public class XSaLTJCraftManager {
 			channel.disconnect();
 
 		} catch (Exception e) {
-			// LOGGER.log(Level.ERROR, e.toString(), e);
+			XSaLTLoggerWrapper.error(XSaLTJCraftManager.class.getName(), e.toString(), e);
 			try {
 				if (fos != null)
 					fos.close();
 			} catch (Exception ee) {
-				// LOGGER.log(Level.ERROR, ee.toString(), ee);
+				XSaLTLoggerWrapper.error(XSaLTJCraftManager.class.getName(), ee.toString(), ee);
 			}
 		}
 

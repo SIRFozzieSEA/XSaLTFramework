@@ -17,22 +17,17 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
 import javax.mail.internet.MimeMultipart;
 
-// import org.apache.logging.log4j.LogManager;
-// import org.apache.logging.log4j.Logger;
-
+import com.codef.xsalt.arch.XSaLTLoggerWrapper;
 import com.codef.xsalt.arch.XSaLTMailMessageObject;
 
 /**
  * @author Stephan P. Cossette
  * @author Copyright 2011 Codef.com
  */
-public class XSaLTMailUtils
-{
+public class XSaLTMailUtils {
 
 	public static boolean XB_TEST_MODE = false;
 	public static boolean XB_IS_TEST_SERVER = false;
-	
-	// private static final Logger LOGGER = LogManager.getLogger(XSaLTMailUtils.class.getName());
 
 	/**
 	 * Mails a com.codef.xsalt.arch.XSaLTMailMessageObject
@@ -42,8 +37,8 @@ public class XSaLTMailUtils
 	 * @throws MessagingException
 	 * @throws IOException 
 	 */
-	public void sendMail(XSaLTMailMessageObject _oXsaltMmo, String _sOverrideServerTestFlag) throws MessagingException, IOException
-	{
+	public void sendMail(XSaLTMailMessageObject _oXsaltMmo, String _sOverrideServerTestFlag)
+			throws MessagingException, IOException {
 
 		String sFromPerson = "";
 		StringBuffer oToPersonBuffer = new StringBuffer();
@@ -57,8 +52,7 @@ public class XSaLTMailUtils
 		oMailProperties.put("mail.smtp.auth", Boolean.valueOf(_oXsaltMmo.doesMailServerHostRequiresAuthentication()));
 		oMailProperties.put("mail.from", _oXsaltMmo.getMailMessageOriginatesFromEmail());
 
-		if (_oXsaltMmo.getMailServerPort().equalsIgnoreCase("587"))
-		{
+		if (_oXsaltMmo.getMailServerPort().equalsIgnoreCase("587")) {
 			oMailProperties.put("mail.imap.auth.plain.disable", "true");
 			oMailProperties.put("mail.imap.auth.ntlm.disable", "true");
 			oMailProperties.put("mail.smtp.auth", "true");
@@ -68,20 +62,21 @@ public class XSaLTMailUtils
 		Session oMailSession = Session.getInstance(oMailProperties, _oXsaltMmo.getXsaltAuthenticator());
 
 		MimeMessage oMimeMessage = new MimeMessage(oMailSession);
-		Address oFromAddress = new InternetAddress(_oXsaltMmo.getMailMessageOriginatesFromEmail(), _oXsaltMmo.getMailMessageOriginatesFromName());
+		Address oFromAddress = new InternetAddress(_oXsaltMmo.getMailMessageOriginatesFromEmail(),
+				_oXsaltMmo.getMailMessageOriginatesFromName());
 		oMimeMessage.setFrom(oFromAddress);
 
 		Address[] aoSenderAddress = new Address[1];
 		aoSenderAddress[0] = new InternetAddress(_oXsaltMmo.getMailMessageOriginatesFromEmail());
 		oMimeMessage.setReplyTo(aoSenderAddress);
 
-		sFromPerson = _oXsaltMmo.getMailMessageOriginatesFromName() + "(" + _oXsaltMmo.getMailMessageOriginatesFromEmail() + ")";
+		sFromPerson = _oXsaltMmo.getMailMessageOriginatesFromName() + "("
+				+ _oXsaltMmo.getMailMessageOriginatesFromEmail() + ")";
 
 		boolean bHasToRecipients = false;
 		int nRecipientToCount = 0;
 		Address[] aoRecipientAddresses = new Address[_oXsaltMmo.getRecipientsToHashmap().size()];
-		for (Iterator<String> i = _oXsaltMmo.getRecipientsToHashmap().keySet().iterator(); i.hasNext();)
-		{
+		for (Iterator<String> i = _oXsaltMmo.getRecipientsToHashmap().keySet().iterator(); i.hasNext();) {
 			String sEmailAddress = (String) i.next();
 			String sDisplayName = (String) _oXsaltMmo.getRecipientsToHashmap().get(sEmailAddress);
 			oToPersonBuffer.append(sDisplayName + " (" + sEmailAddress + "); ");
@@ -90,16 +85,14 @@ public class XSaLTMailUtils
 			bHasToRecipients = true;
 		}
 
-		if (bHasToRecipients)
-		{
+		if (bHasToRecipients) {
 			oMimeMessage.setRecipients(RecipientType.TO, aoRecipientAddresses);
 		}
 
 		boolean bHasBCCRecipients = false;
 		int nRecipientBCCCount = 0;
 		aoRecipientAddresses = new Address[_oXsaltMmo.getRecipientsBCCHashmap().size()];
-		for (Iterator<String> i = _oXsaltMmo.getRecipientsBCCHashmap().keySet().iterator(); i.hasNext();)
-		{
+		for (Iterator<String> i = _oXsaltMmo.getRecipientsBCCHashmap().keySet().iterator(); i.hasNext();) {
 			String sEmailAddress = (String) i.next();
 			String sDisplayName = (String) _oXsaltMmo.getRecipientsBCCHashmap().get(sEmailAddress);
 			oBCCPersonBuffer.append(sDisplayName + " (" + sEmailAddress + "); ");
@@ -108,8 +101,7 @@ public class XSaLTMailUtils
 			bHasBCCRecipients = true;
 		}
 
-		if (bHasBCCRecipients)
-		{
+		if (bHasBCCRecipients) {
 			oMimeMessage.setRecipients(RecipientType.BCC, aoRecipientAddresses);
 		}
 
@@ -123,8 +115,7 @@ public class XSaLTMailUtils
 		MimeMultipart oMimeMultipart = new MimeMultipart("FILEZ");
 		oMimeMultipart.addBodyPart(oMessageBodyPart);
 
-		for (int i = 0; i < _oXsaltMmo.getAttachmentsArraylist().size(); i++)
-		{
+		for (int i = 0; i < _oXsaltMmo.getAttachmentsArraylist().size(); i++) {
 			oMessageBodyPart = new MimeBodyPart();
 			String sFilePath = _oXsaltMmo.getAttachmentsArraylist().get(i).toString();
 			String sFilename = sFilePath.substring(sFilePath.lastIndexOf('/') + 1, sFilePath.length());
@@ -135,11 +126,9 @@ public class XSaLTMailUtils
 		}
 
 		oMimeMessage.setContent(oMimeMultipart);
-		if (bHasToRecipients || bHasBCCRecipients)
-		{
+		if (bHasToRecipients || bHasBCCRecipients) {
 
-			if (XB_TEST_MODE)
-			{
+			if (XB_TEST_MODE) {
 				StringBuffer oMailBuffer = new StringBuffer();
 				String sEMailUniqueKey = "MAIL_" + XSaLTStringUtils.getDatetimeStringNoUnderscoreWithMilli() + ".txt";
 				oMailBuffer.append("XSaLTMailUtils Test Message ------------------------------------------");
@@ -158,23 +147,20 @@ public class XSaLTMailUtils
 				XSaLTFileSystemUtils.createFileFolder("C:/_WORKING/TEST_MAILS/");
 				XSaLTFileSystemUtils.writeStringBufferToFile(oMailBuffer, "C:/_WORKING/TEST_MAILS/" + sEMailUniqueKey);
 
-				// LOGGER.info( "Mailing TEST 1: " + sSubject + " (" + oToPersonBuffer.toString() + oBCCPersonBuffer.toString() + ")");
+				XSaLTLoggerWrapper.info(XSaLTMailUtils.class.getName(), "Mailing TEST 1: " + sSubject + " ("
+						+ oToPersonBuffer.toString() + oBCCPersonBuffer.toString() + ")");
 
-			}
-			else
-			{
+			} else {
 
-				if (_sOverrideServerTestFlag != null && _sOverrideServerTestFlag.equalsIgnoreCase("YES"))
-				{
+				if (_sOverrideServerTestFlag != null && _sOverrideServerTestFlag.equalsIgnoreCase("YES")) {
 					Transport.send(oMimeMessage);
-					// LOGGER.info( "Mailing LIVE 1: " + sSubject + " (" + oToPersonBuffer.toString() + oBCCPersonBuffer.toString() + ")");
-				}
-				else
-				{
-					if (XB_IS_TEST_SERVER)
-					{
+					XSaLTLoggerWrapper.info(XSaLTMailUtils.class.getName(), "Mailing LIVE 1: " + sSubject + " ("
+							+ oToPersonBuffer.toString() + oBCCPersonBuffer.toString() + ")");
+				} else {
+					if (XB_IS_TEST_SERVER) {
 						StringBuffer oMailBuffer = new StringBuffer();
-						String sEMailUniqueKey = "MAIL_" + XSaLTStringUtils.getDatetimeStringNoUnderscoreWithMilli() + ".txt";
+						String sEMailUniqueKey = "MAIL_" + XSaLTStringUtils.getDatetimeStringNoUnderscoreWithMilli()
+								+ ".txt";
 						oMailBuffer.append("XSaLTMailUtils Test Message ------------------------------------------");
 						oMailBuffer.append("\n\n");
 						oMailBuffer.append("     FROM: " + sFromPerson);
@@ -189,16 +175,17 @@ public class XSaLTMailUtils
 						oMailBuffer.append("\n\n");
 
 						XSaLTFileSystemUtils.createFileFolder("C:/_WORKING/TEST_MAILS/");
-						XSaLTFileSystemUtils.writeStringBufferToFile(oMailBuffer, "C:/_WORKING/TEST_MAILS/" + sEMailUniqueKey);
+						XSaLTFileSystemUtils.writeStringBufferToFile(oMailBuffer,
+								"C:/_WORKING/TEST_MAILS/" + sEMailUniqueKey);
 
-						// LOGGER.info( "Mailing TEST 2: " + sSubject + " (" + oToPersonBuffer.toString() + oBCCPersonBuffer.toString() + ")");
+						XSaLTLoggerWrapper.info(XSaLTMailUtils.class.getName(), "Mailing TEST 2: " + sSubject + " ("
+								+ oToPersonBuffer.toString() + oBCCPersonBuffer.toString() + ")");
 
-					}
-					else
-					{
+					} else {
 						Transport.send(oMimeMessage);
 
-						// LOGGER.info( "Mailing LIVE 2: " + sSubject + " (" + oToPersonBuffer.toString() + oBCCPersonBuffer.toString() + ")");
+						XSaLTLoggerWrapper.info(XSaLTMailUtils.class.getName(), "Mailing LIVE 2: " + sSubject + " ("
+								+ oToPersonBuffer.toString() + oBCCPersonBuffer.toString() + ")");
 
 					}
 				}
@@ -245,13 +232,13 @@ public class XSaLTMailUtils
 //			XSaLTMailUtils oTestMail = new XSaLTMailUtils();
 //			XSaLTMailUtils.setTestMode(true);
 //			oTestMail.sendMail(oXsaltMmo, "YES");
-//			// LOGGER.info( "Success");
+//			XSaLTLoggerWrapper.info( "Success");
 //
 //		}
 //		catch (Exception e)
 //		{
 //
-//			// LOGGER.info( "Fail", e);
+//			XSaLTLoggerWrapper.info( "Fail", e);
 //
 //		}
 //	}
@@ -261,8 +248,7 @@ public class XSaLTMailUtils
 	 * @param _bFlag
 	 *            Flag if class should be in test mode
 	 */
-	public static void setTestMode(boolean _bFlag)
-	{
+	public static void setTestMode(boolean _bFlag) {
 		XB_TEST_MODE = _bFlag;
 	}
 

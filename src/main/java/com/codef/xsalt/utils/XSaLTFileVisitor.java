@@ -7,16 +7,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 
-// import org.apache.logging.log4j.LogManager;
-// import org.apache.logging.log4j.Logger;
+import com.codef.xsalt.arch.XSaLTLoggerWrapper;
 
 /**
  * @author Stephan P. Cossette
  * @author Copyright 2011 Codef.com
  */
 public class XSaLTFileVisitor {
-
-	// private static final Logger LOGGER = LogManager.getLogger(XSaLTFileVisitor.class.getName());
 
 	public static int fileCount = 0;
 
@@ -35,11 +32,11 @@ public class XSaLTFileVisitor {
 	public void startVisit(String filePath) {
 		visitFiles(Paths.get(filePath));
 	}
-	
+
 	public void startVisitFolders(String filePath) {
 		visitFolders(Paths.get(filePath));
 	}
-	
+
 	private void visitFolders(Path path) {
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
 			for (Path entry : stream) {
@@ -50,7 +47,7 @@ public class XSaLTFileVisitor {
 				}
 			}
 		} catch (IOException e) {
-			// LOGGER.error(e.toString(), e);
+			XSaLTLoggerWrapper.error(XSaLTFileVisitor.class.getName(), e.toString(), e);
 		}
 	}
 
@@ -65,16 +62,16 @@ public class XSaLTFileVisitor {
 				}
 			}
 		} catch (IOException e) {
-			// LOGGER.error(e.toString(), e);
+			XSaLTLoggerWrapper.error(XSaLTFileVisitor.class.getName(), e.toString(), e);
 		}
 	}
 
 	public void visitFileCode(String filePath) {
-		// LOGGER.info("File " + filePath + " has been visited.");
+		XSaLTLoggerWrapper.info(XSaLTFileVisitor.class.getName(), "File " + filePath + " has been visited.");
 	}
-	
+
 	public void visitFolderCode(String filePath) {
-		// LOGGER.info("Folder " + filePath + " has been visited.");
+		XSaLTLoggerWrapper.info(XSaLTFileVisitor.class.getName(), "Folder " + filePath + " has been visited.");
 	}
 
 }

@@ -14,27 +14,27 @@ public class XSaLTObjectUtils {
 	
 	public static void introspectObject(String _sClassURI) throws ClassNotFoundException
 	{
-
+	
 		Class cls = Class.forName(_sClassURI);
 		Constructor ctorlist[] = cls.getDeclaredConstructors();
 		for (int i = 0; i < ctorlist.length; i++)
 		{
 			Constructor ct = ctorlist[i];
-			XSaLTGeneric// LOGGER.logXSaLT(Priority.INFO_INT, "name  = " + ct.getName());
-			XSaLTGeneric// LOGGER.logXSaLT(Priority.INFO_INT, "decl class = " + ct.getDeclaringClass());
+			XSaLTLoggerWrapper.info("name  = " + ct.getName());
+			XSaLTLoggerWrapper.info("decl class = " + ct.getDeclaringClass());
 			Class pvec[] = ct.getParameterTypes();
 			for (int j = 0; j < pvec.length; j++)
-				XSaLTGeneric// LOGGER.logXSaLT(Priority.INFO_INT, "param #" + j + " " + pvec[j]);
+				XSaLTLoggerWrapper.info("param #" + j + " " + pvec[j]);
 			Class evec[] = ct.getExceptionTypes();
 			for (int j = 0; j < evec.length; j++)
-				XSaLTGeneric// LOGGER.logXSaLT(Priority.INFO_INT, "exc #" + j + " " + evec[j]);
-			XSaLTGeneric// LOGGER.logXSaLT(Priority.INFO_INT, "-----");
+				XSaLTLoggerWrapper.info("exc #" + j + " " + evec[j]);
+			XSaLTLoggerWrapper.info("-----");
 		}
-
+	
 	}
 	
 	*/
-	
+
 	/**
 	 * This method concatenates each string from an array in to a single delimited
 	 * string.

@@ -36,10 +36,9 @@ import java.util.zip.ZipOutputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-// import org.apache.logging.log4j.LogManager;
-// import org.apache.logging.log4j.Logger;
-
 import org.w3c.dom.Document;
+
+import com.codef.xsalt.arch.XSaLTLoggerWrapper;
 
 /**
  * @author Stephan P. Cossette
@@ -47,9 +46,6 @@ import org.w3c.dom.Document;
  */
 public class XSaLTFileSystemUtils {
 
-	// private static final Logger LOGGER = LogManager.getLogger(XSaLTFileSystemUtils.class.getName());
-	
-	
 	public static double getFolderSize(String folderPath, String filePrefixFilter) {
 
 		double directorySize = 0.0;
@@ -76,7 +72,6 @@ public class XSaLTFileSystemUtils {
 		return directorySize;
 
 	}
-	
 
 	/**
 	 * Get the MD5 hash of a file
@@ -127,7 +122,7 @@ public class XSaLTFileSystemUtils {
 				}
 			}
 		} catch (Exception e) {
-			// LOGGER.error(e.toString(), e);
+			XSaLTLoggerWrapper.error(XSaLTFileSystemUtils.class.getName(), e.toString(), e);
 		}
 	}
 
@@ -147,7 +142,7 @@ public class XSaLTFileSystemUtils {
 				out.write(mynumber);
 			}
 		} catch (Exception e) {
-			// LOGGER.error(e.toString(), e);
+			XSaLTLoggerWrapper.error(XSaLTFileSystemUtils.class.getName(), e.toString(), e);
 		}
 	}
 
@@ -173,7 +168,7 @@ public class XSaLTFileSystemUtils {
 		File oFile = new File(_sPath);
 		if (oFile.exists()) {
 			if (_bLogEvent) {
-				// LOGGER.info("Deleting: " + _sPath);
+				XSaLTLoggerWrapper.info(XSaLTFileSystemUtils.class.getName(), "Deleting: " + _sPath);
 			}
 			oFile.delete();
 		}
@@ -241,21 +236,20 @@ public class XSaLTFileSystemUtils {
 			oProps.load(oInputStream);
 			return oProps;
 		} catch (IOException e) {
-			// LOGGER.error(e.toString(), e);
+			XSaLTLoggerWrapper.error(XSaLTFileSystemUtils.class.getName(), e.toString(), e);
 			return null;
 		}
 	}
-	
+
 	public static Properties loadOutsideProperties(String resourceName) {
 		Properties properties = new Properties();
 		try (FileInputStream fileInputStream = new FileInputStream(resourceName)) {
-		    properties.load(fileInputStream);
+			properties.load(fileInputStream);
 		} catch (IOException e) {
-			// LOGGER.error(e.toString(), e);
+			XSaLTLoggerWrapper.error(XSaLTFileSystemUtils.class.getName(), e.toString(), e);
 		}
 		return properties;
 	}
-
 
 	/**
 	 * This method renames a given file.
@@ -269,7 +263,8 @@ public class XSaLTFileSystemUtils {
 
 		boolean success = oFile1.renameTo(oFile2);
 		if (!success) {
-			// LOGGER.info("File '" + _sOldPathName + "' was not successfully renamed to '" + _sNewPathName + "'");
+			XSaLTLoggerWrapper.info(XSaLTFileSystemUtils.class.getName(),
+					"File '" + _sOldPathName + "' was not successfully renamed to '" + _sNewPathName + "'");
 		}
 
 	}
@@ -295,7 +290,7 @@ public class XSaLTFileSystemUtils {
 		for (File oFile : oEmptyFileFolders) {
 			boolean isDeleted = oFile.delete();
 			if (isDeleted) {
-				// LOGGER.error(oFile.getPath() + " deleted");
+				XSaLTLoggerWrapper.error(XSaLTFileSystemUtils.class.getName(), oFile.getPath() + " deleted");
 			}
 		}
 	}
@@ -518,7 +513,7 @@ public class XSaLTFileSystemUtils {
 		zipFile(_oDirectoryToZip, _oDirectoryToZip, oZipOutputStream, _bShowFileProgress);
 		oZipOutputStream.close();
 
-		// LOGGER.info("Zipped 1: " + _sPathToNewZipFile);
+		XSaLTLoggerWrapper.info(XSaLTFileSystemUtils.class.getName(), "Zipped 1: " + _sPathToNewZipFile);
 	}
 
 	/**
@@ -541,7 +536,8 @@ public class XSaLTFileSystemUtils {
 			} else {
 				FileInputStream oFileInputStream = new FileInputStream(oFilesToZip[i]);
 				if (_bShowFileProgress) {
-					// LOGGER.info(oFilesToZip[i].getPath().substring(_oMasterFileDirectory.getPath().length() + 1));
+					XSaLTLoggerWrapper.info(XSaLTFileSystemUtils.class.getName(),
+							oFilesToZip[i].getPath().substring(_oMasterFileDirectory.getPath().length() + 1));
 				}
 				ZipEntry oZipEntry = new ZipEntry(
 						oFilesToZip[i].getPath().substring(_oMasterFileDirectory.getPath().length() + 1));
@@ -588,7 +584,7 @@ public class XSaLTFileSystemUtils {
 		zipFileNoEmbeddedZips(_oDirectoryToZip, _oDirectoryToZip, oZipOutputStream, _bShowFileProgress);
 		oZipOutputStream.close();
 
-		// LOGGER.info("Zipped 2: " + _sPathToNewZipFile);
+		XSaLTLoggerWrapper.info(XSaLTFileSystemUtils.class.getName(), "Zipped 2: " + _sPathToNewZipFile);
 	}
 
 	/**
@@ -615,7 +611,8 @@ public class XSaLTFileSystemUtils {
 
 					FileInputStream oFileInputStream = new FileInputStream(oFilesToZip[i]);
 					if (_bShowFileProgress) {
-						// LOGGER.info(oFilesToZip[i].getPath().substring(_oMasterFileDirectory.getPath().length() + 1));
+						XSaLTLoggerWrapper.info(XSaLTFileSystemUtils.class.getName(),
+								oFilesToZip[i].getPath().substring(_oMasterFileDirectory.getPath().length() + 1));
 					}
 					ZipEntry oZipEntry = new ZipEntry(
 							oFilesToZip[i].getPath().substring(_oMasterFileDirectory.getPath().length() + 1));
@@ -716,7 +713,7 @@ public class XSaLTFileSystemUtils {
 		oFileInputStream.close();
 		oZipOutputStream.close();
 
-		// LOGGER.info("Zipped 3: " + _sPathToNewZipFile);
+		XSaLTLoggerWrapper.info(XSaLTFileSystemUtils.class.getName(), "Zipped 3: " + _sPathToNewZipFile);
 	}
 
 	/**
@@ -740,7 +737,7 @@ public class XSaLTFileSystemUtils {
 	 */
 	public static synchronized void writeStringToFile(String _sStringToWrite, String _sFilePath) throws IOException {
 		Files.write(Paths.get(_sFilePath), _sStringToWrite.getBytes());
-		// LOGGER.info("Writing: " + _sFilePath);
+		XSaLTLoggerWrapper.info(XSaLTFileSystemUtils.class.getName(), "Writing: " + _sFilePath);
 	}
 
 	/**
@@ -780,7 +777,7 @@ public class XSaLTFileSystemUtils {
 			throws IOException {
 		writeStringToFile(_oStringBufferToWrite.toString(), _sFilePath);
 	}
-	
+
 	/**
 	 * This method writes a StringBuffer out to a file as text
 	 * 
@@ -1457,7 +1454,7 @@ public class XSaLTFileSystemUtils {
 
 		return _sFinalFileName;
 	}
-	
+
 	/**
 	 * Concatenates Files in the same directory
 	 * 
@@ -1488,7 +1485,6 @@ public class XSaLTFileSystemUtils {
 
 		return finalOutputFile;
 	}
-	
 
 	/**
 	 * Concatenates Files in the same directory
@@ -1703,7 +1699,7 @@ public class XSaLTFileSystemUtils {
 			doc.getDocumentElement().normalize();
 			return doc;
 		} catch (Exception e) {
-			// LOGGER.error(e.toString(), e);
+			XSaLTLoggerWrapper.error(XSaLTFileSystemUtils.class.getName(), e.toString(), e);
 			return null;
 		}
 
@@ -1728,7 +1724,7 @@ public class XSaLTFileSystemUtils {
 			doc.getDocumentElement().normalize();
 			return doc;
 		} catch (Exception e) {
-			// LOGGER.error(e.toString(), e);
+			XSaLTLoggerWrapper.error(XSaLTFileSystemUtils.class.getName(), e.toString(), e);
 			return null;
 		}
 

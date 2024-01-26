@@ -18,7 +18,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-//import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -28,12 +27,8 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-//import javax.servlet.http.HttpServletRequest;
-
-// import org.apache.logging.log4j.LogManager;
-// import org.apache.logging.log4j.Logger;
-
 import com.codef.xsalt.arch.XSaLTDataProcessInterface;
+import com.codef.xsalt.arch.XSaLTLoggerWrapper;
 import com.codef.xsalt.arch.XSaLTTripleStringLinkedHashMap;
 import com.linuxense.javadbf.DBFField;
 import com.linuxense.javadbf.DBFReader;
@@ -53,8 +48,6 @@ public class XSaLTDataUtils {
 	public static boolean XB_SHOW_STRING_INDEX_OUT_OF_BOUNDS_EXCEPTION = false;
 
 	public static final String XS_ENCRYPT_KEY = "0steve1and2bob3are4awesome5";
-
-	// private static final Logger LOGGER = LogManager.getLogger(XSaLTDataUtils.class.getName());
 
 	/**
 	 * This method will sum each numeric column in the specified table and output
@@ -87,7 +80,8 @@ public class XSaLTDataUtils {
 							sSQL = sSQL + " AND " + sColumnName + " > 0";
 						}
 						ResultSet oRs = getFirstRecord(_oConn, sSQL);
-						// LOGGER.info("\t" + sColumnName + "\t" + "(Greater Than Zero)" + "\t" + oRs.getString("MYSUM") + "\t");
+						XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "\t" + sColumnName + "\t"
+								+ "(Greater Than Zero)" + "\t" + oRs.getString("MYSUM") + "\t");
 					}
 				}
 
@@ -96,7 +90,8 @@ public class XSaLTDataUtils {
 						String sSQL = "SELECT sum(" + sColumnName + ") AS MYSUM FROM " + _sTableName + " WHERE "
 								+ sColumnName + " IS NOT NULL";
 						ResultSet oRs = getFirstRecord(_oConn, sSQL);
-						// LOGGER.info("\t" + sColumnName + "\t" + "(All)" + "\t" + oRs.getString("MYSUM") + "\t");
+						XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+								"\t" + sColumnName + "\t" + "(All)" + "\t" + oRs.getString("MYSUM") + "\t");
 					}
 				}
 
@@ -108,7 +103,8 @@ public class XSaLTDataUtils {
 							sSQL = sSQL + " AND " + sColumnName + " < 0";
 						}
 						ResultSet oRs = getFirstRecord(_oConn, sSQL);
-						// LOGGER.info("\t" + sColumnName + "\t" + "(Less Than Zero)" + "\t" + oRs.getString("MYSUM") + "\t");
+						XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+								"\t" + sColumnName + "\t" + "(Less Than Zero)" + "\t" + oRs.getString("MYSUM") + "\t");
 					}
 				}
 
@@ -121,7 +117,8 @@ public class XSaLTDataUtils {
 							sSQL = sSQL + " AND " + sColumnName + " > 0";
 						}
 						ResultSet oRs = getFirstRecord(_oConn, sSQL);
-						// LOGGER.info("\t" + sColumnName + "\t" + "(Greater Than Zero)" + "\t" + oRs.getString("MYSUM") + "\t");
+						XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "\t" + sColumnName + "\t"
+								+ "(Greater Than Zero)" + "\t" + oRs.getString("MYSUM") + "\t");
 					}
 
 				}
@@ -132,7 +129,8 @@ public class XSaLTDataUtils {
 						String sSQL = "SELECT sum(" + sColumnName + ") AS MYSUM FROM " + _sTableName + " WHERE "
 								+ sColumnName + " IS NOT NULL";
 						ResultSet oRs = getFirstRecord(_oConn, sSQL);
-						// LOGGER.info("\t" + sColumnName + "\t" + "(All)" + "\t" + oRs.getString("MYSUM") + "\t");
+						XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+								"\t" + sColumnName + "\t" + "(All)" + "\t" + oRs.getString("MYSUM") + "\t");
 					}
 
 				}
@@ -146,7 +144,8 @@ public class XSaLTDataUtils {
 							sSQL = sSQL + " AND " + sColumnName + " < 0";
 						}
 						ResultSet oRs = getFirstRecord(_oConn, sSQL);
-						// LOGGER.info("\t" + sColumnName + "\t" + "(Less Than Zero)" + "\t" + oRs.getString("MYSUM") + "\t");
+						XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+								"\t" + sColumnName + "\t" + "(Less Than Zero)" + "\t" + oRs.getString("MYSUM") + "\t");
 					}
 
 				}
@@ -213,7 +212,7 @@ public class XSaLTDataUtils {
 			inputStream.close();
 			XSaLTFileSystemUtils.writeStringBufferToFile(oRecordBuffer, _sFilePath.replaceAll("DBF", "tab"));
 		} catch (Exception e) {
-			// LOGGER.error(e.getMessage());
+			XSaLTLoggerWrapper.error(XSaLTDataUtils.class.getName(), e.getMessage());
 		}
 	}
 
@@ -235,7 +234,7 @@ public class XSaLTDataUtils {
 
 			// if (oRsMd.getColumnTypeName(i + 1).equalsIgnoreCase("timestamp"))
 			// {
-			// // LOGGER.info(_sTableName + "." +
+			// XSaLTLoggerWrapper.info(_sTableName + "." +
 			// sColumnName);
 			// }
 
@@ -298,7 +297,7 @@ public class XSaLTDataUtils {
 			}
 
 		} catch (Exception e) {
-			// LOGGER.error(e.toString(), e);
+			XSaLTLoggerWrapper.error(XSaLTDataUtils.class.getName(), e.toString(), e);
 		}
 	}
 
@@ -451,7 +450,8 @@ public class XSaLTDataUtils {
 				String sColumnType = oRsMd.getColumnTypeName(i + 1);
 
 				if (sColumnType.equalsIgnoreCase("TIMESTAMP")) {
-					// LOGGER.info(sSchema + "." + sTableName + " ---> " + sColumnName + " (" + sColumnType + ")");
+					XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+							sSchema + "." + sTableName + " ---> " + sColumnName + " (" + sColumnType + ")");
 
 				}
 			}
@@ -477,7 +477,7 @@ public class XSaLTDataUtils {
 		for (int i = 0; i < oRsMd.getColumnCount(); i++) {
 			String sColumnName = oRsMd.getColumnName(i + 1).toUpperCase();
 			String sFinalColumnName = _sTablename + "__NEW__1__" + sColumnName + "__REG";
-			// LOGGER.info(sFinalColumnName.toUpperCase());
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), sFinalColumnName.toUpperCase());
 		}
 	}
 
@@ -670,7 +670,7 @@ public class XSaLTDataUtils {
 		oResultsMap.put("COLUMN_LENGTH_DATA", anMaxDataColumnLength);
 
 		if (nMaxDataColumnCount > oCleanFileBuffer.get(0).length) {
-			// LOGGER.fatal("DATA EXTENDS PAST COLUMN HEADERS !!!!!!!");
+			XSaLTLoggerWrapper.fatal(XSaLTDataUtils.class.getName(), "DATA EXTENDS PAST COLUMN HEADERS !!!!!!!");
 		}
 
 		dropTableInDatabase(_oConn, _sTableName.toUpperCase());
@@ -824,38 +824,44 @@ public class XSaLTDataUtils {
 			_oConn.commit();
 		}
 
-		// LOGGER.info("Lines inserted into '" + _sTableName.toUpperCase() + "' = " + getRowsCountInDataTable(_oConn, _sTableName.toUpperCase()));
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "Lines inserted into '" + _sTableName.toUpperCase()
+				+ "' = " + getRowsCountInDataTable(_oConn, _sTableName.toUpperCase()));
 
 		if (_bShowDebug) {
 
-			// LOGGER.info("");
-			// LOGGER.info("TABLE IMPORT SUMMARY: ");
-			// LOGGER.info("");
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "");
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "TABLE IMPORT SUMMARY: ");
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "");
 
 			asTemp = (String[]) oResultsMap.get("COLUMNS");
-			// LOGGER.info("                   Columns: " + XSaLTObjectUtils.getStringArrayWithDelimiter_String(asTemp, ", "));
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+					"                   Columns: " + XSaLTObjectUtils.getStringArrayWithDelimiter_String(asTemp, ", "));
 
-			// LOGGER.info("");
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "");
 
 			Integer oRowCount = (Integer) oResultsMap.get("ROW_COUNT");
-			// LOGGER.info("                 Row Count: " + oRowCount.toString());
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+					"                 Row Count: " + oRowCount.toString());
 
 			Integer oColumnCountHeader = (Integer) oResultsMap.get("COLUMN_COUNT_HEADER");
-			// LOGGER.info("   Max Column Count Header: " + oColumnCountHeader.toString());
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+					"   Max Column Count Header: " + oColumnCountHeader.toString());
 
 			Integer oColumnCount = (Integer) oResultsMap.get("COLUMN_COUNT_DATA");
-			// LOGGER.info("     Max Column Count Data: " + oColumnCount.toString());
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+					"     Max Column Count Data: " + oColumnCount.toString());
 
-			// LOGGER.info("");
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "");
 
 			int[] anTemp = (int[]) oResultsMap.get("COLUMN_LENGTH_DATA");
 			for (int i = 0; i < anTemp.length; i++) {
 				if (i < oColumnCountHeader.intValue()) {
-					// LOGGER.info("         Column Max Length: " + anTemp[i] + " - '" + asTemp[i] + "'");
+					XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+							"         Column Max Length: " + anTemp[i] + " - '" + asTemp[i] + "'");
 				}
 			}
 
-			// LOGGER.info("");
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "");
 
 		}
 
@@ -1051,7 +1057,7 @@ public class XSaLTDataUtils {
 		oResultsMap.put("COLUMN_LENGTH_DATA", anMaxDataColumnLength);
 
 		if (nMaxDataColumnCount > oCleanFileBuffer.get(0).length) {
-			// LOGGER.fatal("DATA EXTENDS PAST COLUMN HEADERS !!!!!!!");
+			XSaLTLoggerWrapper.fatal(XSaLTDataUtils.class.getName(), "DATA EXTENDS PAST COLUMN HEADERS !!!!!!!");
 		}
 
 		dropTableInDatabase(_oConn, _sTableName.toUpperCase());
@@ -1152,38 +1158,44 @@ public class XSaLTDataUtils {
 			_oConn.commit();
 		}
 
-		// LOGGER.info("Lines inserted into '" + _sTableName.toUpperCase() + "' = " + getRowsCountInDataTable(_oConn, _sTableName.toUpperCase()));
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "Lines inserted into '" + _sTableName.toUpperCase()
+				+ "' = " + getRowsCountInDataTable(_oConn, _sTableName.toUpperCase()));
 
 		if (_bShowDebug) {
 
-			// LOGGER.info("");
-			// LOGGER.info("TABLE IMPORT SUMMARY: ");
-			// LOGGER.info("");
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "");
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "TABLE IMPORT SUMMARY: ");
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "");
 
 			asTemp = (String[]) oResultsMap.get("COLUMNS");
-			// LOGGER.info("                   Columns: " + XSaLTObjectUtils.getStringArrayWithDelimiter_String(asTemp, ", "));
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+					"                   Columns: " + XSaLTObjectUtils.getStringArrayWithDelimiter_String(asTemp, ", "));
 
-			// LOGGER.info("");
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "");
 
 			Integer oRowCount = (Integer) oResultsMap.get("ROW_COUNT");
-			// LOGGER.info("                 Row Count: " + oRowCount.toString());
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+					"                 Row Count: " + oRowCount.toString());
 
 			Integer oColumnCountHeader = (Integer) oResultsMap.get("COLUMN_COUNT_HEADER");
-			// LOGGER.info("   Max Column Count Header: " + oColumnCountHeader.toString());
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+					"   Max Column Count Header: " + oColumnCountHeader.toString());
 
 			Integer oColumnCount = (Integer) oResultsMap.get("COLUMN_COUNT_DATA");
-			// LOGGER.info("     Max Column Count Data: " + oColumnCount.toString());
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+					"     Max Column Count Data: " + oColumnCount.toString());
 
-			// LOGGER.info("");
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "");
 
 			int[] anTemp = (int[]) oResultsMap.get("COLUMN_LENGTH_DATA");
 			for (int i = 0; i < anTemp.length; i++) {
 				if (i < oColumnCountHeader.intValue()) {
-					// LOGGER.info("         Column Max Length: " + anTemp[i] + " - '" + asTemp[i] + "'");
+					XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+							"         Column Max Length: " + anTemp[i] + " - '" + asTemp[i] + "'");
 				}
 			}
 
-			// LOGGER.info("");
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "");
 
 		}
 
@@ -1365,7 +1377,7 @@ public class XSaLTDataUtils {
 		oResultsMap.put("COLUMN_LENGTH_DATA", anMaxDataColumnLength);
 
 		if (nMaxDataColumnCount > oCleanFileBuffer.get(0).length) {
-			// LOGGER.fatal("DATA EXTENDS PAST COLUMN HEADERS !!!!!!!");
+			XSaLTLoggerWrapper.fatal(XSaLTDataUtils.class.getName(), "DATA EXTENDS PAST COLUMN HEADERS !!!!!!!");
 		}
 
 		String sInsertStart = "INSERT INTO " + _sTableName.toUpperCase() + " ("
@@ -1392,7 +1404,8 @@ public class XSaLTDataUtils {
 			oFinalInsertBuffer.append("), ");
 
 			if ((i - 1) % 1001 == 0) {
-				// LOGGER.info("Lines inserted into '" + _sTableName.toUpperCase() + "' = " + nRowInsertCount);
+				XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+						"Lines inserted into '" + _sTableName.toUpperCase() + "' = " + nRowInsertCount);
 
 				executeSQL(_oConn, oFinalInsertBuffer.substring(0, oFinalInsertBuffer.length() - 2).toString());
 
@@ -1414,26 +1427,30 @@ public class XSaLTDataUtils {
 			_oConn.commit();
 		}
 
-		// LOGGER.info("Lines inserted into '" + _sTableName.toUpperCase() + "' = " + getRowsCountInDataTable(_oConn, _sTableName.toUpperCase()));
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "Lines inserted into '" + _sTableName.toUpperCase()
+				+ "' = " + getRowsCountInDataTable(_oConn, _sTableName.toUpperCase()));
 
 		if (_bShowDebug) {
 
-			// LOGGER.info("");
-			// LOGGER.info("TABLE IMPORT SUMMARY: ");
-			// LOGGER.info("");
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "");
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "TABLE IMPORT SUMMARY: ");
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "");
 
-			// LOGGER.info("");
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "");
 
 			Integer oRowCount = (Integer) oResultsMap.get("ROW_COUNT");
-			// LOGGER.info("                 Row Count: " + oRowCount.toString());
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+					"                 Row Count: " + oRowCount.toString());
 
 			Integer oColumnCountHeader = (Integer) oResultsMap.get("COLUMN_COUNT_HEADER");
-			// LOGGER.info("   Max Column Count Header: " + oColumnCountHeader.toString());
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+					"   Max Column Count Header: " + oColumnCountHeader.toString());
 
 			Integer oColumnCount = (Integer) oResultsMap.get("COLUMN_COUNT_DATA");
-			// LOGGER.info("     Max Column Count Data: " + oColumnCount.toString());
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+					"     Max Column Count Data: " + oColumnCount.toString());
 
-			// LOGGER.info("");
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "");
 
 		}
 
@@ -1483,7 +1500,7 @@ public class XSaLTDataUtils {
 
 	public static void fixNegativeValueInDataColumnAndConvertToDouble(Connection _oConnection, String sTableName,
 			String _sColumnName) throws SQLException {
-		// LOGGER.info("Fixing column " + _sColumnName + " negative values");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "Fixing column " + _sColumnName + " negative values");
 
 		executeSQL(_oConnection,
 				"UPDATE " + sTableName + " SET " + _sColumnName + " = null where " + _sColumnName + " = ''");
@@ -1704,14 +1721,15 @@ public class XSaLTDataUtils {
 				oSQLBuffer.append(" WHERE " + _sToKeyColumnName + " = '" + sFromKeyColumnValue + "'");
 
 				if (nRowCounter % 500 == 0) {
-					// LOGGER.info("ADDING OLD DATA BACK, ROW: " + nRowCounter);
+					XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+							"ADDING OLD DATA BACK, ROW: " + nRowCounter);
 				}
 
 				executeSQL(_oConn, oSQLBuffer.toString());
 				nRowCounter = nRowCounter + 1;
 			}
 
-			// LOGGER.info("ADDING OLD DATA BACK, ROW: " + nRowCounter);
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "ADDING OLD DATA BACK, ROW: " + nRowCounter);
 
 		}
 
@@ -1958,42 +1976,55 @@ public class XSaLTDataUtils {
 		ResultSet oSourceRs = querySQL(_oMySQLConnectionSource, "SELECT * FROM " + _sSourceTable);
 		ResultSetMetaData oRsMd = oSourceRs.getMetaData();
 
-		// LOGGER.info("");
-		// LOGGER.info("");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "");
 
-		// LOGGER.info("LinkedHashMap<String, String> oRenameColumnMap = new LinkedHashMap<String, String>();");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+				"LinkedHashMap<String, String> oRenameColumnMap = new LinkedHashMap<String, String>();");
 
 		for (int i = 0; i < oRsMd.getColumnCount(); i++) {
 			String sColumnName = oRsMd.getColumnName(i + 1).toUpperCase();
-			// LOGGER.info("oRenameColumnMap.put(\"" + sColumnName + "\", \"\");");
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+					"oRenameColumnMap.put(\"" + sColumnName + "\", \"\");");
 		}
 
-		// LOGGER.info("");
-		// LOGGER.info("//   ----- SUGGESTIONS -----");
-		// LOGGER.info("");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "//   ----- SUGGESTIONS -----");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "");
 
-		// LOGGER.info("//   ADDRESS_PK               PET_PK                   VEHICLE_PK");
-		// LOGGER.info("//   FIRST_NAME_ONE           PET_NAME                 VEHICLE_YEAR");
-		// LOGGER.info("//   FIRST_NAME_TWO           PET_GENDER               VEHICLE_MAKE");
-		// LOGGER.info("//   FULLNAME                 PET_BREED                VEHICLE_MODEL");
-		// LOGGER.info("//   LAST_NAME_ONE            PET_COLOR                VEHICLE_COLOR");
-		// LOGGER.info("//   LAST_NAME_TWO            OLD_RABIES_NO            VEHICLE_PLATE");
-		// LOGGER.info("//   FULLNAME_TWO             OLD_RABIES_UDATEZ        VEHICLE_VIN");
-		// LOGGER.info("//   COMPANY                  NEW_RABIES_NO            STICKER_NOS");
-		// LOGGER.info("//   ADDRESS_TYPE             NEW_RABIES_UDATEZ");
-		// LOGGER.info("//   ADDRESS_1");
-		// LOGGER.info("//   ADDRESS_2                PHONE_AREACODE");
-		// LOGGER.info("//   ADDRESS_3                PHONE_EXCHANGE");
-		// LOGGER.info("//   ADDRESS_4                PHONE_SUFFIX");
-		// LOGGER.info("//   CITY                     FULLPHONE");
-		// LOGGER.info("//   STATEPROV                                         COSTCODE_NAME");
-		// LOGGER.info("//   ZIP                                               COSTCODE_COST");
-		// LOGGER.info("//   ZIP_PLUS                                          STATUS");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+				"//   ADDRESS_PK               PET_PK                   VEHICLE_PK");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+				"//   FIRST_NAME_ONE           PET_NAME                 VEHICLE_YEAR");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+				"//   FIRST_NAME_TWO           PET_GENDER               VEHICLE_MAKE");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+				"//   FULLNAME                 PET_BREED                VEHICLE_MODEL");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+				"//   LAST_NAME_ONE            PET_COLOR                VEHICLE_COLOR");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+				"//   LAST_NAME_TWO            OLD_RABIES_NO            VEHICLE_PLATE");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+				"//   FULLNAME_TWO             OLD_RABIES_UDATEZ        VEHICLE_VIN");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+				"//   COMPANY                  NEW_RABIES_NO            STICKER_NOS");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "//   ADDRESS_TYPE             NEW_RABIES_UDATEZ");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "//   ADDRESS_1");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "//   ADDRESS_2                PHONE_AREACODE");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "//   ADDRESS_3                PHONE_EXCHANGE");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "//   ADDRESS_4                PHONE_SUFFIX");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "//   CITY                     FULLPHONE");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+				"//   STATEPROV                                         COSTCODE_NAME");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+				"//   ZIP                                               COSTCODE_COST");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+				"//   ZIP_PLUS                                          STATUS");
 
-		// LOGGER.info("");
-		// LOGGER.info("//   ----- SUGGESTIONS -----");
-		// LOGGER.info("");
-		// LOGGER.info("");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "//   ----- SUGGESTIONS -----");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "");
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "");
 
 	}
 
@@ -2045,7 +2076,8 @@ public class XSaLTDataUtils {
 		ResultSet oSourceRs = querySQL(_oMySQLConnectionSource, "SELECT * FROM " + _sSourceTable);
 		ResultSet oDestinationRs = querySQL(_oMySQLConnectionDestination, "SELECT * FROM " + _sDestinationTableName);
 
-		// LOGGER.info("copying " + _oMySQLConnectionSource + "." + _sSourceTable + " to " + _oMySQLConnectionDestination + "." + _sDestinationTableName);
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "copying " + _oMySQLConnectionSource + "."
+				+ _sSourceTable + " to " + _oMySQLConnectionDestination + "." + _sDestinationTableName);
 
 		ArrayList<String> oDefaultNCOAFields = getStandardNCOAFields();
 		boolean bLastDestinationFieldFound = false;
@@ -2093,7 +2125,8 @@ public class XSaLTDataUtils {
 			}
 			if (oColumnsCreated.length() > 2) {
 				oColumnsCreated = new StringBuffer(oColumnsCreated.substring(0, oColumnsCreated.length() - 2));
-				// LOGGER.info("Columns Created: " + oColumnsCreated.toString());
+				XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+						"Columns Created: " + oColumnsCreated.toString());
 			}
 		}
 
@@ -2223,7 +2256,7 @@ public class XSaLTDataUtils {
 	 * 
 	 * nRowCount++;
 	 * 
-	 * if (nRowCount % 500 == 0) { // LOGGER.info( "Rows cobol corrected in '" +
+	 * if (nRowCount % 500 == 0) { XSaLTLoggerWrapper.info( "Rows cobol corrected in '" +
 	 * _sTableName + "' = " + nRowCount); }
 	 * 
 	 * }
@@ -2351,7 +2384,8 @@ public class XSaLTDataUtils {
 		if (oColumnsCreated.length() > 2) {
 			oColumnsCreated = new StringBuffer(oColumnsCreated.substring(0, oColumnsCreated.length() - 2));
 			if (_bShowRowsCreated) {
-				// LOGGER.info("Columns Created: " + oColumnsCreated.toString());
+				XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+						"Columns Created: " + oColumnsCreated.toString());
 			}
 		}
 
@@ -2567,7 +2601,8 @@ public class XSaLTDataUtils {
 			int nMaxLength = oRs2.getInt("MAX_LENGTH");
 			if (nMaxLength == 0) {
 				if (!oNCOAFields.contains(sColumnName.toUpperCase())) {
-					// LOGGER.info("can delete " + sColumnName + " in table " + _sTableName);
+					XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+							"can delete " + sColumnName + " in table " + _sTableName);
 					dropColumnInTable(_oConnection, _sTableName, sColumnName);
 				}
 			}
@@ -2617,7 +2652,7 @@ public class XSaLTDataUtils {
 
 				String sTableName = XSaLTStringUtils.getEmptyStringIfNull(as[0]);
 
-				if (sTableName.indexOf("XXX") == -1) {
+				if (sTableName.indexOf("XSaLTDataUtils.class.getName()") == -1) {
 
 					String sEditMode = XSaLTStringUtils.getEmptyStringIfNull(as[1]);
 
@@ -2831,11 +2866,11 @@ public class XSaLTDataUtils {
 
 					if (sSQLBuffer != null) {
 						if (_bConvertInputToUppercase) {
-							// // LOGGER.info("upper:" +
+							// XSaLTLoggerWrapper.info("upper:" +
 							// sSQLBuffer.toString().toUpperCase());
 							sLastGenKey = executeSQLGetKey(_oConnection, sSQLBuffer.toString().toUpperCase());
 						} else {
-							// // LOGGER.info("lower:" +
+							// XSaLTLoggerWrapper.info("lower:" +
 							// sSQLBuffer.toString().toUpperCase());
 							sLastGenKey = executeSQLGetKey(_oConnection, sSQLBuffer.toString());
 						}
@@ -2929,7 +2964,7 @@ public class XSaLTDataUtils {
 		try {
 			executeSQL(_oConnection, "DROP TABLE IF EXISTS " + _sTableName.toUpperCase());
 		} catch (Exception e) {
-			// LOGGER.error(e.toString(), e);
+			XSaLTLoggerWrapper.error(XSaLTDataUtils.class.getName(), e.toString(), e);
 		}
 
 	}
@@ -3004,7 +3039,7 @@ public class XSaLTDataUtils {
 				}
 			}
 		} catch (SQLException e) {
-			// LOGGER.error(e.toString(), e);
+			XSaLTLoggerWrapper.error(XSaLTDataUtils.class.getName(), e.toString(), e);
 		}
 
 	}
@@ -3023,7 +3058,7 @@ public class XSaLTDataUtils {
 		try {
 			executeSQL(_oConnection, "ALTER TABLE " + _sTableName + " ADD COLUMN " + _sColumnName + " " + _sColumnType);
 		} catch (SQLException e) {
-			// LOGGER.error(e.toString(), e);
+			XSaLTLoggerWrapper.error(XSaLTDataUtils.class.getName(), e.toString(), e);
 		}
 
 	}
@@ -3044,7 +3079,7 @@ public class XSaLTDataUtils {
 			executeSQL(_oConnection, "ALTER TABLE " + _sTableName + " ADD COLUMN " + _sNewColumnName + " "
 					+ _sColumnType + " after " + _sPreceedingColumnName);
 		} catch (SQLException e) {
-			// LOGGER.error(e.toString(), e);
+			XSaLTLoggerWrapper.error(XSaLTDataUtils.class.getName(), e.toString(), e);
 		}
 
 	}
@@ -3066,7 +3101,7 @@ public class XSaLTDataUtils {
 			executeSQL(_oConnection, "ALTER TABLE " + _sTableName + " ADD COLUMN " + _sColumnName + " " + _sColumnType
 					+ " DEFAULT '" + _sDefaultValue + "'");
 		} catch (SQLException e) {
-			// LOGGER.error(e.toString(), e);
+			XSaLTLoggerWrapper.error(XSaLTDataUtils.class.getName(), e.toString(), e);
 		}
 
 	}
@@ -3391,14 +3426,16 @@ public class XSaLTDataUtils {
 					_sTableName, sReadLine, nRowNo, _bEmptyColumnAsNull, true, _nMaxSizeOfData);
 			nInsertedRows = nInsertedRows + 1;
 			if (nInsertedRows % 500 == 0) {
-				// LOGGER.info("Lines inserted into '" + _sTableName.toUpperCase() + "' = " + nInsertedRows);
+				XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+						"Lines inserted into '" + _sTableName.toUpperCase() + "' = " + nInsertedRows);
 			}
 
 		}
 
 		oLineNumberReader.close();
 
-		// LOGGER.info("Lines inserted into '" + _sTableName.toUpperCase() + "' = " + nInsertedRows);
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+				"Lines inserted into '" + _sTableName.toUpperCase() + "' = " + nInsertedRows);
 
 	}
 
@@ -3439,14 +3476,16 @@ public class XSaLTDataUtils {
 					sReadLine, nRowNo, _bEmptyColumnAsNull, _bConvertToUppercase, _nMaxSizeOfData);
 			nInsertedRows = nInsertedRows + 1;
 			if (nInsertedRows % 500 == 0) {
-				// LOGGER.info("Lines inserted into '" + _sTableName.toUpperCase() + "' = " + nInsertedRows);
+				XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+						"Lines inserted into '" + _sTableName.toUpperCase() + "' = " + nInsertedRows);
 			}
 
 		}
 
 		oLineNumberReader.close();
 
-		// LOGGER.info("Lines inserted into '" + _sTableName.toUpperCase() + "' = " + nInsertedRows);
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+				"Lines inserted into '" + _sTableName.toUpperCase() + "' = " + nInsertedRows);
 
 	}
 
@@ -3563,13 +3602,15 @@ public class XSaLTDataUtils {
 				insertRowIntoTempWorkTableForFixedDataFileNew(_oConnection, oColumnsOrderedmap, null, _sTableName,
 						sReadLine, nRowNo, _bEmptyColumnAsNull, true, _nMaxSizeOfData);
 			} else {
-				// LOGGER.info("ROWGENID (" + nInsertedRows + ") excluded from import because it was smaller than the line length expected");
+				XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "ROWGENID (" + nInsertedRows
+						+ ") excluded from import because it was smaller than the line length expected");
 				nExcludedRows = nExcludedRows + 1;
 			}
 
 			nInsertedRows = nInsertedRows + 1;
 			if (nInsertedRows % 500 == 0) {
-				// LOGGER.info("Lines inserted into '" + _sTableName.toUpperCase() + "' = " + nInsertedRows);
+				XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+						"Lines inserted into '" + _sTableName.toUpperCase() + "' = " + nInsertedRows);
 			}
 
 		}
@@ -3588,7 +3629,8 @@ public class XSaLTDataUtils {
 
 		oLineNumberReader.close();
 
-		// LOGGER.info("Lines inserted into '" + _sTableName.toUpperCase() + "' = " + (nInsertedRows - nExcludedRows));
+		XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+				"Lines inserted into '" + _sTableName.toUpperCase() + "' = " + (nInsertedRows - nExcludedRows));
 
 	}
 
@@ -3857,7 +3899,7 @@ public class XSaLTDataUtils {
 			} catch (StringIndexOutOfBoundsException oob) {
 
 				if (XB_SHOW_STRING_INDEX_OUT_OF_BOUNDS_EXCEPTION) {
-					// LOGGER.warn(oob.toString());
+					XSaLTLoggerWrapper.warn(XSaLTDataUtils.class.getName(), oob.toString());
 				}
 				if (nCharsStart < _sReadLine.length()) {
 					sRawExtract = _sReadLine.substring(nCharsStart).trim();
@@ -3869,8 +3911,8 @@ public class XSaLTDataUtils {
 					sValueToInsert = XSaLTStringUtils.regExReplaceStringForInsert(sRawExtract);
 				}
 			} catch (Exception e) {
-				// LOGGER.error(e.toString(), e);
-				// LOGGER.info(_sReadLine);
+				XSaLTLoggerWrapper.error(XSaLTDataUtils.class.getName(), e.toString(), e);
+				XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), _sReadLine);
 
 			}
 
@@ -4257,19 +4299,19 @@ public class XSaLTDataUtils {
 
 		Connection o_connection_mysql = null;
 		String sConnectString = "";
-		// // LOGGER.info("sConnectString: " +
+		// XSaLTLoggerWrapper.info("sConnectString: " +
 		// sConnectString);
 
 		if (_sSchemaName == null) {
 
 			sConnectString = "jdbc:mysql://" + _sHostName + ":" + _sPortNumber + "/" + "?user=" + _sUsername
 					+ "&password=" + _sPassword;
-			// // LOGGER.info("sConnectString: " +
+			// XSaLTLoggerWrapper.info("sConnectString: " +
 			// sConnectString);
 		} else {
 			sConnectString = "jdbc:mysql://" + _sHostName + ":" + _sPortNumber + "/" + _sSchemaName + "?user="
 					+ _sUsername + "&password=" + _sPassword;
-			// // LOGGER.info("sConnectString: " +
+			// XSaLTLoggerWrapper.info("sConnectString: " +
 			// sConnectString);
 		}
 
@@ -4303,7 +4345,7 @@ public class XSaLTDataUtils {
 
 		Connection o_connection_mysql = null;
 		String sConnectString = "jdbc:postgresql://" + _sHostName + ":" + _sPortNumber + "/" + _sSchemaName;
-		// // LOGGER.info("sConnectString: " +
+		// XSaLTLoggerWrapper.info("sConnectString: " +
 		// sConnectString);
 
 		try {
@@ -4534,7 +4576,7 @@ public class XSaLTDataUtils {
 	 */
 	public static int executeSQL(Connection _oConnection, String _sSqlText) throws SQLException {
 		if (XB_SYSOUT_DB_CALLS) {
-			// LOGGER.info("\t\t" + _sSqlText);
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "\t\t" + _sSqlText);
 
 		}
 
@@ -4560,7 +4602,7 @@ public class XSaLTDataUtils {
 			sReturnKeyAsString = oGenKeysRs.getString(1);
 
 			if (XB_SYSOUT_DB_CALLS) {
-				// LOGGER.info(sReturnKeyAsString + "\t\t" + _sSqlText);
+				XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), sReturnKeyAsString + "\t\t" + _sSqlText);
 			}
 
 		}
@@ -4600,7 +4642,8 @@ public class XSaLTDataUtils {
 			sReturnKeyAsString = oGenKeysRs.getString(1);
 
 			if (XB_SYSOUT_DB_CALLS) {
-				// LOGGER.info(sReturnKeyAsString + "\t\t" + _oPreparedStatement.toString());
+				XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(),
+						sReturnKeyAsString + "\t\t" + _oPreparedStatement.toString());
 			}
 
 		}
@@ -4637,7 +4680,7 @@ public class XSaLTDataUtils {
 			oStmt.setMaxRows(_nMaxRows);
 		}
 		if (XB_SYSOUT_DB_CALLS) {
-			// LOGGER.info("\t\t" + _sSqlText);
+			XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "\t\t" + _sSqlText);
 		}
 		ResultSet oRsMysql = oStmt.executeQuery(_sSqlText);
 		return oRsMysql;
@@ -4675,7 +4718,8 @@ public class XSaLTDataUtils {
 					+ sType;
 			executeSQL(_oConnection, sSQL);
 		} else {
-			// LOGGER.fatal("Column not found and not changed: " + _sOldColumnName);
+			XSaLTLoggerWrapper.fatal(XSaLTDataUtils.class.getName(),
+					"Column not found and not changed: " + _sOldColumnName);
 		}
 	}
 
@@ -4845,7 +4889,8 @@ public class XSaLTDataUtils {
 						+ columnSize + ")";
 				executeSQL(_oConnection, addColumnSql);
 			} catch (SQLException e) {
-				// LOGGER.warn("Cannot alter table: {}, reason {}", addColumnSql, e.toString());
+				XSaLTLoggerWrapper.warn(XSaLTDataUtils.class.getName(),
+						"Cannot alter table: " + addColumnSql + ", reason " + e.toString());
 			}
 
 		}
@@ -4867,7 +4912,7 @@ public class XSaLTDataUtils {
 			try {
 				makeAndInsertRows(_oConnection, _sTableName, finalParams);
 				if (lineCount % 100 == 0) {
-					// LOGGER.info("row {} added!", lineCount);
+					XSaLTLoggerWrapper.info(XSaLTDataUtils.class.getName(), "row " + lineCount + " added!");
 				}
 			} catch (SQLException ee) {
 				ee.printStackTrace();

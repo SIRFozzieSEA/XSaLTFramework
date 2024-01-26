@@ -14,16 +14,13 @@ import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 
-// import org.apache.logging.log4j.LogManager;
-// import org.apache.logging.log4j.Logger;
+import com.codef.xsalt.arch.XSaLTLoggerWrapper;
 
 /**
  * @author Stephan P. Cossette
  * @author Copyright 2011 Codef.com
  */
 public class XSaLTFTPClient {
-
-	// private static final Logger LOGGER = LogManager.getLogger(XSaLTFTPClient.class.getName());
 
 	private FTPClient ioFTPClient = new FTPClient();
 
@@ -101,7 +98,7 @@ public class XSaLTFTPClient {
 				}
 			}
 		} catch (IOException e) {
-			// LOGGER.error(e.toString(), e);
+			XSaLTLoggerWrapper.error(XSaLTFTPClient.class.getName(), e.toString(), e);
 		}
 	}
 

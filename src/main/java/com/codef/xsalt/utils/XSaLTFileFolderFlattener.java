@@ -6,12 +6,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import com.codef.xsalt.arch.XSaLTLoggerWrapper;
+
 /**
  * @author Stephan P. Cossette
  * @author Copyright 2011 Codef.com
  */
-public class XSaLTFileFolderFlattener
-{
+public class XSaLTFileFolderFlattener {
 
 	/**
 	 * Number of files
@@ -50,8 +51,7 @@ public class XSaLTFileFolderFlattener
 	 *            Path to directory/folder to flatten
 	 * @throws IOException
 	 */
-	public XSaLTFileFolderFlattener(String _sFilePathWithNoEndSlash) throws IOException
-	{
+	public XSaLTFileFolderFlattener(String _sFilePathWithNoEndSlash) throws IOException {
 
 		inNumberOfFiles = 0;
 		inNumberOfFilesToMove = 0;
@@ -65,20 +65,18 @@ public class XSaLTFileFolderFlattener
 
 		primeRootDocumentFolder(_sFilePathWithNoEndSlash);
 		primeEmbeddedFoldersArrayList(_sFilePathWithNoEndSlash, _sFilePathWithNoEndSlash);
-		if (ibHasNestedFolders)
-		{
+		if (ibHasNestedFolders) {
 
-			for (Iterator<String> j = ioFilePathHashMap.keySet().iterator(); j.hasNext();)
-			{
+			for (Iterator<String> j = ioFilePathHashMap.keySet().iterator(); j.hasNext();) {
 				String sOriginalFile = (String) j.next();
 				String sCopyToLocation = ioFilePathHashMap.get(sOriginalFile);
-				//					XSaLTGeneric// LOGGER.logXSaLT(Priority.INFO_INT, sOriginalFile + " --> " + sCopyToLocation);
+				XSaLTLoggerWrapper.info(XSaLTFileFolderFlattener.class.getName(),
+						sOriginalFile + " --> " + sCopyToLocation);
 				XSaLTFileSystemUtils.copyFile(sOriginalFile, sCopyToLocation);
 
 			}
 
-			for (int j = 0; j < ioNestedFolderToDeleteArrayList.size(); j++)
-			{
+			for (int j = 0; j < ioNestedFolderToDeleteArrayList.size(); j++) {
 				XSaLTFileSystemUtils.deleteDirectoryAndSubdirectories(ioNestedFolderToDeleteArrayList.get(j));
 			}
 
@@ -93,20 +91,17 @@ public class XSaLTFileFolderFlattener
 	 * @param _sStartDirectory
 	 *            Directory path to perform work on
 	 */
-	private void primeRootDocumentFolder(String _sStartDirectory)
-	{
+	private void primeRootDocumentFolder(String _sStartDirectory) {
 		File _oDirectory = new File(_sStartDirectory);
 		String[] aoDirectoryChildren = _oDirectory.list();
 
-		for (int i = 0; i < aoDirectoryChildren.length; i++)
-		{
+		for (int i = 0; i < aoDirectoryChildren.length; i++) {
 			isCurrentFilePath = _oDirectory.getAbsolutePath() + "\\" + aoDirectoryChildren[i];
 			File oTestDirectory = new File(isCurrentFilePath);
-			if (!oTestDirectory.isDirectory())
-			{
+			if (!oTestDirectory.isDirectory()) {
 				isCurrentFilePath = isCurrentFilePath.replace('\\', '/');
-				String sCurrentFileName = isCurrentFilePath.substring(isCurrentFilePath.lastIndexOf('/') + 1, isCurrentFilePath
-						.length());
+				String sCurrentFileName = isCurrentFilePath.substring(isCurrentFilePath.lastIndexOf('/') + 1,
+						isCurrentFilePath.length());
 				ioFileNameArrayList.add(sCurrentFileName);
 			}
 		}
@@ -122,24 +117,17 @@ public class XSaLTFileFolderFlattener
 	 * @param _sHomeDirectory
 	 *            Root directory where files will be copied
 	 */
-	private void primeEmbeddedFoldersArrayList(String _sStartDirectory, String _sHomeDirectory)
-	{
+	private void primeEmbeddedFoldersArrayList(String _sStartDirectory, String _sHomeDirectory) {
 		File _oDirectory = new File(_sStartDirectory);
-		if (_oDirectory.isDirectory())
-		{
+		if (_oDirectory.isDirectory()) {
 			String[] asDirectoryChildren = _oDirectory.list();
-			if (asDirectoryChildren != null)
-			{
-				for (int i = 0; i < asDirectoryChildren.length; i++)
-				{
+			if (asDirectoryChildren != null) {
+				for (int i = 0; i < asDirectoryChildren.length; i++) {
 					isCurrentFilePath = _oDirectory.getAbsolutePath() + "\\" + asDirectoryChildren[i];
 					File oTestDirectory = new File(isCurrentFilePath);
-					if (oTestDirectory.isDirectory())
-					{
+					if (oTestDirectory.isDirectory()) {
 						ibHasNestedFolders = true;
-					}
-					else
-					{
+					} else {
 						isCurrentFilePath = isCurrentFilePath.replace('\\', '/');
 						String sCurrentFolderPath = isCurrentFilePath.substring(0, isCurrentFilePath.lastIndexOf('/'));
 						String sCurrentFileName = isCurrentFilePath.substring(isCurrentFilePath.lastIndexOf('/') + 1,
@@ -149,38 +137,30 @@ public class XSaLTFileFolderFlattener
 						String sKey = sCurrentFileFullPath;
 						String sValue = "";
 
-						if (!_sStartDirectory.equals(_sHomeDirectory))
-						{
+						if (!_sStartDirectory.equals(_sHomeDirectory)) {
 							ioNestedFolderToDeleteArrayList.add(sCurrentFolderPath);
 						}
 
-						if (ioFileNameArrayList.contains(sCurrentFileName))
-						{
-							if (sCurrentFileName.indexOf(".") != -1)
-							{
+						if (ioFileNameArrayList.contains(sCurrentFileName)) {
+							if (sCurrentFileName.indexOf(".") != -1) {
 								int nPeriodIndex = sCurrentFileName.lastIndexOf(".");
 								String sExtension = sCurrentFileName.substring(nPeriodIndex, sCurrentFileName.length());
 								String sFileNameWithoutExtension = sCurrentFileName.substring(0, nPeriodIndex);
 								sValue = _sHomeDirectory + "/" + sFileNameWithoutExtension + "_"
 										+ XSaLTStringUtils.getDatetimeStringNoUnderscoreWithMilli() + sExtension;
-							}
-							else
-							{
+							} else {
 								sValue = _sHomeDirectory + "/" + sCurrentFileName + "_"
 										+ XSaLTStringUtils.getDatetimeStringNoUnderscoreWithMilli();
 							}
 
-						}
-						else
-						{
+						} else {
 							sValue = _sHomeDirectory + "/" + sCurrentFileName;
 						}
 
 						ioFileNameArrayList.add(sCurrentFileName);
 						inNumberOfFiles = inNumberOfFiles + 1;
 
-						if (!_sStartDirectory.equals(_sHomeDirectory))
-						{
+						if (!_sStartDirectory.equals(_sHomeDirectory)) {
 							ioFilePathHashMap.put(sKey, sValue);
 							inNumberOfFilesToMove = inNumberOfFilesToMove + 1;
 						}
