@@ -1646,37 +1646,21 @@ public class XSaLTFileSystemUtils {
 	 * @param _oDstPath Destination
 	 * @throws IOException
 	 */
-	public static void copyDirectory(File _oSrcPath, File _oDstPath) throws IOException {
-		if (_oSrcPath.isDirectory()) {
-			if (!_oDstPath.exists()) {
-				_oDstPath.mkdir();
-			}
-			String files[] = _oSrcPath.list();
-
-			for (int i = 0; i < files.length; i++) {
-				copyDirectory(new File(_oSrcPath, files[i]), new File(_oDstPath, files[i]));
-			}
-
-		} else {
-			if (!_oSrcPath.exists()) {
-				throw new IOException("File or directory does not exist: " + _oSrcPath.getAbsolutePath());
-			} else {
-				FileInputStream in = new FileInputStream(_oSrcPath);
-				FileOutputStream out = new FileOutputStream(_oDstPath);
-				// Transfer bytes from in to out
-				byte[] buf = new byte[4096];
-
-				int len;
-
-				while ((len = in.read(buf)) > 0) {
-					out.write(buf, 0, len);
+	public static void copyDirectory(String _oSrcPath, String _oDstPath) {
+		try {
+			Files.walk(Paths.get(_oSrcPath)).forEach(source -> {
+				try {
+					Files.copy(source,
+							Paths.get(_oDstPath).resolve(Paths.get(_oSrcPath).relativize(source)));
+				} catch (IOException e) {
+					XSaLTLoggerWrapper.error(XSaLTFileSystemUtils.class.getName(),
+							"Error copying " + source + " to " +_oDstPath + "", e);
 				}
-
-				in.close();
-				out.close();
-			}
+			});
+		} catch (IOException e) {
+			XSaLTLoggerWrapper.error(XSaLTFileSystemUtils.class.getName(),
+					"Error copying " + _oSrcPath + " to " +_oDstPath + "", e);
 		}
-
 	}
 
 	/**
