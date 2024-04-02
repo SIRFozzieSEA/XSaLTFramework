@@ -148,18 +148,18 @@ public class XSaLTRobot {
 			robot.keyRelease(KeyEvent.VK_EQUALS);
 			break;
 		case '~':
+            robot.keyPress(KeyEvent.VK_SHIFT);
             robot.keyPress(KeyEvent.VK_DEAD_TILDE);
             robot.keyRelease(KeyEvent.VK_DEAD_TILDE);
+            robot.keyRelease(KeyEvent.VK_SHIFT);
 			break;
 		case '(':
-			System.out.println("LEFT_PARENTHESIS");
             robot.keyPress(KeyEvent.VK_SHIFT);
             robot.keyPress(KeyEvent.VK_9);
             robot.keyRelease(KeyEvent.VK_9);
             robot.keyRelease(KeyEvent.VK_SHIFT);
 			break;
 		case ')':
-			System.out.println("RIGHT_PARENTHESIS");
             robot.keyPress(KeyEvent.VK_SHIFT);
             robot.keyPress(KeyEvent.VK_0);
             robot.keyRelease(KeyEvent.VK_0);
