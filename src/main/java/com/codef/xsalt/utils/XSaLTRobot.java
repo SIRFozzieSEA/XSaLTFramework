@@ -152,6 +152,14 @@ public class XSaLTRobot {
             robot.keyPress(KeyEvent.VK_DEAD_TILDE);
             robot.keyRelease(KeyEvent.VK_DEAD_TILDE);
 			break;
+		case '(':
+            robot.keyPress(KeyEvent.VK_LEFT_PARENTHESIS);
+            robot.keyRelease(KeyEvent.VK_LEFT_PARENTHESIS);
+			break;
+		case ')':
+            robot.keyPress(KeyEvent.VK_RIGHT_PARENTHESIS);
+            robot.keyRelease(KeyEvent.VK_RIGHT_PARENTHESIS);
+			break;
 		default:
 			// do nothing
 		}
