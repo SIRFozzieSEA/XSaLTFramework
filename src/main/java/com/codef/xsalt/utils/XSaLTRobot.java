@@ -148,6 +148,10 @@ public class XSaLTRobot {
 			robot.keyPress(KeyEvent.VK_EQUALS);
 			robot.keyRelease(KeyEvent.VK_EQUALS);
 			break;
+		case '~':
+            robot.keyPress(KeyEvent.VK_DEAD_TILDE);
+            robot.keyRelease(KeyEvent.VK_DEAD_TILDE);
+			break;
 		default:
 			// do nothing
 		}
