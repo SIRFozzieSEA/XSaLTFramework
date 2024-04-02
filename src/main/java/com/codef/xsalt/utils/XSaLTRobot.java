@@ -13,7 +13,6 @@ public class XSaLTRobot {
 			char chary = stringForKeypress.charAt(i);
 			typeCharacter(robot, chary, nKeyPressDelay);
 		}
-
 	}
 
 	public static void getKeyPressKeysForString(Robot robot, int initialDelay, String stringForKeypress,
@@ -153,12 +152,18 @@ public class XSaLTRobot {
             robot.keyRelease(KeyEvent.VK_DEAD_TILDE);
 			break;
 		case '(':
-            robot.keyPress(KeyEvent.VK_LEFT_PARENTHESIS);
-            robot.keyRelease(KeyEvent.VK_LEFT_PARENTHESIS);
+			System.out.println("LEFT_PARENTHESIS");
+            robot.keyPress(KeyEvent.VK_SHIFT);
+            robot.keyPress(KeyEvent.VK_9);
+            robot.keyRelease(KeyEvent.VK_9);
+            robot.keyRelease(KeyEvent.VK_SHIFT);
 			break;
 		case ')':
-            robot.keyPress(KeyEvent.VK_RIGHT_PARENTHESIS);
-            robot.keyRelease(KeyEvent.VK_RIGHT_PARENTHESIS);
+			System.out.println("RIGHT_PARENTHESIS");
+            robot.keyPress(KeyEvent.VK_SHIFT);
+            robot.keyPress(KeyEvent.VK_0);
+            robot.keyRelease(KeyEvent.VK_0);
+            robot.keyRelease(KeyEvent.VK_SHIFT);
 			break;
 		default:
 			// do nothing
