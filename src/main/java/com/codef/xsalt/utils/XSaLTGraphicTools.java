@@ -1,7 +1,6 @@
 package com.codef.xsalt.utils;
 
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -42,10 +41,6 @@ import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-
-import multivalent.Behavior;
-import multivalent.ParseException;
-import multivalent.std.adaptor.pdf.PDF;
 
 /**
  * @author Stephan P. Cossette
@@ -176,63 +171,6 @@ public class XSaLTGraphicTools {
 	public static BufferedImage cropImage(BufferedImage bufferedImage, int x, int y, int width, int height) {
 		BufferedImage croppedImage = bufferedImage.getSubimage(x, y, width, height);
 		return croppedImage;
-	}
-
-	/**
-	 * This method reads a PDF file and converts the file and writes it into a JPEG
-	 * format.
-	 * 
-	 * @param _sPDFFilePath      Path for PDF file
-	 * @param _sImageFilePathJPG Path to write JPEG file
-	 * @throws IOException
-	 * @throws DocumentException
-	 * @throws ParseException
-	 */
-	public static void convertPDFtoJPEG(String _sPDFFilePath, String _sImageFilePathJPG)
-			throws IOException, DocumentException, ParseException {
-
-		File oInputFile = new File(_sPDFFilePath);
-		File oOutFile = new File(_sImageFilePathJPG);
-
-		PDF oPDFInputFile = (PDF) Behavior.getInstance("AdobePDF", "AdobePDF", null, null, null);
-
-		oPDFInputFile.setInput(oInputFile);
-
-		multivalent.Document oDocument = new multivalent.Document("doc", null, null);
-		oPDFInputFile.parse(oDocument);
-		oDocument.clear();
-
-		oDocument.putAttr(multivalent.Document.ATTR_PAGE, Integer.toString(1));
-		oPDFInputFile.parse(oDocument);
-
-		multivalent.Node oTopNode = oDocument.childAt(0);
-
-		oDocument.formatBeforeAfter(612, 792, null);
-
-		int w = oTopNode.bbox.width;
-		int h = oTopNode.bbox.height;
-
-		BufferedImage oBufferedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-		Graphics2D oGraphics2D = oBufferedImage.createGraphics();
-		oGraphics2D.setClip(0, 0, w, h);
-
-		oGraphics2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		oGraphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		oGraphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-
-		multivalent.Context oContext = oDocument.getStyleSheet().getContext(oGraphics2D, null);
-		oTopNode.paintBeforeAfter(oGraphics2D.getClipBounds(), oContext);
-
-		ImageIO.write(oBufferedImage, "jpeg", oOutFile);
-
-		oDocument.removeAllChildren();
-		oContext.reset();
-		oGraphics2D.dispose();
-
-		oPDFInputFile.getReader().close();
-		oOutFile = null;
-		oDocument = null;
-
 	}
 
 	/**

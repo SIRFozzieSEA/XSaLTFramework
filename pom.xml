@@ -120,15 +120,6 @@
 			<scope>runtime</scope>
 		</dependency>
 
-
-		<dependency>
-			<groupId>multivalent</groupId>
-			<artifactId>multivalent</artifactId>
-			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${multivalent.jarpath}</systemPath>
-		</dependency>
-
 	</dependencies>
 
 	<build>
